@@ -998,3 +998,2049 @@ function setTeamSize(size) {
 
   window.PartyAutoFill = Object.freeze({ assignCaught, partyIds });
 })();
+</script>
+<script>
+function hideMainScreens() {
+  if (safariAggressionTimer) window.clearTimeout(safariAggressionTimer);
+  ["onboarding-screen", "select-screen", "cups-screen", "trainer-screen", "safari-screen", "pokedex-screen", "shop-screen", "settings-screen", "battle-screen"].forEach(id => { els[id].hidden = true; });
+  window.PartyTray?.render();
+  window.YSFlow?.emit("screens:hidden", { battle });
+}
+
+function setActiveNav(id) {
+  document.querySelectorAll(".nav-button").forEach(button => button.classList.toggle("active", button.id === id));
+  window.YSFlow?.emit("nav:changed", { id });
+}
+
+function showCollection() {
+  if (!save.onboardingComplete) return;
+  setTeamSize(6);
+  hideMainScreens();
+  els["select-screen"].hidden = false;
+  setActiveNav("collection-tab");
+  renderRoster();
+  window.YSFlow?.emit("party:shown");
+}
+
+</script><script>
+function showShop() {
+  if (!save.onboardingComplete || battle) return;
+  hideMainScreens();
+  els["shop-screen"].hidden = false;
+  setActiveNav("shop-tab");
+  renderShop();
+}
+
+</script><script>
+function chooseEggs() {
+  return shuffle(EGG_POOL.filter(id => !save.owned.includes(id))).slice(0, 2);
+}
+
+function markSeen(ids) {
+  ids.forEach(id => { if (SPECIES[id] && !save.seen.includes(id)) save.seen.push(id); });
+}
+
+function addOwned(id, level = 5) {
+  if (!SPECIES[id]) return false;
+  markSeen([id]);
+  save.caughtSpecies ||= [];
+  if (!save.caughtSpecies.includes(id)) save.caughtSpecies.push(id);
+  const isNew = !save.owned.includes(id);
+  if (isNew) save.owned.push(id);
+  save.pokemon ||= [];
+  const record = createPokemonRecord(save, id, { xp: expForLevel(id, level) });
+  save.pokemon.push(record);
+  save.xp[id] ??= expForLevel(id, level);
+  window.YSFlow?.emit("pokemon:added", { id, level, isNew, record });
+  return isNew;
+}
+
+function chooseStarter(id) {
+  if (!STARTER_IDS.includes(id) || save.owned.length) return;
+  save.owned = [];
+  save.pokemon = [];
+  save.activePartyInstanceIds = [];
+  save.partyPresetInstanceIds = [];
+  addOwned(id, 5);
+  save.pendingEggs = chooseEggs();
+  save.hatchedEggs = [];
+  writeSave();
+  renderOnboarding();
+}
+
+function hatchEgg(index) {
+  const id = save.pendingEggs[index];
+  if (!id || save.hatchedEggs.includes(index)) return;
+  save.hatchedEggs.push(index);
+  addOwned(id, 5);
+  writeSave();
+  renderOnboarding();
+}
+
+function finishOnboarding() {
+  if (save.hatchedEggs.length !== 2) return;
+  save.onboardingComplete = true;
+  save.introComplete = true;
+  save.pendingEggs = [];
+  save.hatchedEggs = [];
+  selected = save.pokemon.slice(0, 6).map(mon => mon.uid);
+  selectionLimit = 6;
+  save.activePartyInstanceIds = [...selected];
+  save.adventurePartyInstanceIds = [...selected];
+  writeSave();
+  renderApp();
+}
+
+function renderOnboarding() {
+  hideMainScreens();
+  els["mode-nav"].hidden = true;
+  els["onboarding-screen"].hidden = false;
+  const hasStarter = save.owned.length > 0;
+  els["partner-step"].hidden = hasStarter;
+  els["egg-step"].hidden = !hasStarter;
+  if (!hasStarter) {
+    els["starter-grid"].innerHTML = "";
+    STARTER_IDS.forEach(id => {
+      const mon = SPECIES[id];
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "starter-card";
+      button.innerHTML = `<strong>${mon.name}</strong><small>${mon.types.join(" · ")}</small><img alt="${mon.name}">`;
+      setSprite(button.querySelector("img"), id);
+      button.addEventListener("click", () => chooseStarter(id));
+      els["starter-grid"].appendChild(button);
+    });
+    return;
+  }
+  if (save.pendingEggs.length !== 2) {
+    save.pendingEggs = chooseEggs();
+    save.hatchedEggs = [];
+    writeSave();
+  }
+  els["egg-grid"].innerHTML = "";
+  save.pendingEggs.forEach((id, index) => {
+    const hatched = save.hatchedEggs.includes(index);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `egg-card${hatched ? " hatched" : ""}`;
+    button.disabled = hatched;
+    button.innerHTML = hatched
+      ? `<img alt="${SPECIES[id].name}"><strong>${SPECIES[id].name}</strong>`
+      : `<span class="egg-shape" aria-hidden="true"></span><strong>CRACK EGG</strong>`;
+    if (hatched) setSprite(button.querySelector("img"), id);
+    else button.addEventListener("click", () => hatchEgg(index));
+    els["egg-grid"].appendChild(button);
+  });
+  els["begin-journey"].disabled = save.hatchedEggs.length !== 2;
+}
+
+</script><script>
+function renderShop() {
+  renderRecord();
+  els["shop-grid"].innerHTML = "";
+  Object.entries(ITEMS).forEach(([id, item]) => {
+    const unlocked = (!item.cups || save.cupsCompleted >= item.cups) && (!item.elite || save.eliteCompleted);
+    const awardOnly = id === "masterBall" || item.rewardOnly;
+    const card = document.createElement("article");
+    card.className = `shop-card${unlocked ? "" : " locked"}`;
+    card.dataset.item = id;
+    const lockCopy = item.elite ? "DEFEAT THE ELITE FOUR" : item.cups ? `COMPLETE ${item.cups} CUPS` : "";
+    const awardCopy = id === "masterBall" ? "CHAMPION PRIZE" : "BATTLE REWARD";
+    const file = window.YS_SOURCE_ITEM_ICONS?.[id];
+    const iconMarkup = file
+      ? `<span class="item-icon source-backed" aria-hidden="true"><img class="source-item-img" src="${assetUrl(`./assets/items/${file}`)}" alt=""></span>`
+      : `<span class="item-icon" aria-hidden="true">${({pokeBall:"◉",greatBall:"◉",ultraBall:"◉",superBall:"◉",masterBall:"◉",potion:"✚",superPotion:"✚",fullHeal:"✦",revive:"✧"})[id] || "◆"}</span>`;
+    card.innerHTML = `${iconMarkup}<h3>${item.name} <small>×${save.inventory[id] || 0}</small></h3><p>${unlocked ? item.description : lockCopy}</p><footer><span>${awardOnly ? awardCopy : `● ${item.price}`}</span><button type="button" ${!unlocked || awardOnly || save.coins < item.price ? "disabled" : ""}>${awardOnly ? (id === "masterBall" ? "AWARDED" : "FIND IN BATTLE") : unlocked ? "BUY" : "LOCKED"}</button></footer>`;
+    if (!awardOnly) card.querySelector("button").addEventListener("click", () => buyItem(id));
+    els["shop-grid"].appendChild(card);
+  });
+  window.YSFlow?.emit("shop:rendered");
+}
+
+function buyItem(id) {
+  const item = ITEMS[id];
+  const unlocked = item && (!item.cups || save.cupsCompleted >= item.cups) && (!item.elite || save.eliteCompleted);
+  if (!item || !unlocked || id === "masterBall" || item.rewardOnly || save.coins < item.price) return;
+  save.coins -= item.price;
+  save.inventory[id] = (save.inventory[id] || 0) + 1;
+  writeSave();
+  renderShop();
+}
+
+</script><script>
+function showCups() {
+  if (!save.onboardingComplete || battle) return;
+  setTeamSize(6);
+  hideMainScreens();
+  els["cups-screen"].hidden = false;
+  setActiveNav("cups-tab");
+  renderCups();
+}
+
+function renderCups() {
+  if (window.KantoMap) { window.KantoMap.render(); window.YSFlow?.emit("journey:rendered"); return; }
+  els["badge-count"].innerHTML = `<span>${save.cupsCompleted}</span> / 8`;
+  els["cup-summary"].textContent = save.cupsCompleted < 8
+    ? `${8 - save.cupsCompleted} badge${8 - save.cupsCompleted === 1 ? "" : "s"} remain before the Elite Four.`
+    : "The Indigo Plateau is open.";
+  els["badge-grid"].innerHTML = "";
+  CUPS.forEach((cup, index) => {
+    const completed = index < save.cupsCompleted;
+    const current = index === save.cupsCompleted;
+    const card = document.createElement("article");
+    card.className = `badge-card${completed ? " completed" : current ? " current" : " locked"}`;
+    card.innerHTML = `<span class="badge-icon">${cup.mark}</span><div><strong>${cup.badge} GYM</strong><small>${cup.leader} · ${cup.types.join(" / ")}${completed ? " · COMPLETE" : ""}</small>${current ? `<button type="button">${selected.length === 3 ? "CHALLENGE" : "SELECT TEAM"}</button>` : ""}</div>`;
+    if (current) card.querySelector("button").addEventListener("click", () => selected.length === 3 ? startCup(index) : showCollection());
+    els["badge-grid"].appendChild(card);
+  });
+  renderElitePanel();
+  window.YSFlow?.emit("journey:rendered");
+}
+
+function renderElitePanel() {
+  const panel = els["elite-panel"];
+  if (save.cupsCompleted < 8) {
+    panel.innerHTML = `<h3>ELITE FOUR · LOCKED</h3><p>Complete all eight Kanto Gyms to enter the Indigo Plateau.</p>`;
+    return;
+  }
+  if (!save.eliteCompleted) {
+    const member = ELITE_FOUR[save.eliteProgress];
+    panel.innerHTML = `<h3>ELITE FOUR · ${save.eliteProgress}/4</h3><p>Next opponent: ${member.name}. Journey damage carries forward, so prepare your six-slot adventure party and Bag.</p><button class="primary-button" type="button">BATTLE ${member.name}<span>›</span></button>`;
+    panel.querySelector("button").onclick = startElite;
+    return;
+  }
+  const legendaryIds = ["articuno", "zapdos", "moltres"];
+  const count = legendaryIds.filter(id => save.owned.includes(id)).length;
+  const allCaught = count === legendaryIds.length;
+  panel.replaceChildren();
+  const head = document.createElement("div");
+  head.innerHTML = `<h3>KANTO CHAMPION · POSTGAME</h3><p>${allCaught ? "The three legendary birds are yours. A psychic signal has appeared near Cerulean Cave." : `${count} / 3 legendary birds caught. Their signals are now visible on the Kanto map.`}</p>`;
+  panel.append(head);
+  const grid = document.createElement("div");
+  grid.className = "v57-legendary-grid";
+  legendaryIds.forEach(id => {
+    const caught = save.owned.includes(id), button = document.createElement("button");
+    button.type = "button"; button.dataset.legendary = id; button.className = `v57-legendary-card${caught ? " caught" : ""}`;
+    const img = document.createElement("img"); img.alt = ""; setSprite(img, id);
+    const span = document.createElement("span"); span.innerHTML = `<strong>${SPECIES[id].name}</strong><small>${caught ? "CAUGHT" : "TRACK ON MAP"}</small>`;
+    button.append(img, span); button.disabled = caught;
+    button.onclick = () => window.startLegendaryBattle?.(id); grid.append(button);
+  });
+  panel.append(grid);
+  if (allCaught) {
+    const button = document.createElement("button");
+    button.type = "button"; button.className = "primary-button v57-mewtwo-button"; button.textContent = save.mewtwoDefeated ? "REPLAY MEWTWO ENCOUNTER" : "CHALLENGE MEWTWO ›";
+    button.onclick = startMewtwoBattle; panel.append(button);
+  }
+  if (save.mewEgg?.awarded && !save.mewEgg.hatched) {
+    const egg = document.createElement("p"); egg.className = "v57-egg-progress";
+    egg.textContent = `Mew Egg · ${save.mewEgg.progress || 0} / 42 battles completed`;
+    panel.append(egg);
+  }
+}
+
+function startCup(index) {
+  startCupRound(index, 0);
+}
+
+function startCupRound(index, round) {
+  const cup = CUPS[index];
+  if (!cup || index > save.cupsCompleted || selected.length < 1 || selected.length > 6 || round < 0 || round > 2) return;
+  const qualifier = CUP_ROUNDS[index][round];
+  const seed = [...(qualifier?.team || cup.team)];
+  const desired = index <= 1 ? (round === 2 ? 3 : 2) : index <= 4 ? (round === 2 ? 4 : 3) : (round === 2 ? 5 : 4);
+  const legendaryIds = ["articuno", "zapdos", "moltres"];
+  const pool = Object.keys(SPECIES).filter(id => !["mew", "mewtwo", ...legendaryIds].includes(id) && SPECIES[id].types.some(type => cup.types.includes(type)));
+  for (const id of shuffle(pool)) {
+    if (seed.length >= desired) break;
+    if (!seed.includes(id)) seed.push(id);
+  }
+  startBattle("cup", {
+    enemyIds: seed.slice(0, desired),
+    trainer: qualifier || { name: cup.leader, sprite: cup.sprite },
+    strategy: qualifier?.strategy,
+    encounter: !qualifier && index === 0 ? "boulderFinal" : null,
+    cupIndex: index, cupRound: round,
+    levelBonus: Math.floor(index / 2) + (round === 2 ? 1 : 0)
+  });
+}
+
+function startElite() {
+  const member = ELITE_FOUR[save.eliteProgress];
+  if (!member || selected.length < 1 || selected.length > 6) return;
+  startBattle("elite", { enemyIds: member.team, trainer: member, eliteIndex: save.eliteProgress, levelBonus: 3 + save.eliteProgress });
+}
+
+function startMewtwoBattle() {
+  const legendarySet = ["articuno","zapdos","moltres"];
+  if (!save.eliteCompleted || !legendarySet.every(id => save.owned.includes(id)) || selected.length < 1 || selected.length > 6) return;
+  startBattle("mewtwo", { enemyIds: ["mewtwo"], trainer: { name: "MEWTWO", sprite: "psychic" }, levelBonus: 7 });
+}
+
+</script><script>
+let selectedArcadeCup = 0;
+function arcadeCupUnlocked(index) { return index === 0 || save.arcadeCupClears[index - 1] === true; }
+function showTrainer() {
+  if (!save.onboardingComplete || battle) return;
+  setTeamSize(3);
+  hideMainScreens();
+  els["trainer-screen"].hidden = false;
+  setActiveNav("trainer-tab");
+  if (!arcadeCupUnlocked(selectedArcadeCup)) selectedArcadeCup = Math.max(0, save.arcadeCupClears.findIndex(done => !done));
+  renderArcadeCups();
+  window.YSFlow?.emit("trainer:shown");
+}
+
+function renderArcadeCups() {
+  const cleared = save.arcadeCupClears.filter(Boolean).length;
+  els["arcade-clear-count"].textContent = `${cleared} / 3`;
+  const grid = els["arcade-cup-grid"]; grid.replaceChildren();
+  ARCADE_CUPS.forEach((cup,index) => {
+    const unlocked = arcadeCupUnlocked(index), complete = save.arcadeCupClears[index], progress = save.arcadeCupProgress[index] || 0;
+    const button = document.createElement("button"); button.type = "button";
+    button.className = `arcade-cup-card ${cup.id}${index === selectedArcadeCup ? " selected" : ""}${complete ? " complete" : ""}`;
+    button.disabled = !unlocked;
+    button.innerHTML = `<span class="arcade-cup-ball">${cup.icon}</span><span><strong>${cup.name}</strong><small>${!unlocked ? `CLEAR ${ARCADE_CUPS[index-1].name}` : complete ? "CLEARED · REPLAY ANYTIME" : progress ? `STAGE ${progress + 1} / ${cup.stages.length}` : `${cup.stages.length} STAGES`}</small></span>`;
+    button.addEventListener("click",()=>{selectedArcadeCup=index;renderArcadeCups();});
+    grid.append(button);
+  });
+  const cup = ARCADE_CUPS[selectedArcadeCup], progress = save.arcadeCupProgress[selectedArcadeCup] || 0;
+  els["arcade-run-title"].textContent = cup.name;
+  els["arcade-run-copy"].textContent = cup.description;
+  els["arcade-boss"].innerHTML = `<img src="${assetUrl(`./assets/trainers/${cup.bossSprite}.png`)}" alt="${cup.boss}"><span>FINAL BOSS<b>${cup.boss}</b></span>`;
+  const track = els["arcade-stage-track"]; track.replaceChildren();
+  cup.stages.forEach((stage,index)=>{
+    const node=document.createElement("article");
+    node.className=`arcade-stage ${stage.boss?"boss":""}${index<progress||save.arcadeCupClears[selectedArcadeCup]?" cleared":index===progress?" current":""}`;
+    node.innerHTML=`<span>${index<progress||save.arcadeCupClears[selectedArcadeCup]?"✓":index+1}</span><div><small>${stage.label}</small><strong>${stage.title}</strong></div>`;
+    track.append(node);
+  });
+  const action=els["arcade-start"], ready=selected.length===3;
+  action.disabled=false;
+  action.innerHTML=ready?`${save.arcadeCupClears[selectedArcadeCup]?"REPLAY":"ENTER"} ${cup.name} · STAGE ${progress+1} <span>›</span>`:`MANAGE 3-POKÉMON PARTY <span>›</span>`;
+  action.onclick=()=>ready?startArcadeStage(selectedArcadeCup,progress):window.PartyTray?.open();
+}
+
+function prepareTrainer(size = 3) { if (window.BattleEntryUX?.prepareTrainer) return window.BattleEntryUX.prepareTrainer(size); showTrainer(); }
+
+function startArcadeStage(cupIndex, stageIndex) {
+  const cup=ARCADE_CUPS[cupIndex],stage=cup?.stages[stageIndex];
+  if(!stage||!arcadeCupUnlocked(cupIndex)||selected.length!==3)return;
+  const random=stage.randomTeam?.length?shuffle(stage.randomTeam)[0]:null;
+  const enemyIds=random?[random]:stage.team;
+  startBattle("arcade",{enemyIds,trainer:stage.trainer,strategy:stage.strategy,levelBonus:stage.levelBonus||Math.floor(cupIndex/2),arcadeCupIndex:cupIndex,arcadeStage:stageIndex,arcadeStageTitle:stage.title,arcadeLabel:stage.label,encounterText:stage.encounterText||""});
+}
+
+function startTrainer(size) {
+  if (selected.length !== size) return;
+  const trainer = shuffle(TRAINERS)[0];
+  const average = Math.round(selected.reduce((sum, id) => sum + levelFor(id), 0) / selected.length);
+  const ids = chooseDiverseTeam(Object.keys(SPECIES), size);
+  startBattle(size === 6 ? "trainerDuo" : "trainer", { enemyIds: ids, trainer, forcedLevel: average });
+}
+
+// Safari zones are deliberately bounded: a high-level party cannot turn a starter habitat into an endgame area.
+
+</script><script>
+const SAFARI_ZONES = [
+  { id:"woodland", name:"Woodland Trail", unlock:0, min:3, max:18, levelBonus:1, types:["GRASS","BUG","NORMAL"], note:"Gentle paths · wild Pokémon scale to your team +1" },
+  { id:"coast", name:"Coastal Route", unlock:2, min:12, max:34, levelBonus:1, types:["WATER","FLYING","ICE"], note:"Unlocked after Misty · new coastal encounters" },
+  { id:"ridge", name:"Volcanic Ridge", unlock:4, min:24, max:52, levelBonus:2, types:["FIRE","ROCK","GROUND","FIGHTING"], note:"Unlocked after Gym 4 · rugged high-level encounters" },
+  { id:"preserve", name:"Champion's Preserve", unlock:6, min:36, max:70, levelBonus:3, types:["DRAGON","PSYCHIC","ELECTRIC","NORMAL"], note:"Unlocked after Gym 6 · rare late-Kanto encounters" },
+  { id:"dark", name:"Dark Safari", unlock:8, min:46, max:88, levelBonus:4, types:["GHOST","PSYCHIC","POISON","DARK"], note:"Unlocked after all eight badges · extremely rare corrupted variants can appear" }
+];
+let activeSafariZone = "woodland";
+function currentSafariZone() { return SAFARI_ZONES.find(z => z.id === activeSafariZone && save.cupsCompleted >= z.unlock) || SAFARI_ZONES[0]; }
+function safariSpeciesPool() {
+  const zone = currentSafariZone();
+  const legends = new Set(["articuno","zapdos","moltres","mew"]);
+  const eligible = Object.keys(SPECIES).filter(id => id !== "mewtwo" && SPECIES[id].types.some(t => zone.types.includes(t)) && (!PRE_EVOLUTION[id] || save.cupsCompleted >= 6) && (!legends.has(id) || zone.id === "preserve"));
+  return eligible.length ? eligible : Object.keys(SPECIES).filter(id => id !== "mewtwo" && !legends.has(id));
+}
+function safariEncounterLevel() {
+  const zone = currentSafariZone();
+  const average = Math.round(selected.reduce((sum, uid) => sum + levelFor(uid), 0) / Math.max(1, selected.length));
+  // Safari difficulty comes from the habitat, never the global difficulty setting.
+  // Keep the encounter readable and fair: the selected team's average + the zone threat bonus,
+  // bounded by that habitat's intended progression band.
+  return Math.max(zone.min, Math.min(zone.max, average + zone.levelBonus));
+}
+function renderSafariZonePicker() {
+  let picker = document.getElementById("safari-zone-picker");
+  if (!picker) { picker = document.createElement("div"); picker.id = "safari-zone-picker"; picker.className = "safari-zone-picker"; els["safari-field"].before(picker); }
+  picker.replaceChildren();
+  SAFARI_ZONES.forEach(zone => {
+    const unlocked = save.cupsCompleted >= zone.unlock;
+    const button = document.createElement("button"); button.type = "button";
+    button.className = "safari-zone-button" + (currentSafariZone().id === zone.id ? " selected" : "");
+    button.disabled = !unlocked;
+    button.textContent = unlocked ? zone.name : `${zone.name} · ${zone.unlock} badges`;
+    button.setAttribute("aria-pressed", String(currentSafariZone().id === zone.id));
+    button.addEventListener("click", () => { activeSafariZone = zone.id; renderSafariField(); });
+    picker.appendChild(button);
+  });
+}
+function showSafari() {
+  if (window.SafariController?.open) return window.SafariController.open();
+  if (!save.onboardingComplete || battle) return;
+  setTeamSize(6);
+  hideMainScreens();
+  els["safari-screen"].hidden = false;
+  setActiveNav("safari-tab");
+  renderSafariField();
+}
+
+function renderSafariField() {
+  if (window.SafariController?.render) return window.SafariController.render();
+  if (safariAggressionTimer) window.clearTimeout(safariAggressionTimer);
+  renderSafariZonePicker();
+  const zone = currentSafariZone();
+  const pool = safariSpeciesPool();
+  const uncaught = pool.filter(id => !save.owned.includes(id));
+  const picks = shuffle(uncaught.length >= 6 ? uncaught : pool).slice(0, 6);
+  const positions = [[18,31],[42,22],[70,31],[29,65],[55,60],[79,69]];
+  els["safari-team-warning"].hidden = selected.length >= 1;
+  els["safari-tier-copy"].textContent = `${zone.name} · TEAM +${zone.levelBonus} · Lv ${zone.min}–${zone.max}. ${zone.note}. Select a Pokémon to approach.`;
+  els["safari-field"].innerHTML = "";
+  let charging = null;
+  picks.forEach((id, index) => {
+    markSeen([id]);
+    const mon = SPECIES[id];
+    const aggressive = ["FIGHTING","DRAGON","POISON"].some(type => mon.types.includes(type)) || mon.stats[1] + mon.stats[5] > 185 || Math.random() < .22;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `safari-mon${aggressive ? " aggressive" : ""}`;
+    button.style.left = `${positions[index][0]}%`;
+    button.style.top = `${positions[index][1]}%`;
+    button.innerHTML = `<img alt="${mon.name}"><span>${aggressive ? "! " : ""}${mon.name}</span>`;
+    setSprite(button.querySelector("img"), id);
+    button.addEventListener("click", () => startSafariEncounter(id));
+    els["safari-field"].appendChild(button);
+    if (aggressive && !charging) charging = id;
+  });
+  writeSave();
+  if (charging && selected.length >= 1) safariAggressionTimer = window.setTimeout(() => {
+    if (!battle && !els["safari-screen"].hidden) startSafariEncounter(charging);
+  }, 9000);
+}
+
+function startSafariEncounter(id) {
+  if (window.BattleEntryUX?.canStartSafariEncounter && !window.BattleEntryUX.canStartSafariEncounter()) return;
+  if (selected.length < 1 || selected.length > 6 || !SPECIES[id]) {
+    els["safari-team-warning"].hidden = false;
+    return;
+  }
+  const enemyVariant = window.YSAdventureV58?.rollSafariVariant?.() || "";
+  startBattle("safari", { enemyIds: [id], forcedLevel: safariEncounterLevel(), enemyVariant });
+}
+
+</script><script>
+function showPokedex() {
+  if (!save.onboardingComplete || battle) return;
+  hideMainScreens();
+  els["pokedex-screen"].hidden = false;
+  setActiveNav("pokedex-tab");
+  renderPokedex();
+}
+
+function renderPokedex() {
+  els["seen-count"].textContent = save.seen.length;
+  const caughtSpecies = save.caughtSpecies || save.owned;
+  els["caught-count"].textContent = caughtSpecies.length;
+  els["pokedex-grid"].innerHTML = "";
+  Object.entries(SPECIES).sort((a, b) => a[1].dex - b[1].dex).forEach(([id, mon]) => {
+    const seen = save.seen.includes(id);
+    const caught = caughtSpecies.includes(id);
+    const entry = document.createElement("button");
+    entry.type = "button";
+    entry.className = `dex-entry ${caught ? "caught" : seen ? "seen" : "unseen"}`;
+    entry.dataset.pokemonId = id;
+    entry.disabled = !seen;
+    entry.setAttribute("aria-label", seen ? `View Pokédex notes for ${mon.name}` : `Pokédex entry ${mon.dex}, unknown`);
+    entry.innerHTML = `<img alt=""><strong>#${String(mon.dex).padStart(3,"0")} ${seen ? mon.name : "?????"}</strong><small>${caught ? "CAUGHT" : seen ? "SEEN" : "UNKNOWN"}</small>`;
+    setSprite(entry.querySelector("img"), id);
+    if (seen) entry.addEventListener("click", () => window.PokemonDetails?.inspect(id));
+    els["pokedex-grid"].appendChild(entry);
+  });
+}
+
+</script><script>
+function renderApp() {
+  renderRecord();
+  renderDifficulty();
+  if (!save.onboardingComplete || save.pokemon.length < 3) {
+    renderOnboarding();
+    window.YSFlow?.emit("app:rendered", { onboarding: true });
+    return;
+  }
+  if (!selected.length) {
+    selected = save.pokemon.slice(0, 6).map(mon => mon.uid);
+    selectionLimit = 6;
+    save.activePartyInstanceIds = [...selected];
+    writeSave();
+  }
+  els["mode-nav"].hidden = false;
+  showCollection();
+  window.PartyTray?.render();
+  window.YSFlow?.emit("app:rendered", { onboarding: false });
+}
+
+</script><script>
+function createMon(ref, side, forcedLevel = null) {
+  const record = side === "player" ? pokemonRecord(ref) : null;
+  const id = record?.speciesId || ref;
+  const base = SPECIES[id];
+  const level = forcedLevel ?? (side === "player" ? levelFor(record?.uid || id) : 50);
+  const stats = calculatedStats(id, level);
+  const mon = {
+    id, companionUid: record?.uid || null, name: record?.notes?.nickname || base.name, speciesName: base.name, types: base.types, level,
+    maxHp: stats.hp, hp: stats.hp, attack: stats.attack, defense: stats.defense,
+    specialAttack: stats.specialAttack, specialDefense: stats.specialDefense, speed: stats.speed,
+    moveIds: base.moves, pp: base.moves.map(move => MOVES[move].pp),
+    status: null, sleep: 0, seeded: false, recharge: false, trappedTurns: 0, flinched: false,
+    stages: { attack: 0, defense: 0, speed: 0, specialAttack: 0, specialDefense: 0, accuracy: 0 }
+  };
+  window.YSFlow?.emit("battle:modelCreated", { mon, ref, side, forcedLevel, record });
+  return mon;
+}
+
+function shuffle(items) {
+  const list = [...items];
+  for (let i = list.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [list[i], list[j]] = [list[j], list[i]];
+  }
+  return list;
+}
+
+function moveThreat(attacker, defender) {
+  return Math.max(...attacker.moveIds.map(id => {
+    const move = MOVES[id];
+    if (!move.power) return 0;
+    return estimateDamage(attacker, defender, move);
+  }));
+}
+
+function matchupScore(candidate, opposing) {
+  const outgoing = moveThreat(candidate, opposing) / Math.max(1, opposing.hp);
+  const incoming = moveThreat(opposing, candidate) / Math.max(1, candidate.hp);
+  return outgoing * 1.35 - incoming;
+}
+
+function chooseDiverseTeam(pool, count) {
+  const available = shuffle(pool);
+  const chosen = [];
+  while (chosen.length < count && available.length) {
+    available.sort((a, b) => {
+      const aNew = SPECIES[a].types.filter(type => !chosen.some(id => SPECIES[id].types.includes(type))).length;
+      const bNew = SPECIES[b].types.filter(type => !chosen.some(id => SPECIES[id].types.includes(type))).length;
+      return bNew - aNew + (Math.random() - .5);
+    });
+    chosen.push(available.shift());
+  }
+  return chosen;
+}
+
+function chooseOpponentTeam(pool, playerTeam, difficulty, enemyLevel) {
+  if (difficulty === "casual") return shuffle(pool).slice(0, 3);
+  if (difficulty === "stadium") return chooseDiverseTeam(pool, 3);
+  const candidates = pool.map(id => {
+    const mon = createMon(id, "enemy", enemyLevel);
+    const counterScore = playerTeam.reduce((sum, player) => sum + matchupScore(mon, player), 0);
+    return { id, score: counterScore + Math.random() * .8 };
+  }).sort((a, b) => b.score - a.score);
+  const chosen = [];
+  for (const candidate of candidates) {
+    const repeatedTypes = SPECIES[candidate.id].types.filter(type => chosen.some(id => SPECIES[id].types.includes(type))).length;
+    if (repeatedTypes === 0) chosen.push(candidate.id);
+    if (chosen.length === 3) break;
+  }
+  for (const candidate of candidates) {
+    if (chosen.length === 3) break;
+    if (!chosen.includes(candidate.id)) chosen.push(candidate.id);
+  }
+  return chosen;
+}
+
+function chooseProfile(difficulty) {
+  if (difficulty === "casual") return AI_PROFILES.rookie;
+  if (difficulty === "master") return AI_PROFILES.master;
+  return AI_PROFILES[shuffle(["aggressor", "tactician", "controller"])[0]];
+}
+
+</script><script>
+function startBattle(mode = "trainer", config = {}) {
+  if (window.BattleEntryUX?.interceptStart?.(mode, config, startBattleImmediate)) return;
+  return startBattleImmediate(mode, config);
+}
+
+function startBattleImmediate(mode = "trainer", config = {}) {
+  const startContext = {
+    mode,
+    config: { ...config },
+    cancelled: false,
+    reason: "",
+    cancel(reason = "cancelled") { this.cancelled = true; this.reason = reason; }
+  };
+  window.YSFlow?.emit("battle:beforeStart", startContext);
+  mode = startContext.mode;
+  config = startContext.config || {};
+  const finishStart = (started = false) => window.YSFlow?.emit("battle:startFinished", { ...startContext, mode, config, battle: started ? battle : null, started });
+  if (startContext.cancelled) {
+    window.YSFlow?.emit("battle:startAborted", { ...startContext, mode, config });
+    finishStart(false);
+    return;
+  }
+  const adventure = ["cup","safari","elite","mewtwo","legendary"].includes(mode);
+  const required = mode === "trainerDuo" ? 6 : 3;
+  if (adventure ? (selected.length < 1 || selected.length > 6) : selected.length !== required) {
+    window.YSFlow?.emit("battle:startAborted", { ...startContext, mode, config, reason: "invalid-party-size" });
+    finishStart(false);
+    return;
+  }
+  const difficulty = ["trainer", "trainerDuo"].includes(mode) && DIFFICULTIES[save.difficulty] ? save.difficulty : "stadium";
+  const playerTeam = selected.map(uid => createMon(uid, "player"));
+  const averageLevel = Math.round(playerTeam.reduce((sum, mon) => sum + mon.level, 0) / playerTeam.length);
+  const levelDelta = config.levelBonus ?? (mode === "safari" ? currentSafariZone().levelBonus : DIFFICULTIES[difficulty].levelOffset);
+  const enemyLevel = Math.max(1, Math.min(100, config.forcedLevel ?? averageLevel + levelDelta));
+  const opponentPool = Object.keys(SPECIES);
+  const uncaughtPool = opponentPool.filter(id => !save.owned.includes(id));
+  const enemyIds = config.enemyIds || (mode === "safari"
+    ? [shuffle(uncaughtPool.length ? uncaughtPool : opponentPool)[0]]
+    : chooseOpponentTeam(opponentPool, playerTeam, difficulty, enemyLevel));
+  markSeen(enemyIds);
+  battle = {
+    player: playerTeam,
+    enemy: enemyIds.map(id => createMon(id, "enemy", enemyLevel)),
+    mode, difficulty, profile: chooseProfile(difficulty), trainer: config.trainer || null,
+    cupIndex: config.cupIndex, cupRound: config.cupRound ?? 2, eliteIndex: config.eliteIndex, captured: false,
+    arcadeCupIndex: config.arcadeCupIndex, arcadeStage: config.arcadeStage, arcadeStageTitle: config.arcadeStageTitle, arcadeLabel: config.arcadeLabel, encounterText: config.encounterText || "", tutorialDemo: config.tutorialDemo === true,
+    pActive: Math.max(0, playerTeam.findIndex(mon => mon.hp > 0)), eActive: 0, turn: 1, locked: false, over: false,
+    participants: new Set([0, ...(mode === "trainerDuo" ? [1] : [])]),
+    aiSwitchCooldown: 0, lastPlayerMove: null
+  };
+  music.setScene("battle");
+  hideMainScreens();
+  els["mode-nav"].hidden = true;
+  els["battle-screen"].hidden = false;
+  updateBattleUI();
+  announce(mode === "safari"
+    ? battle.tutorialDemo
+      ? `An aggressive ${activeEnemy().name} attacked! Defeat it, or open BAG and throw a Poké Ball to capture it.`
+      : `A wild ${activeEnemy().name} appeared! Weaken it, then throw a Poké Ball.`
+    : mode === "mewtwo"
+      ? "Mewtwo answered the challenge. This is the final test."
+      : `${battle.trainer?.name || battle.profile.label} enters the arena. Go, ${activePlayer().name}!`);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.YSFlow?.emit("battle:started", { battle, mode, config });
+  finishStart(true);
+}
+
+function activePlayer() { return battle.player[battle.pActive]; }
+function activeEnemy() { return battle.enemy[battle.eActive]; }
+function duoPartner(side) {
+  if (battle.mode !== "trainerDuo") return null;
+  const team = battle[side];
+  const active = side === "player" ? battle.pActive : battle.eActive;
+  return team.find((mon, index) => index !== active && mon.hp > 0) || null;
+}
+
+function stageMultiplier(stage) {
+  return stage >= 0 ? (2 + stage) / 2 : 2 / (2 - stage);
+}
+
+function effectiveStat(mon, stat) {
+  let value = mon[stat] * stageMultiplier(mon.stages[stat] || 0);
+  if (stat === "speed" && mon.status === "PAR") value *= .5;
+  if (stat === "attack" && mon.status === "BRN") value *= .5;
+  return Math.max(1, Math.floor(value));
+}
+
+function effectiveness(moveType, defender) {
+  return defender.types.reduce((mult, type) => mult * (TYPE_CHART[moveType]?.[type] ?? 1), 1);
+}
+
+function hpColor(percent) {
+  if (percent <= 20) return "#ef5c5c";
+  if (percent <= 50) return "#f5c542";
+  return "#28b36f";
+}
+
+function setHpBar(element, mon) {
+  const percent = Math.max(0, Math.round((mon.hp / mon.maxHp) * 100));
+  element.style.width = `${percent}%`;
+  element.style.background = hpColor(percent);
+}
+
+</script><script>
+function updateBattleUI() {
+  if (!battle) return;
+  window.YSFlow?.emit("battle:beforeUI", { battle });
+  const player = activePlayer();
+  const enemy = activeEnemy();
+  els["turn-count"].textContent = `TURN ${battle.turn}`;
+  const labels = { safari: "WILD ENCOUNTER", cup: `${CUPS[battle.cupIndex]?.badge || "KANTO"} JOURNEY`, arcade: `${ARCADE_CUPS[battle.arcadeCupIndex]?.name || "ARCADE CUP"} · STAGE ${battle.arcadeStage + 1}`, elite: "ELITE FOUR", mewtwo: "FINAL CHALLENGE", trainer: "EXHIBITION 3v3", trainerDuo: "EXHIBITION 6v6 DUOS" };
+  els["match-type"].textContent = labels[battle.mode] || "EXHIBITION";
+  els["opponent-profile"].querySelector("span").textContent = battle.mode === "safari"
+    ? "SAFARI · WILD ENCOUNTER"
+    : `${DIFFICULTIES[battle.difficulty].label} · ${battle.trainer?.name || battle.profile.label}`;
+  els["trainer-sprite"].hidden = !battle.trainer || battle.mode === "safari";
+  if (battle.trainer) els["trainer-sprite"].src = assetUrl(`./assets/trainers/${battle.trainer.sprite}.png`);
+  els["player-name"].textContent = player.name;
+  els["player-level"].textContent = `L${player.level}`;
+  els["player-hp"].textContent = Math.max(0, player.hp);
+  els["player-max-hp"].textContent = player.maxHp;
+  els["player-status"].textContent = [player.status, player.trappedTurns ? "TRAPPED" : ""].filter(Boolean).join(" · ");
+  setSprite(els["player-sprite"], player.id, true);
+  els["player-sprite"].alt = `${player.name}, viewed from behind`;
+  els["enemy-name"].textContent = enemy.name;
+  els["enemy-level"].textContent = `L${enemy.level}`;
+  els["enemy-status"].textContent = [enemy.status, enemy.trappedTurns ? "TRAPPED" : ""].filter(Boolean).join(" · ");
+  setSprite(els["enemy-sprite"], enemy.id);
+  els["enemy-sprite"].alt = `Opponent ${enemy.name}`;
+  setHpBar(els["player-hp-bar"], player);
+  setHpBar(els["enemy-hp-bar"], enemy);
+  const pPartner = duoPartner("player");
+  const ePartner = duoPartner("enemy");
+  els["player-partner"].hidden = !pPartner;
+  els["enemy-partner"].hidden = !ePartner;
+  if (pPartner) {
+    setSprite(els["player-partner-sprite"], pPartner.id, true);
+    els["player-partner-name"].textContent = `${pPartner.name} · ${Math.max(0,pPartner.hp)} HP`;
+  }
+  if (ePartner) {
+    setSprite(els["enemy-partner-sprite"], ePartner.id);
+    els["enemy-partner-name"].textContent = `${ePartner.name} · ${Math.max(0,ePartner.hp)} HP`;
+  }
+  renderMoves();
+  renderTeamButtons();
+  renderBattleItems();
+  window.YSFlow?.emit("battle:ui", { battle });
+}
+
+function renderMoves() {
+  const player = activePlayer();
+  els.moves.innerHTML = "";
+  player.moveIds.forEach((moveId, index) => {
+    const move = MOVES[moveId];
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "move-button";
+    button.disabled = battle.locked || player.hp <= 0 || player.pp[index] <= 0;
+    button.innerHTML = `<span><span class="move-name">${move.name}</span><span class="move-type">${move.type} · ${move.category}${move.power ? ` · ${move.power}` : ""}</span></span><span class="move-pp">${player.pp[index]}/${move.pp}</span>`;
+    button.addEventListener("click", () => takeTurn(index));
+    els.moves.appendChild(button);
+  });
+  window.YSFlow?.emit("battle:moves", { battle, player });
+}
+
+function renderTeamButtons() {
+  const player = activePlayer();
+  const partner = duoPartner("player");
+  els["team-buttons"].innerHTML = "";
+  battle.player.forEach((mon, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `team-button${index === battle.pActive ? " current" : mon === partner ? " partner" : ""}`;
+    button.disabled = battle.locked || index === battle.pActive || mon.hp <= 0 || player.trappedTurns > 0;
+    button.innerHTML = `<img alt=""><span>${mon.name}<em>L${mon.level}</em></span><small>${Math.max(0,mon.hp)}/${mon.maxHp}</small>`;
+    setSprite(button.querySelector("img"), mon.id);
+    button.addEventListener("click", () => switchPlayer(index));
+    els["team-buttons"].appendChild(button);
+  });
+}
+
+function renderBattleItems() {
+  els["battle-items"].innerHTML = "";
+  Object.entries(ITEMS).forEach(([id, item]) => {
+    const count = save.inventory[id] || 0;
+    const active = activePlayer();
+    const usable = count > 0 && !battle.locked && (
+      (item.ball && ["safari","mewtwo","legendary"].includes(battle.mode) && (!PRE_EVOLUTION[activeEnemy().id] || battle.mode === "mewtwo")) ||
+      (id === "potion" && active.hp > 0 && active.hp < active.maxHp) ||
+      (id === "superPotion" && active.hp > 0 && active.hp < active.maxHp) ||
+      (id === "fullHeal" && Boolean(active.status)) ||
+      (id === "revive" && battle.player.some(mon => mon.hp <= 0))
+    );
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "item-button";
+    button.disabled = !usable;
+    button.innerHTML = `${item.name}<b>×${count}</b>`;
+    button.addEventListener("click", () => useBattleItem(id));
+    els["battle-items"].appendChild(button);
+  });
+}
+
+</script><script>
+function announce(text) {
+  els.message.textContent = text;
+  window.YSFlow?.emit("battle:announced", { text, battle });
+}
+
+function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+</script><script>
+function estimateDamage(attacker, defender, move) {
+  if (!move.power) return 0;
+  if (move.fixed === "level") return Math.min(defender.hp, attacker.level);
+  const special = move.category === "SPECIAL";
+  const atk = effectiveStat(attacker, special ? "specialAttack" : "attack");
+  const def = effectiveStat(defender, special ? "specialDefense" : "defense");
+  const type = effectiveness(move.type, defender);
+  if (type === 0) return 0;
+  const stab = attacker.types.includes(move.type) ? 1.5 : 1;
+  const base = Math.floor(Math.floor(Math.floor((2 * attacker.level / 5 + 2) * move.power * atk / Math.max(1, def)) / 50) + 2);
+  const hits = move.multi ? (move.multi[0] + move.multi[1]) / 2 : 1;
+  return Math.floor(base * stab * type * .925 * hits);
+}
+
+function scoreEnemyMove(mon, defender, option) {
+  const move = option.move;
+  const profile = battle.profile;
+  let score = 0;
+  if (move.power) {
+    const expected = estimateDamage(mon, defender, move);
+    score = expected / Math.max(1, defender.maxHp) * 300 * profile.damage;
+    if (expected >= defender.hp) score += 190;
+    if (effectiveness(move.type, defender) > 1) score += 28;
+    if (move.status && canInflictStatus(defender, move.status)) score += move.chance * .3;
+    if (move.flinchChance && effectiveStat(mon, "speed") > effectiveStat(defender, "speed")) score += 20;
+    if (move.trap && !defender.trappedTurns) score += 24;
+  } else if (move.effect === "recover" || move.effect === "rest") {
+    const hpRatio = mon.hp / mon.maxHp;
+    score = hpRatio < .3 ? 230 : hpRatio < .55 ? 100 : -80;
+    if (move.effect === "rest" && mon.status) score += 50;
+  } else if (move.effect === "sleep") {
+    score = canInflictStatus(defender, "SLP") ? 118 * profile.status : -90;
+  } else if (move.effect === "paralyze") {
+    score = canInflictStatus(defender, "PAR") && !defender.types.includes("GROUND")
+      ? (effectiveStat(defender, "speed") > effectiveStat(mon, "speed") ? 125 : 82) * profile.status
+      : -90;
+  } else if (move.effect === "seed") {
+    score = !defender.seeded && !defender.types.includes("GRASS") ? 105 * profile.status : -90;
+  } else if (move.effect === "speedUp") {
+    score = mon.stages.speed < 2 && mon.hp / mon.maxHp > .45 ? 72 * profile.status : -45;
+  }
+  score *= move.accuracy / 100;
+  score *= .92 + Math.random() * .16;
+  return score;
+}
+
+function chooseEnemyMove(mon, defender) {
+  const usable = mon.moveIds.map((id, i) => ({ id, i, move: MOVES[id] })).filter(x => mon.pp[x.i] > 0);
+  if (!usable.length) return -1;
+  if (battle.difficulty === "casual" && Math.random() < .62) return usable[Math.floor(Math.random() * usable.length)].i;
+  const scored = usable.map(option => ({ ...option, score: scoreEnemyMove(mon, defender, option) }));
+  scored.sort((a,b) => b.score - a.score);
+  if (battle.difficulty === "stadium" && Math.random() < .14) return scored[Math.min(1, scored.length - 1)].i;
+  return scored[0].i;
+}
+
+function chooseEnemySwitch(mon, defender) {
+  if (battle.difficulty === "casual" || battle.aiSwitchCooldown > 0 || mon.trappedTurns > 0) return -1;
+  const currentScore = matchupScore(mon, defender);
+  const currentThreat = moveThreat(defender, mon) / Math.max(1, mon.hp);
+  const predictedType = battle.lastPlayerMove?.type;
+  const candidates = battle.enemy
+    .map((candidate, index) => ({ candidate, index }))
+    .filter(entry => entry.index !== battle.eActive && entry.candidate.hp > 0 && !entry.candidate.recharge)
+    .map(entry => ({ ...entry, score: matchupScore(entry.candidate, defender) }))
+    .sort((a, b) => b.score - a.score);
+  if (!candidates.length) return -1;
+  const best = candidates[0];
+  const predictedDanger = predictedType ? effectiveness(predictedType, mon) : 1;
+  const predictedRelief = predictedType ? effectiveness(predictedType, best.candidate) : 1;
+  const needsHelp = currentThreat >= .55 || currentScore < -.12 || (predictedDanger >= 2 && predictedRelief < predictedDanger);
+  const meaningfulUpgrade = best.score > currentScore + (battle.difficulty === "master" ? .12 : .28);
+  if (!needsHelp || !meaningfulUpgrade) return -1;
+  const chance = (battle.difficulty === "master" ? .88 : .56) * battle.profile.switching;
+  return Math.random() < chance ? best.index : -1;
+}
+
+function chooseEnemyAction(mon, defender) {
+  const switchIndex = chooseEnemySwitch(mon, defender);
+  return switchIndex >= 0 ? { type: "switch", index: switchIndex } : { type: "move", index: chooseEnemyMove(mon, defender) };
+}
+
+async function executeEnemySwitch(index) {
+  const outgoing = activeEnemy();
+  battle.eActive = index;
+  battle.aiSwitchCooldown = 2;
+  announce(`${battle.profile.label} withdrew ${outgoing.name}!`);
+  await delay(500);
+  updateBattleUI();
+  announce(`The opponent sent out ${activeEnemy().name}!`);
+  await delay(650);
+}
+
+</script><script>
+async function resolveDuoAssist() {
+  let playerPartner = duoPartner("player");
+  let enemyPartner = duoPartner("enemy");
+  if (!playerPartner || !enemyPartner || battle.over) return;
+  const actions = effectiveStat(playerPartner, "speed") >= effectiveStat(enemyPartner, "speed")
+    ? [[playerPartner, enemyPartner, "player"], [enemyPartner, playerPartner, "enemy"]]
+    : [[enemyPartner, playerPartner, "enemy"], [playerPartner, enemyPartner, "player"]];
+  for (const [actor, target, side] of actions) {
+    if (actor.hp <= 0 || target.hp <= 0 || battle.over) continue;
+    announce(`${actor.name} moved in from the duo slot!`);
+    await delay(350);
+    await executeMove({ actor, target, index: chooseEnemyMove(actor, target), side });
+    if (target.hp <= 0) {
+      announce(`${target.name} fainted!`);
+      await delay(600);
+      if (battle[side === "player" ? "enemy" : "player"].every(mon => mon.hp <= 0)) {
+        endBattle(side === "player");
+        return;
+      }
+      updateBattleUI();
+    }
+  }
+}
+
+function movePriority(mon, index) {
+  return index < 0 ? 0 : (MOVES[mon.moveIds[index]].priority || 0);
+}
+
+async function takeTurn(playerMoveIndex) {
+  if (!battle || battle.locked || battle.over) return;
+  battle.locked = true;
+  updateBattleUI();
+  const p = activePlayer();
+  const e = activeEnemy();
+  battle.actedThisTurn = [];
+  p.flinched = false;
+  e.flinched = false;
+  const enemyDecision = chooseEnemyAction(e, p);
+  const enemyMoveIndex = enemyDecision.type === "move" ? enemyDecision.index : -1;
+  const playerAction = { type: "move", actor: p, index: playerMoveIndex, side: "player" };
+  const enemyAction = enemyDecision.type === "switch"
+    ? { type: "switch", index: enemyDecision.index, side: "enemy" }
+    : { type: "move", actor: e, index: enemyMoveIndex, side: "enemy" };
+  const pPriority = movePriority(p, playerMoveIndex);
+  const ePriority = movePriority(e, enemyMoveIndex);
+  const actions = enemyDecision.type === "switch" ? [enemyAction, playerAction]
+    : pPriority !== ePriority
+      ? (pPriority > ePriority ? [playerAction, enemyAction] : [enemyAction, playerAction])
+      : (effectiveStat(p,"speed") >= effectiveStat(e,"speed") ? [playerAction, enemyAction] : [enemyAction, playerAction]);
+
+  for (const action of actions) {
+    if (action.type === "switch") {
+      await executeEnemySwitch(action.index);
+      continue;
+    }
+    const target = action.side === "player" ? activeEnemy() : activePlayer();
+    if (action.actor.hp <= 0 || target.hp <= 0 || battle.over) continue;
+    await executeMove({ ...action, target });
+    battle.actedThisTurn.push(action.side);
+    updateBattleUI();
+    if (target.hp <= 0) {
+      await faintAndAdvance(action.side === "player" ? "enemy" : "player");
+      if (battle.over) return;
+    }
+  }
+  if (battle.mode === "trainerDuo") {
+    await resolveDuoAssist();
+    if (battle.over) return;
+  }
+  await endTurnEffects();
+  if (battle.over) return;
+  battle.aiSwitchCooldown = Math.max(0, battle.aiSwitchCooldown - 1);
+  battle.turn += 1;
+  battle.locked = false;
+  updateBattleUI();
+  window.BattleFlow?.ready(); announce("What will you do?");
+}
+
+async function executeMove({ actor, target, index, side }) {
+  if (actor.flinched) {
+    actor.flinched = false;
+    announce(`${actor.name} flinched and couldn't move!`);
+    await delay(700);
+    return;
+  }
+  if (actor.recharge) {
+    actor.recharge = false;
+    announce(`${actor.name} must recharge!`);
+    await delay(700);
+    return;
+  }
+  if (actor.status === "SLP") {
+    actor.sleep -= 1;
+    if (actor.sleep > 0) {
+      announce(`${actor.name} is fast asleep.`);
+      await delay(700);
+      return;
+    }
+    actor.status = null;
+    announce(`${actor.name} woke up!`);
+    updateBattleUI();
+    await delay(550);
+  }
+  if (actor.status === "FRZ") {
+    if (Math.random() < .2) {
+      actor.status = null;
+      announce(`${actor.name} thawed out!`);
+      updateBattleUI();
+      await delay(550);
+    } else {
+      announce(`${actor.name} is frozen solid!`);
+      await delay(700);
+      return;
+    }
+  }
+  if (actor.status === "PAR" && Math.random() < .25) {
+    announce(`${actor.name} is fully paralyzed!`);
+    await delay(700);
+    return;
+  }
+  if (index < 0 || actor.pp[index] <= 0) return;
+  const move = MOVES[actor.moveIds[index]];  if (side === "player") battle.lastPlayerMove = move;
+  actor.pp[index] -= 1;
+  announce(`${actor.name} used ${move.name}!`);
+  animateAttack(side);
+  await delay(430);
+
+  const accuracy = move.accuracy * stageMultiplier(actor.stages.accuracy || 0);
+  if (Math.random() * 100 >= accuracy) {
+    announce(`${actor.name}'s attack missed!`);
+    await delay(650);
+    return;
+  }
+
+  if (!move.power) {
+    await applyStatusMove(actor, target, move);
+    return;
+  }
+
+  const effect = effectiveness(move.type, target);
+  if (effect === 0 && !move.fixed) {
+    announce(`It doesn't affect ${target.name}…`);
+    await delay(650);
+    return;
+  }
+  const hits = move.multi ? move.multi[0] + Math.floor(Math.random() * (move.multi[1] - move.multi[0] + 1)) : 1;
+  let total = 0;
+  let critical = false;
+  for (let hit = 0; hit < hits && target.hp > 0; hit++) {
+    const result = calculateDamage(actor, target, move);
+    total += result.damage;
+    critical ||= result.critical;
+    target.hp = Math.max(0, target.hp - result.damage);
+  }
+  animateHit(side === "player" ? "enemy" : "player");
+  updateBattleUI();
+  await delay(450);
+
+  if (critical) { announce("A critical hit!"); await delay(450); }
+  if (effect > 1) { announce("It's super effective!"); await delay(500); }
+  else if (effect > 0 && effect < 1) { announce("It's not very effective…"); await delay(500); }
+  if (hits > 1) { announce(`Hit ${hits} times for ${total} damage!`); await delay(500); }
+
+  if (target.hp > 0 && move.status && canInflictStatus(target, move.status) && Math.random() * 100 < move.chance) {
+    inflictStatus(target, move.status);
+    announce(statusMessage(target));
+    await delay(550);
+  }
+  if (target.hp > 0 && move.effect === "specialDown" && Math.random() * 100 < move.chance) {
+    target.stages.specialDefense = Math.max(-6, target.stages.specialDefense - 1);
+    announce(`${target.name}'s SP. DEF fell!`);
+    await delay(500);
+  }
+  const targetSide = side === "player" ? "enemy" : "player";
+  if (target.hp > 0 && move.flinchChance && !battle.actedThisTurn.includes(targetSide) && Math.random() * 100 < move.flinchChance) {
+    target.flinched = true;
+    announce(`${target.name} flinched!`);
+    await delay(450);
+  }
+  if (target.hp > 0 && move.trap && !target.trappedTurns) {
+    target.trappedTurns = 4 + Math.floor(Math.random() * 2);
+    announce(`${target.name} was trapped in the vortex!`);
+    await delay(500);
+  }
+  if (move.effect === "recharge") actor.recharge = true;
+}
+
+</script><script>
+function calculateDamage(attacker, defender, move) {
+  if (move.fixed === "level") return { damage: Math.min(defender.hp, attacker.level), critical: false };
+  const special = move.category === "SPECIAL";
+  const critRate = move.highCrit ? 1 / 8 : 1 / 24;
+  const critical = Math.random() < critRate;
+  const atkKey = special ? "specialAttack" : "attack";
+  const defKey = special ? "specialDefense" : "defense";
+  const atk = effectiveStat(attacker, atkKey);
+  const def = effectiveStat(defender, defKey);
+  const stab = attacker.types.includes(move.type) ? 1.5 : 1;
+  const type = effectiveness(move.type, defender);
+  const random = .85 + Math.random() * .15;
+  const base = Math.floor(Math.floor(Math.floor((2 * attacker.level / 5 + 2) * move.power * atk / Math.max(1,def)) / 50) + 2);
+  return { damage: Math.max(1, Math.floor(base * stab * type * random * (critical ? 1.5 : 1))), critical };
+}
+
+async function applyStatusMove(actor, target, move) {
+  if (move.effect === "recover" || move.effect === "rest") {
+    if (actor.hp === actor.maxHp) { announce("But it failed!"); await delay(550); return; }
+    actor.hp = move.effect === "rest" ? actor.maxHp : Math.min(actor.maxHp, actor.hp + Math.floor(actor.maxHp / 2));
+    if (move.effect === "rest") { actor.status = "SLP"; actor.sleep = 2; }
+    announce(`${actor.name} restored its health!`);
+  } else if (move.effect === "sleep" || move.effect === "paralyze") {
+    const status = move.effect === "sleep" ? "SLP" : "PAR";
+    if (!canInflictStatus(target, status) || (move.effect === "paralyze" && target.types.includes("GROUND"))) announce("But it failed!");
+    else {
+      inflictStatus(target, status);
+      announce(statusMessage(target));
+    }
+  } else if (move.effect === "seed") {
+    if (target.seeded || target.types.includes("GRASS")) announce("But it failed!");
+    else { target.seeded = true; announce(`${target.name} was seeded!`); }
+  } else if (move.effect === "speedUp") {
+    actor.stages.speed = Math.min(6, actor.stages.speed + 2);
+    announce(`${actor.name}'s SPEED sharply rose!`);
+  }
+  updateBattleUI();
+  await delay(650);
+}
+
+function inflictStatus(mon, status) {
+  mon.status = status;
+  if (status === "SLP") mon.sleep = 1 + Math.floor(Math.random() * 3);
+}
+
+function canInflictStatus(mon, status) {
+  // Stadium rules normalized TOX to poison before the legacy immunity checks.
+  // Keep that exact behavior in the single engine-owned implementation.
+  const normalized = status === "TOX" ? "PSN" : status;
+  if (mon.status) return false;
+  if ((normalized === "SLP" && mon.ability === "insomnia") ||
+      (normalized === "PSN" && mon.ability === "immunity") ||
+      (normalized === "PAR" && mon.ability === "limber")) return false;
+  if (normalized === "PAR" && mon.types.includes("ELECTRIC")) return false;
+  if (normalized === "BRN" && mon.types.includes("FIRE")) return false;
+  if (normalized === "FRZ" && mon.types.includes("ICE")) return false;
+  if (normalized === "PSN" && (mon.types.includes("POISON") || mon.types.includes("STEEL"))) return false;
+  return true;
+}
+
+function statusMessage(mon) {
+  return ({ PAR: `${mon.name} is paralyzed!`, SLP: `${mon.name} fell asleep!`, BRN: `${mon.name} was burned!`, FRZ: `${mon.name} was frozen solid!`, PSN: `${mon.name} was poisoned!` })[mon.status];
+}
+
+</script><script>
+function animateAttack(side) {
+  const sprite = side === "player" ? els["player-sprite"] : els["enemy-sprite"];
+  sprite.classList.remove("attack-right", "attack-left");
+  void sprite.offsetWidth;
+  sprite.classList.add(side === "player" ? "attack-right" : "attack-left");
+}
+
+function animateHit(side) {
+  const sprite = side === "player" ? els["player-sprite"] : els["enemy-sprite"];
+  sprite.classList.remove("hit");
+  void sprite.offsetWidth;
+  sprite.classList.add("hit");
+  els["effect-flash"].classList.remove("flash");
+  void els["effect-flash"].offsetWidth;
+  els["effect-flash"].classList.add("flash");
+}
+
+</script><script>
+async function faintAndAdvance(side) {
+  const team = battle[side];
+  const activeKey = side === "player" ? "pActive" : "eActive";
+  const sprite = side === "player" ? els["player-sprite"] : els["enemy-sprite"];
+  const fainted = team[battle[activeKey]];
+  announce(`${fainted.name} fainted!`);
+  sprite.classList.add("faint");
+  await delay(800);
+  const next = team.findIndex(mon => mon.hp > 0);
+  if (next < 0) {
+    endBattle(side === "enemy");
+    return;
+  }
+  battle[activeKey] = next;
+  sprite.classList.remove("faint");
+  updateBattleUI();
+  announce(side === "enemy" ? `The opponent sent out ${team[next].name}!` : `Go, ${team[next].name}!`);
+  await delay(700);
+}
+
+async function endTurnEffects() {
+  for (const mon of [activePlayer(), activeEnemy()]) {
+    if (mon.hp <= 0) continue;
+    if (mon.status === "BRN" || mon.status === "PSN") {
+      mon.hp = Math.max(0, mon.hp - Math.max(1, Math.floor(mon.maxHp / 16)));
+      announce(`${mon.name} is hurt by ${mon.status === "BRN" ? "its burn" : "poison"}!`);
+      updateBattleUI();
+      await delay(500);
+    }
+    if (mon.seeded && mon.hp > 0) {
+      const drain = Math.max(1, Math.floor(mon.maxHp / 8));
+      mon.hp = Math.max(0, mon.hp - drain);
+      const other = mon === activePlayer() ? activeEnemy() : activePlayer();
+      other.hp = Math.min(other.maxHp, other.hp + drain);
+      announce(`LEECH SEED sapped ${mon.name}!`);
+      updateBattleUI();
+      await delay(500);
+    }
+    if (mon.trappedTurns > 0 && mon.hp > 0) {
+      mon.hp = Math.max(0, mon.hp - Math.max(1, Math.floor(mon.maxHp / 8)));
+      mon.trappedTurns -= 1;
+      announce(`${mon.name} is hurt by the vortex!`);
+      updateBattleUI();
+      await delay(500);
+    }
+    if (mon.hp <= 0) {
+      await faintAndAdvance(mon === activePlayer() ? "player" : "enemy");
+      if (battle.over) return;
+    }
+  }
+}
+
+</script><script>
+function safariCatchChance(mon, ballBonus = 1) {
+  const healthFactor = 1 - mon.hp / mon.maxHp;
+  const statusBonus = mon.status === "SLP" || mon.status === "FRZ" ? 1.65 : mon.status ? 1.3 : 1;
+  return Math.min(.95, Math.max(.06, (SPECIES[mon.id].catchRate / 255) * (.5 + healthFactor * 1.6) * statusBonus * ballBonus));
+}
+
+async function enemyUtilityResponse() {
+  const enemy = activeEnemy();
+  await executeMove({ actor: enemy, target: activePlayer(), index: chooseEnemyMove(enemy, activePlayer()), side: "enemy" });
+  updateBattleUI();
+  if (activePlayer().hp <= 0) await faintAndAdvance("player");
+  if (battle.over) return;
+  if (battle.mode === "trainerDuo") {
+    await resolveDuoAssist();
+    if (battle.over) return;
+  }
+  await endTurnEffects();
+  if (battle.over) return;
+  battle.turn += 1;
+  battle.locked = false;
+  updateBattleUI();
+  announce("What will you do?");
+}
+
+async function useBattleItem(id) {
+  if (!battle || battle.locked || battle.over || !ITEMS[id] || (save.inventory[id] || 0) <= 0) return;
+  const player = activePlayer();
+  if (ITEMS[id].ball && !["safari","mewtwo","legendary"].includes(battle.mode)) return;
+  if (ITEMS[id].ball && PRE_EVOLUTION[activeEnemy().id] && battle.mode === "safari") {
+    announce(`${activeEnemy().name} must be obtained by evolving ${SPECIES[PRE_EVOLUTION[activeEnemy().id]].name}.`);
+    return;
+  }
+  if ((id === "potion" || id === "superPotion") && (player.hp <= 0 || player.hp >= player.maxHp)) return;
+  if (id === "fullHeal" && !player.status) return;
+  const fainted = battle.player.find(mon => mon.hp <= 0);
+  if (id === "revive" && !fainted) return;
+
+  window.YSFlow?.emit("battle:item:before", { id, item: ITEMS[id], battle, player });
+  battle.locked = true;
+  save.inventory[id] -= 1;
+  writeSave();
+  if (ITEMS[id].ball) {
+    const wild = activeEnemy();
+    announce(`You threw a ${ITEMS[id].name} at ${wild.name}!`);
+    await delay(800);
+    if (ITEMS[id].ball >= 99 || Math.random() < safariCatchChance(wild, ITEMS[id].ball)) {
+      battle.captured = true;
+      battle.caughtNew = addOwned(wild.id, wild.level);
+      const caughtRecord = save.pokemon?.[save.pokemon.length - 1] || null;
+      battle.caughtAutoParty = window.PartyAutoFill?.assignCaught?.(caughtRecord) === true;
+      announce(`Click! ${wild.name} was caught!${battle.caughtAutoParty ? " It joined your party!" : ""}`);
+      updateBattleUI();
+      await delay(850);
+      window.YSFlow?.emit("battle:item:after", { id, item: ITEMS[id], battle, player, captured: true });
+      endBattle(true);
+      return;
+    }
+    window.YSFlow?.emit("battle:item:after", { id, item: ITEMS[id], battle, player, captured: false });
+    announce(`${wild.name} broke free!`);
+    await delay(650);
+    await enemyUtilityResponse();
+    return;
+  }
+  if (id === "potion" || id === "superPotion") {
+    const amount = id === "potion" ? 40 : 70;
+    player.hp = Math.min(player.maxHp, player.hp + amount);
+    announce(`${ITEMS[id].name} restored ${player.name}'s HP!`);
+  } else if (id === "fullHeal") {
+    player.status = null;
+    player.sleep = 0;
+    announce(`${player.name} was cured!`);
+  } else if (id === "revive") {
+    fainted.hp = Math.max(1, Math.floor(fainted.maxHp / 2));
+    fainted.status = null;
+    announce(`${fainted.name} returned to battle!`);
+  }
+  updateBattleUI();
+  window.YSFlow?.emit("battle:item:after", { id, item: ITEMS[id], battle, player });
+  await delay(650);
+  await enemyUtilityResponse();
+}
+
+</script><script>
+async function switchPlayer(index) {
+  if (!battle || battle.locked || index === battle.pActive || battle.player[index].hp <= 0) return;
+  if (activePlayer().trappedTurns > 0) {
+    announce(`${activePlayer().name} is trapped and can't switch!`);
+    return;
+  }
+  battle.locked = true;
+  const outgoing = activePlayer();
+  battle.pActive = index;
+  battle.participants?.add(index);
+  announce(`${outgoing.name}, come back! Go, ${activePlayer().name}!`);
+  updateBattleUI();
+  await delay(650);
+  await enemyUtilityResponse();
+}
+
+</script><script>
+function matchExperience(mon) {
+  if (mon.level >= 100) return 0;
+  const earned = battle.enemy.reduce((sum, enemy) => {
+    const ratio = (2 * enemy.level + 10) ** 2.5 / (enemy.level + mon.level + 10) ** 2.5;
+    return sum + Math.floor((SPECIES[enemy.id].baseExp * enemy.level / 5) * ratio + 1);
+  }, 0);
+  return Math.max(1, Math.floor(earned * 3 / battle.player.length));
+}
+
+function processEvolutions(gains) {
+  save.growthQueue = Array.isArray(save.growthQueue) ? save.growthQueue : [];
+  gains.forEach(({ id, uid }) => {
+    const record = pokemonRecord(uid || id);
+    if (!record || EVOLUTION_STONE_RULES[id] || record.evolutionPaused) return;
+    if (EVOLUTIONS[id] && levelFor(record.uid) >= EVOLUTIONS[id][1] && !save.growthQueue.some(entry => entry.kind === "evolve" && entry.uid === record.uid)) {
+      save.growthQueue.push({ kind:"evolve", uid:record.uid, id });
+    }
+  });
+  // Evolution choices are reviewed through the growth queue so the same Pokémon instance survives.
+  return [];
+}
+
+</script><script>
+function endBattle(victory) {
+  const finished = battle;
+  window.YSFlow?.emit("battle:beforeEnd", { battle: finished, victory });
+  battle.over = true;
+  battle.locked = true;
+  battle.victory = victory;
+  const safari = battle.mode === "safari";
+  const gains = battle.player.map(mon => {
+    const participated = battle.participants?.has(battle.player.indexOf(mon));
+    const ref = mon.companionUid || mon.id;
+    const record = pokemonRecord(ref);
+    const oldLevel = levelFor(ref);
+    const oldXp = experienceFor(ref);
+    const oldProgress = xpProgress(ref);
+    const full = matchExperience(mon);
+    const gained = !save.sharedExp && !participated ? 0 : battle.captured ? Math.floor(full * .45) : victory ? full : Math.floor(full * .25);
+    const nextXp = Math.min(expForLevel(mon.id, 100), experienceFor(ref) + gained);
+    if (record) record.xp = nextXp; else save.xp[mon.id] = nextXp;
+    return { id: mon.id, uid: record?.uid || null, ref, gained, oldLevel, newLevel: levelFor(ref), oldXp, oldProgress, newProgress: xpProgress(ref) };
+  });
+  const evolutions = processEvolutions(gains);
+  let coinGain = safari
+    ? (battle.captured ? 45 : victory ? 60 : 10)
+    : battle.mode === "trainerDuo"
+      ? (victory ? 260 : -45)
+      : battle.mode === "trainer"
+        ? (victory ? 150 : -30)
+        : battle.mode === "arcade"
+          ? (victory ? (battle.arcadeStage === ARCADE_CUPS[battle.arcadeCupIndex].stages.length - 1 ? 500 + battle.arcadeCupIndex * 250 : 125 + battle.arcadeCupIndex * 50) : 0)
+        : battle.mode === "cup"
+          ? (victory ? (battle.cupRound === 2 ? 250 + battle.cupIndex * 50 : 75 + battle.cupIndex * 10) : 0)
+          : battle.mode === "elite"
+            ? (victory ? 500 : 0)
+            : battle.mode === "mewtwo"
+              ? (victory ? 1000 : 0)
+              : (victory ? ({ casual: 90, stadium: 140, master: 220 }[battle.difficulty]) : 25);
+  if (coinGain < 0) coinGain = -Math.min(save.coins, Math.abs(coinGain));
+  save.coins = Math.max(0, save.coins + coinGain);
+  save.version = SAVE_SCHEMA_VERSION;
+  let progressionReward = "";
+  if (battle.mode === "arcade") {
+    const cup=ARCADE_CUPS[battle.arcadeCupIndex],last=battle.arcadeStage===cup.stages.length-1;
+    if(victory&&last){
+      const firstClear=!save.arcadeCupClears[battle.arcadeCupIndex];
+      save.arcadeCupClears[battle.arcadeCupIndex]=true;save.arcadeCupProgress[battle.arcadeCupIndex]=0;battle.arcadeCupComplete=true;
+      const prize=["focusBand","leftovers","quickClaw"][battle.arcadeCupIndex];
+      if(firstClear){save.inventory[prize]=(save.inventory[prize]||0)+1;progressionReward=`${cup.name} CLEARED · ${ITEMS[prize].name} WON`;}
+      else progressionReward=`${cup.name} CLEARED AGAIN`;
+    }else if(victory){
+      save.arcadeCupProgress[battle.arcadeCupIndex]=battle.arcadeStage+1;battle.arcadeNextStage=battle.arcadeStage+1;
+      progressionReward=`STAGE ${battle.arcadeStage+1} CLEARED · NEXT: ${cup.stages[battle.arcadeStage+1].title}`;
+    }else{
+      save.arcadeCupProgress[battle.arcadeCupIndex]=0;battle.arcadeRunFailed=true;progressionReward=`${cup.name} RUN ENDED · RESTART FROM STAGE 1`;
+    }
+  }
+  if (battle.mode === "cup" && victory && battle.cupRound === 2 && battle.cupIndex === save.cupsCompleted) {
+    save.cupsCompleted += 1;
+    progressionReward = `${CUPS[battle.cupIndex].badge} BADGE EARNED`;
+  }
+  if (battle.mode === "elite" && victory && battle.eliteIndex === save.eliteProgress) {
+    save.eliteProgress += 1;
+    if (save.eliteProgress >= 4) {
+      save.eliteCompleted = true;
+      save.inventory.masterBall = Math.max(1, save.inventory.masterBall || 0);
+      progressionReward = "ELITE FOUR COMPLETE · MASTER BALL AWARDED";
+    } else progressionReward = `${ELITE_FOUR[battle.eliteIndex].name} DEFEATED`;
+  }
+  if (battle.mode === "mewtwo" && victory) {
+    save.mewtwoDefeated = true;
+    progressionReward = battle.captured ? "MEWTWO CAPTURED" : "MEWTWO DEFEATED";
+  }
+  if (["trainer","trainerDuo"].includes(battle.mode)) {
+    if (victory) {
+      save.trainerStreak += 1;
+      save.bestTrainerStreak = Math.max(save.bestTrainerStreak, save.trainerStreak);
+      if (save.trainerStreak === 3) { save.inventory.potion += 2; progressionReward = "3-WIN PRIZE · 2 POTIONS"; }
+      if (save.trainerStreak === 5) { save.coins += 300; progressionReward = "5-WIN PRIZE · 300 COINS"; }
+      if (save.trainerStreak === 10) { save.inventory.ultraBall += 2; progressionReward = "10-WIN PRIZE · 2 ULTRA BALLS"; }
+    } else save.trainerStreak = 0;
+  }
+  if (!safari && victory) {
+    save.wins += 1;
+    save.streak += 1;
+  } else if (!safari) {
+    save.losses += 1;
+    save.streak = 0;
+  }
+  writeSave();
+  els["result-title"].textContent = battle.captured ? "CAUGHT!" : victory ? "VICTORY!" : "DEFEAT";
+  els["result-copy"].textContent = battle.captured
+    ? battle.caughtAutoParty ? `${activeEnemy().name} joined your active party.` : `${activeEnemy().name} was sent to your Pokémon Box.`
+    : safari && victory
+      ? "The wild Pokémon was defeated. Search the Safari again for another encounter."
+      : ["trainer","trainerDuo"].includes(battle.mode) && !victory
+        ? "The opposing trainer takes the match and a portion of your coins. Your team still earns partial experience."
+        : battle.mode === "arcade"
+          ? victory
+            ? battle.arcadeCupComplete?`${ARCADE_CUPS[battle.arcadeCupIndex].name} conquered. The boss is down.`:`${battle.arcadeStageTitle} cleared. The next arcade stage is waiting.`
+            : `${battle.arcadeStageTitle} stopped the run. Adjust your party and restart the Cup.`
+        : battle.mode === "cup" && victory
+          ? battle.cupRound === 2
+            ? `${CUPS[battle.cupIndex].leader} has awarded you the ${CUPS[battle.cupIndex].badge} Badge.`
+            : `${battle.trainer.name} was defeated. ${2 - battle.cupRound} Journey battle${battle.cupRound === 1 ? "" : "s"} remain.`
+          : battle.mode === "elite" && victory
+            ? `${ELITE_FOUR[battle.eliteIndex].name} has been defeated.`
+      : victory
+        ? "The opposing team is down. Your team earned experience and prize coins."
+        : "Your team receives partial experience. Return stronger and try again.";
+  const caught = battle.captured
+    ? `<strong>${battle.caughtAutoParty ? `${activeEnemy().name} JOINED PARTY` : `${activeEnemy().name} SENT TO BOX`}</strong>`
+    : "";
+  const evolutionCopy = evolutions.map(entry => `<strong>${SPECIES[entry.from].name} EVOLVED INTO ${SPECIES[entry.to].name}!</strong>`).join("");
+  const itemGlyphs={pokeBall:"◉",greatBall:"◉",ultraBall:"◉",superBall:"◉",masterBall:"◉",potion:"✚",superPotion:"✚",fullHeal:"✦",revive:"✧",focusBand:"◈",leftovers:"▣",quickClaw:"✣",fireStone:"◆",waterStone:"◆",thunderStone:"◆",leafStone:"◆",moonStone:"◆"};
+  const xpCards=gains.filter(g=>g.gained>0).map(gain=>{const levelUp=gain.newLevel>gain.oldLevel;const from=Math.max(0,Math.round(gain.oldProgress?.percent||0));const to=Math.max(0,Math.round(levelUp?100:(gain.newProgress?.percent||0)));const levelCopy=levelUp?`LV ${gain.oldLevel} → ${gain.newLevel}`:`LV ${gain.newLevel}`;const progressCopy=levelUp?'LEVEL UP READY':`${to}% TO NEXT LV`;return `<span class="xp-card${levelUp?' level-up':''}" style="--xp-from:${from}%"><img src="${spriteUrl(gain.id)}" alt=""><span class="xp-card-main"><span class="xp-card-topline"><strong>${pokemonNameFor(gain.ref)}</strong><em>${levelCopy}</em></span><span class="xp-card-head"><b>+${gain.gained.toLocaleString()} XP</b><small>${progressCopy}</small></span><span class="xp-track"><i class="xp-fill" data-xp-to="${to}"></i><i class="xp-cap"></i></span><span class="xp-meta"><small>START ${from}%</small><small>NOW ${to}%</small></span></span></span>`}).join("");
+  const coinLabel=coinGain<0?'TRAINER LOSS':'PRIZE COINS';
+  const major=progressionReward?`<strong class="reward-major"><span class="reward-icon">${/BADGE/.test(progressionReward)?'★':/BALL|POTION|BAND|LEFTOVERS|CLAW|STONE/.test(progressionReward)?'◆':'✦'}</span><span>${progressionReward}<small>${/BADGE/.test(progressionReward)?'A new milestone has been added to your journey.':'Battle progress updated.'}</small></span></strong>`:'';
+  els.reward.innerHTML = `<div class="reward-summary"><span class="reward-chip coins${coinGain<0?' loss':''}"><span class="reward-icon" aria-hidden="true"></span><span><small>${coinLabel}</small><b>${coinGain>=0?'+':''}${coinGain} COINS</b></span></span><span class="reward-chip team-xp"><span class="reward-icon" aria-hidden="true"></span><span><small>TEAM EXPERIENCE</small><b>${gains.reduce((n,g)=>n+g.gained,0).toLocaleString()} XP</b></span></span></div>${xpCards?`<div class="xp-rewards">${xpCards}</div>`:''}${caught}${evolutionCopy}${major}`;
+  els["result-modal"].hidden = false;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>els.reward.querySelectorAll('.xp-fill').forEach(bar=>bar.style.width=`${bar.dataset.xpTo}%`)));
+  window.YSFlow?.emit("battle:ended", { battle: finished, victory, gains, evolutions, coinGain, progressionReward });
+}
+
+</script><script>
+function returnToRoster() {
+  const finished = battle;
+  els["result-modal"].hidden = true;
+  els["battle-screen"].hidden = true;
+  if (finished?.mode === "cup" && finished.victory && finished.cupRound < 2) {
+    battle = null;
+    startCupRound(finished.cupIndex, finished.cupRound + 1);
+    return;
+  }
+  if (finished?.mode === "arcade" && finished.victory && Number.isInteger(finished.arcadeNextStage)) {
+    const cupIndex=finished.arcadeCupIndex,next=finished.arcadeNextStage;
+    battle=null;
+    startArcadeStage(cupIndex,next);
+    return;
+  }
+  battle = null;
+  music.setScene("menu");
+  els["mode-nav"].hidden = false;
+  if (finished?.tutorialDemo) showCups();
+  else if (["trainer", "trainerDuo", "arcade"].includes(finished?.mode)) showTrainer();
+  else if (finished?.mode === "safari") showSafari();
+  else if (["cup", "elite", "mewtwo", "legendary"].includes(finished?.mode)) showCups();
+  else showCollection();
+  window.PartyTray?.render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+els["box-manage-party"].addEventListener("click",()=>window.PartyTray?.open());
+els["settings-tab"].addEventListener("click",()=>{if(battle)return;hideMainScreens();els["settings-screen"].hidden=false;setActiveNav("settings-tab");els["shared-exp"].checked=save.sharedExp!==false;});
+els["shared-exp"].addEventListener("change",event=>{save.sharedExp=event.target.checked;writeSave();});
+els["battle-retreat"].addEventListener("click",()=>{if(!battle||battle.over||battle.locked)return;const safari=battle.mode==="safari";if(!window.confirm(safari?"Run from this wild encounter? No rewards will be earned.":"Retreat from this battle? No rewards will be earned and this run will end."))return;const finished=battle;window.YSAdventureV57?.syncBattleHealth?.(finished);if(finished.mode==="arcade"){save.arcadeCupProgress[finished.arcadeCupIndex]=0;writeSave();}else writeSave();battle=null;els["battle-screen"].hidden=true;els["result-modal"].hidden=true;els["mode-nav"].hidden=false;music.setScene("menu");if(finished.mode==="safari")showSafari();else if(["cup","elite","mewtwo","legendary"].includes(finished.mode))showCups();else showTrainer();window.PartyTray?.render();});
+els["start-battle"].addEventListener("click", showTrainer);
+els["start-duo"].addEventListener("click", showTrainer);
+els["start-safari"].addEventListener("click", showSafari);
+els["continue-button"].addEventListener("click", returnToRoster);
+els["collection-tab"].addEventListener("click", showCollection);
+els["cups-tab"].addEventListener("click", showCups);
+els["trainer-tab"].addEventListener("click", showTrainer);
+els["safari-tab"].addEventListener("click", showSafari);
+els["pokedex-tab"].addEventListener("click", showPokedex);
+els["shop-tab"].addEventListener("click", showShop);
+els["team-size-3"].addEventListener("click", () => setTeamSize(3));
+els["team-size-6"].addEventListener("click", () => setTeamSize(6));
+els["prepare-singles"]?.addEventListener("click", showTrainer);
+els["prepare-duos"]?.addEventListener("click", showTrainer);
+els["refresh-safari"].addEventListener("click", renderSafariField);
+els["begin-journey"].addEventListener("click", finishOnboarding);
+els["music-toggle"].addEventListener("click", () => { void music.toggle(); });
+document.addEventListener("pointerdown", () => { void music.start(); }, { once: true });
+document.addEventListener("keydown", () => { void music.start(); }, { once: true });
+document.querySelectorAll('input[name="difficulty"]').forEach(input => {
+  input.addEventListener("change", () => {
+    if (!input.checked || !DIFFICULTIES[input.value]) return;
+    save.difficulty = input.value;
+    writeSave();
+    renderDifficulty();
+  });
+});
+els["reset-save"].addEventListener("click", () => {
+  if (!window.confirm("Reset your party, coins, items, levels, badges, and record?")) return;
+  try { localStorage.removeItem(SAVE_KEY); } catch {}
+  try { localStorage.removeItem(SAVE_BACKUP_KEY); } catch {}
+  battle = null;
+  save = loadSave();
+  selected = [];
+  renderApp();
+});
+
+</script><script>
+function registerAgentControls() {
+  const context = document.modelContext;
+  if (!context?.registerTool) return;
+  const ids = Object.keys(SPECIES);
+  try {
+    void Promise.resolve(context.registerTool({
+      name: "select_owned_team",
+      title: "Select owned team",
+      description: "Select exactly three Pokémon from the player's party.",
+      inputSchema: {
+        type: "object",
+        properties: { pokemon: { type: "array", items: { type: "string", enum: ids }, minItems: 3, maxItems: 3, uniqueItems: true } },
+        required: ["pokemon"],
+        additionalProperties: false
+      },
+      annotations: { readOnlyHint: false, untrustedContentHint: false },
+      execute(input) {
+        const picks = input?.pokemon;
+        if (!Array.isArray(picks) || picks.length !== 3 || new Set(picks).size !== 3) throw new Error("Choose exactly three different Pokémon.");
+        if (picks.some(id => !SPECIES[id] || !unlocked(id))) throw new Error("One or more selected Pokémon are not owned.");
+        if (battle) throw new Error("A match is already in progress.");
+        selected = picks.map(id => save.pokemon.find(mon => mon.speciesId === id)?.uid).filter(Boolean);
+        selectionLimit = 3;
+        save.activePartyInstanceIds = [...selected];
+        writeSave();
+        renderRoster();
+        window.PartyTray?.render();
+        return { selected: selected.map(pokemonNameFor), ready: true };
+      }
+    })).catch(() => {});
+    void Promise.resolve(context.registerTool({
+      name: "set_battle_difficulty",
+      title: "Set battle difficulty",
+      description: "Set the AI difficulty for the next stadium match.",
+      inputSchema: {
+        type: "object",
+        properties: { difficulty: { type: "string", enum: ["casual", "stadium", "master"] } },
+        required: ["difficulty"],
+        additionalProperties: false
+      },
+      annotations: { readOnlyHint: false, untrustedContentHint: false },
+      execute(input) {
+        if (battle) throw new Error("Difficulty cannot change during a match.");
+        if (!DIFFICULTIES[input?.difficulty]) throw new Error("Choose casual, stadium, or master.");
+        save.difficulty = input.difficulty;
+        writeSave();
+        renderDifficulty();
+        return { difficulty: DIFFICULTIES[save.difficulty].label };
+      }
+    })).catch(() => {});
+    void Promise.resolve(context.registerTool({
+      name: "start_stadium_match",
+      title: "Start stadium match",
+      description: "Start a three-on-three match using the three owned Pokémon already selected.",
+      inputSchema: { type: "object", properties: {}, additionalProperties: false },
+      annotations: { readOnlyHint: false, untrustedContentHint: false },
+      execute() {
+        if (battle) throw new Error("A match is already in progress.");
+        if (selected.length !== 3) throw new Error("Select exactly three Pokémon first.");
+        startBattle("stadium");
+        return { started: true, team: battle.player.map(mon => mon.name), opponents: battle.enemy.map(mon => mon.name) };
+      }
+    })).catch(() => {});
+  } catch { /* WebMCP is optional and feature-detected. */ }
+}
+
+// The battle upgrade initializes the UI after registering its mechanics.
+
+</script>
+    <script>
+"use strict";
+(() => {
+  const panel=document.getElementById('save-tools'),label=document.getElementById('save-status'),help=document.getElementById('save-help');
+  let lastWritten='';
+  function status(ok){if(ok)lastWritten=JSON.stringify(save);label.textContent=ok?'Saved in this browser':'Not saved — export a backup';panel.dataset.saved=String(ok);if(!ok){panel.open=true;help.textContent='Browser storage could not save your progress. Export a backup now. Your current session is still playable.';}}
+  function payload(){return JSON.stringify({format:'yellow-stadium-backup',version:1,exportedAt:new Date().toISOString(),save},null,2);}
+  function restore(raw){
+    if(battle && !battle.over)throw Error('Finish your battle before restoring a backup.');
+    if(raw.length>1000000)throw Error('That backup is too large. Select a Yellow Stadium JSON backup.');
+    const parsed=JSON.parse(raw),data=parsed?.format==='yellow-stadium-backup'?parsed.save:parsed;
+    if(!validSave(data)||!data.owned.every(id=>typeof id==='string'&&SPECIES[id]))throw Error('This is not a valid Yellow Stadium save.');
+    if(data.onboardingComplete && data.owned.length<3)throw Error('The backup is missing party Pokémon.');
+    if(save.owned.length && !window.confirm('Replace your current progress with this backup? Export your current save first if you want to keep it.'))return false;
+    const restored=loadSave(data);
+    save=restored;selected=[];battle=null;
+    window.TrainerScenes?.finish();els['result-modal'].hidden=true;
+    window.StadiumUpgrade?.migrateTraining();
+    const ok=writeSave();renderApp();
+    help.textContent=ok?'Backup restored and saved in this browser.':'Backup restored for this session, but browser storage is unavailable. Keep your backup file.';
+    return true;
+  }
+  document.getElementById('save-now').onclick=async()=>{
+    const ok=writeSave();
+    help.textContent=ok?'Progress saved in this browser. Export a backup to move it to another browser or device.':'Saving failed. Export your progress before closing the game.';
+    if(ok && navigator.storage?.persist)try{await navigator.storage.persist();}catch{}
+  };
+  document.getElementById('export-save').onclick=async()=>{
+    const json=payload(),name='yellow-stadium-save.json';
+    const file=new File([json],name,{type:'application/json'});
+    try {
+      if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:'Yellow Stadium save'});help.textContent='Choose Save to Files in the share sheet to keep your backup.';return;}
+      const url=URL.createObjectURL(file),link=document.createElement('a');link.href=url;link.download=name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+      help.textContent='Backup download requested. Keep the JSON file to restore your progress later.';
+    }catch(error){help.textContent=error.name==='AbortError'?'Backup sharing cancelled.':'Could not export. Try opening the game directly in your browser, then export again.';}
+  };
+  document.getElementById('import-save').onchange=async event=>{
+    const input=event.target,file=input.files?.[0];if(!file)return;
+    try{if(file.size>1000000)throw Error('That file is too large to be a game save.');restore(await file.text());}catch(error){help.textContent=error instanceof SyntaxError?'That file is not a readable JSON backup.':error.message;}finally{input.value='';}
+  };
+  const flush=()=>{if(JSON.stringify(save)!==lastWritten)writeSave();};
+  window.addEventListener('pagehide',flush);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)flush();});
+  window.SaveTools={status,payload,restore};
+  label.textContent = 'Session ready';
+  panel.dataset.saved = 'unknown';
+})();
+
+</script>
+    <script>
+"use strict";
+(() => {
+  const stops=[['Pewter City',30,25],['Cerulean City',59,17],['Vermilion City',61,55],['Celadon City',43,41],['Fuchsia City',61,82],['Saffron City',61,36],['Cinnabar Island',24,86],['Viridian City',17,54],['Indigo Plateau',10,10]];
+  let selectedStop=0;
+  const state=i=>i<save.cupsCompleted || (i===8 && save.eliteCompleted)?'completed':i===save.cupsCompleted?'current':'locked';
+  function inspect(index, focus=false) {
+    selectedStop=index;
+    const avatar=document.getElementById('journey-avatar');if(avatar){avatar.style.left=`${stops[index][1]}%`;avatar.style.top=`${stops[index][2]}%`;}
+    const status=state(index),city=stops[index][0],cup=CUPS[index];
+    for(const button of els['kanto-markers'].children)button.setAttribute('aria-pressed',String(Number(button.dataset.stop)===index));
+    const panel=els['map-stop'];panel.replaceChildren();
+    const text=document.createElement('div');
+    const title=document.createElement('h2');title.textContent=city;
+    const description=document.createElement('p');
+    description.textContent=cup?`${cup.leader} · ${cup.badge} GYM · ${cup.types.join(' / ')} · 3 vs 3`:'The Elite Four await at the end of your Kanto journey.';
+    const note=document.createElement('p');note.className='stop-note';
+    note.textContent=status==='completed'?'Completed — your victory is recorded.':status==='locked'?`Earn ${index===8?'all eight badges':`the ${CUPS[index-1].badge} Badge`} to unlock this stop.`:'Your next destination. Choose three Pokémon in Party, then challenge here.';
+    text.append(title,description,note);
+    if(cup){const portrait=document.createElement('img');portrait.src=assetUrl(`./assets/trainers/${cup.sprite}.png`);portrait.alt=cup.leader;portrait.width=80;portrait.height=80;panel.append(portrait);}
+    panel.append(text);
+    if((status==='current'||status==='completed') && cup){const button=document.createElement('button');button.type='button';button.className='primary-button';button.textContent=selected.length===3?`${status==='completed'?'REPLAY':'CHALLENGE'} ${cup.leader}`:'MANAGE PARTY';button.onclick=()=>selected.length===3?startCup(index):window.PartyTray?.open();panel.append(button);}
+    if(index===8 && save.cupsCompleted===8){const button=document.createElement('button');button.type='button';button.className='primary-button';button.textContent='VIEW LEAGUE CHALLENGE';button.onclick=()=>els['elite-panel'].scrollIntoView({block:'center',behavior:'smooth'});panel.append(button);}
+    if(focus && window.MobileUX && status==='current' && cup) { window.MobileUX.prepare(()=>startCup(index),3,`${cup.badge} GYM · ${cup.leader}`); return; }
+    if(focus)panel.scrollIntoView?.({block:'nearest',behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  }
+  function render(){
+    els['badge-count'].textContent=`${save.cupsCompleted} / 8`;
+    els['cup-summary'].textContent=save.cupsCompleted<8?`Next stop: ${stops[save.cupsCompleted][0]} · ${CUPS[save.cupsCompleted].leader}`:save.eliteCompleted?'Kanto Champion — all eight badges earned.':'All eight badges earned. Head to Indigo Plateau.';
+    els['kanto-markers'].replaceChildren();
+    stops.forEach(([city,x,y],i)=>{const button=document.createElement('button');const status=state(i);button.type='button';button.className=`map-marker ${status}`;button.style.left=`${x}%`;button.style.top=`${y}%`;button.dataset.stop=i;button.textContent=status==='completed'?'✓':i===8?'E4':String(i+1);if(i<8){button.textContent='';const icon=document.createElement('span');icon.className='kanto-badge';window.TrainerScenes.badge(icon,i);button.append(icon);}button.title=`${city} · ${status}`;button.setAttribute('aria-label',`${i===8?'Elite Four':`Gym ${i+1}`}: ${city}. ${status==='current'?'Next challenge':status==='completed'?'Completed':'Locked'}`);if(status==='current')button.setAttribute('aria-current','step');button.onclick=()=>inspect(i,true);els['kanto-markers'].append(button);});
+    inspect(Math.min(save.cupsCompleted,8));renderElitePanel();
+  }
+  window.KantoMap={render,inspect,stops};
+})();
+
+</script>
+    <script>
+"use strict";
+(() => {
+  const scene=document.getElementById('trainer-scene');
+  const button=document.getElementById('scene-continue');
+  const quotes={
+    BROCK:['My team will turn the arena itself against you. Show me you can break our formation!','You read my strategy and broke through it. You earned the Boulder Badge.','The sand and Spikes dictated the match. Bring Water or Grass pressure, switch with purpose, and strike when Protect leaves an opening.'],
+    MISTY:['Let’s see how your team handles the tide!','You made quite a splash! The Cascade Badge is yours.','Keep training. I’ll be waiting for a rematch!'],
+    'LT. SURGE':['Ready for an electrifying battle?','Now that’s power! Take the Thunder Badge.','Your team needs a little more charge. Try again!'],
+    ERIKA:['A calm mind can bring out remarkable strength.','A beautiful battle. Please accept the Rainbow Badge.','Let your team grow, then visit again.'],
+    KOGA:['Can you see through my strategy?','You have overcome my tricks. Take the Soul Badge.','Strength alone cannot overcome every challenge.'],
+    SABRINA:['Your next decision will decide this battle.','You surprised me. The Marsh Badge belongs to you.','Consider your next move carefully.'],
+    BLAINE:['Let’s turn up the heat!','A blazing performance! You earned the Volcano Badge.','Keep that spark alive and return stronger.'],
+    GIOVANNI:['Show me what your journey has taught you.','You have proven yourself. Take the Earth Badge.','You still have much to learn. Return when you are ready.']
+  };
+  const encounterPlans={
+    boulderFinal:{
+      plan:'Geodude summons sand, Rhyhorn lays Spikes, and Onix closes as Brock’s ace.',
+      counter:'Water and Grass attacks crack his defense. Avoid extra switches after Spikes and use Protect turns to recover or set up.'
+    }
+  };
+  let finish=null;
+  const supported=b=>['cup','trainer','trainerDuo','elite','arcade'].includes(b.mode);
+  const badgeSymbols=['◆','●','ϟ','✿','☠','◉','▲','◇'];
+  function badge(node,index){node.style.removeProperty('background-image');node.style.removeProperty('background-position');node.classList.add(`badge-${index}`);node.textContent=badgeSymbols[index]||'◆';node.setAttribute('role','img');node.setAttribute('aria-label',`${CUPS[index].badge} Badge`);}
+  function show(b,victory){
+    const intro=victory===undefined,name=b.trainer?.name||'TRAINER';
+    scene.dataset.phase=intro?'intro':victory?'win':'loss';
+    const cupStage=b.mode==='cup'?(b.cupRound===2?'LEADER BATTLE':`BATTLE ${(b.cupRound||0)+1} OF 3`):'';
+    document.getElementById('scene-kicker').textContent=intro?(b.mode==='cup'?`${CUPS[b.cupIndex].badge} JOURNEY · ${cupStage}`:b.mode==='arcade'?`${ARCADE_CUPS[b.arcadeCupIndex].name} · STAGE ${b.arcadeStage+1}/${ARCADE_CUPS[b.arcadeCupIndex].stages.length} · ${b.arcadeLabel}`:b.mode==='elite'?'POKÉMON LEAGUE':'TRAINER CHALLENGE'):'MATCH COMPLETE';
+    document.getElementById('scene-title').textContent=intro?`${name} challenges you!`:victory?`You defeated ${name}!`:`${name} wins the match!`;
+    const sprite=document.getElementById('scene-trainer');sprite.src=assetUrl(`./assets/trainers/${b.trainer?.sprite||'youngster'}.png`);sprite.alt=name;
+    const leader=b.mode==='cup'&&b.cupRound===2,lines=leader?quotes[name]:null;
+    const qualifierIntro=b.mode==='cup'&&!leader?`You will not reach ${CUPS[b.cupIndex].leader} without getting through my team first!`:null;
+    document.getElementById('scene-quote').textContent=b.mode==='arcade'&&intro?(b.encounterText||`${b.arcadeStageTitle}. Clear the stage to keep your Cup run alive.`):lines?lines[intro?0:victory?1:2]:intro?(qualifierIntro||'Our eyes have met. Let’s see what your Pokémon can do!'):victory?'You and your Pokémon make a great team. The next challenger is waiting!':'A good battle! Train your team and challenge me again.';
+    const plan=intro&&encounterPlans[b.encounter];
+    const planNode=document.getElementById('scene-plan');planNode.hidden=!plan;
+    if(plan){document.getElementById('scene-plan-copy').textContent=plan.plan;document.getElementById('scene-counter-copy').textContent=plan.counter;}
+    const icon=document.getElementById('scene-badge');icon.hidden=intro||!victory||!leader;if(!icon.hidden)badge(icon,b.cupIndex);
+    button.textContent=intro?'LET’S BATTLE ▸':'VIEW REWARDS ▸';scene.hidden=false;button.focus();
+  }
+  button.onclick=()=>finish?.();
+  scene.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();finish?.();}if(event.key==='Tab'){event.preventDefault();button.focus();}});
+  async function intro(b){
+    if(!supported(b))return;
+    show(b);
+    window.YSFlow?.emit("presentation:trainerIntro", { battle: b });
+    await new Promise(resolve=>{
+      let ended=false;const done=()=>{if(ended)return;ended=true;scene.hidden=true;if(finish===done)finish=null;resolve();};finish=done;
+      // Short automatic intro; the button or Escape skips it immediately.
+      void delay(window.BattlePolish?.delay(2000)??2000).then(done);
+    });
+  }
+  function outro(b,victory){
+    if(!supported(b))return;
+    els['result-modal'].hidden=true;show(b,victory);
+    finish=()=>{scene.hidden=true;finish=null;els['result-modal'].hidden=false;els['continue-button'].focus();};
+  }
+  window.TrainerScenes={intro,outro,badge,finish:()=>finish?.()};
+})();
+
+</script>
+    <script>
+"use strict";
+// Original presentation layer: perspective transforms, not a DS emulator.
+(() => {
+  const world = document.getElementById('battle-world');
+  const arena = document.getElementById('battle-arena');
+  if (!world || !arena || !world.appendChild) return;
+  for (const selector of ['.enemy-pad','.player-pad','#enemy-partner','#player-partner']) {
+    const node = arena.querySelector(selector);
+    if (node) world.appendChild(node);
+  }
+  // Sprites and names remain accessible; only the floor is decorative.
+  world.removeAttribute('aria-hidden');
+  world.querySelector('.battle-floor').setAttribute('aria-hidden','true');
+  const button = document.getElementById('camera-toggle');
+  const banner = document.getElementById('move-banner');
+  const label = document.getElementById('impact-label');
+  let dynamic = true, lastBattle = null;
+  try { dynamic = localStorage.getItem('yellow-stadium-camera') !== 'fixed'; } catch {}
+  const reduced = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  function reset() { arena.dataset.focus = 'wide'; banner.hidden = true; label.hidden = true; }
+  function preference() {
+    arena.dataset.camera = dynamic && !reduced() ? 'dynamic' : 'fixed';
+    button.textContent = `CAMERA · ${dynamic && !reduced() ? 'DYNAMIC' : 'FIXED'}`;
+    button.setAttribute('aria-pressed',String(dynamic && !reduced()));
+  }
+  button.onclick = () => { dynamic = !dynamic; try { localStorage.setItem('yellow-stadium-camera',dynamic ? 'dynamic' : 'fixed'); } catch {} preference(); reset(); };
+  window.matchMedia?.('(prefers-reduced-motion: reduce)').addEventListener?.('change',preference);
+  const palette = { FIRE:'#ff955d', WATER:'#69bdff', ELECTRIC:'#ffe36b', GRASS:'#8dea9e', ICE:'#a0edff', PSYCHIC:'#f4a0dc', GHOST:'#bb9aef', POISON:'#d9a1f0', GROUND:'#e4bd85', ROCK:'#dec69a', FIGHTING:'#ffb08c' };
+  function cue(actor, move) {
+    arena.dataset.focus = actor.side;
+    arena.style.setProperty('--move-color',palette[move.type] || '#edf5ff');
+    banner.textContent = `${actor.name}  /  ${move.name}`; banner.hidden = false; label.hidden = true;
+  }
+  function impact(target, text) {
+    arena.dataset.focus = target.side === 'player' ? 'hit-player' : 'hit-enemy';
+    label.dataset.side = target.side; label.textContent = text; label.hidden = false;
+    if (!reduced() && label.animate) label.animate([{opacity:0,transform:'translateY(10px)'},{opacity:1,transform:'translateY(0)'}],{duration:180});
+  }
+  function render() {
+    if (!battle?.slots) return;
+    if (battle !== lastBattle) { lastBattle = battle; reset(); }
+    arena.dataset.duo = String(battle.mode === 'trainerDuo');
+    arena.dataset.weather = battle.weather;
+    for (const side of ['player','enemy']) {
+      const mon = side === 'player' ? activePlayer() : activeEnemy();
+      const living = battle[side].filter(p=>p.hp>0).length;
+      const name = mon.ability.replace(/([A-Z])/g,' $1');
+      document.getElementById(`${side}-battle-detail`).textContent = `${mon.types.join(' / ')} · ${name.toUpperCase()} · ${living}/${battle[side].length} left`;
+    }
+    if (battle.over || !battle.locked) reset();
+  }
+  preference(); reset();
+  window.BattlePresentation = { cue, impact, render, reset };
+})();
+
+</script>
+    <script>
+"use strict";
+// Move-specific procedural effects. No downloads, random battle rolls or save changes.
+(() => {
+  const recipes = {
+    thunderbolt:['bolt','#ffe34f',3], thunder:['storm','#fff19a',5], thunderShock:['spark','#ffee38',2], thunderWave:['electric-ring','#ffe968',4],
+    flamethrower:['flame-stream','#ff6428',26], ember:['embers','#ff982c',7], fireSpin:['fire-vortex','#ff501f',24],
+    surf:['wave','#36bfff',6], waterGun:['water-jet','#4bccff',14], scald:['steam-jet','#bcecff',22],
+    iceBeam:['ice-ray','#92efff',9], blizzard:['snowstorm','#c7f8ff',32],
+    razorLeaf:['leaves','#8ddd49',9], vineWhip:['vine','#58bf4e',2], leechSeed:['seeds','#acd94d',6], sleepPowder:['powder','#b6b8ff',24],
+    psychic:['psychic-rings','#fb7cff',5], confusion:['confusion-swirl','#fbc0ff',3], hypnosis:['hypnotic-spiral','#eb98ff',8],
+    nightShade:['shade','#9f62d4',7], shadowBall:['shadow-orb','#8d56e7',1], sludgeBomb:['sludge','#b86adc',9], toxic:['toxic-bubbles','#dd62b6',12], confuseRay:['confuse-ray','#ffe894',6],
+    quickAttack:['dash','#f2fbff',7], tackle:['impact','#fff6c3',1], bodySlam:['slam','#ffd09a',3], struggle:['struggle','#ff9e96',5],
+    slash:['claws','#fff6d6',3], dragonClaw:['dragon-claws','#74fbd0',4], xScissor:['cross','#b1fb6d',2], wingAttack:['wings','#e2faff',2],
+    doubleKick:['kicks','#ffc18d',2], brickBreak:['break','#edb079',5], seismicToss:['toss','#ffb26c',1], bite:['jaws','#ded5e9',6],
+    earthquake:['quake','#d2b381',7], rockSlide:['rocks','#b3a28d',8], pinMissile:['needles','#ceee84',5], hyperBeam:['hyper-beam','#fff0a7',1],
+    rest:['sleep','#bcc8ff',3], sing:['notes','#ffc1ee',5], recover:['heal','#92ffc2',8],
+    protect:['shield','#91ffd3',1], substitute:['decoy','#a0dca4',4], reflect:['reflect-wall','#ffbce9',3], lightScreen:['light-wall','#ffe8a0',5],
+    swordsDance:['swords','#dce8ff',3], calmMind:['mind-aura','#fba9ff',6], workUp:['power-up','#ffad70',4], agility:['speed','#a9eaff',6], helpingHand:['help','#ffdd99',2],
+    spikes:['spikes','#c6b7a4',6], rainDance:['rain','#79caff',35], sunnyDay:['sun','#ffe38c',12], sandstorm:['sand','#dfc68e',42]
+  };
+  const mix=(a,b,t)=>a+(b-a)*t, clamp=t=>Math.max(0,Math.min(1,t));
+  function draw(c,id,t,a,b,w,h) {
+    const [kind,color,count]=recipes[id];
+    const p=clamp(t/.72), envelope=Math.min(1,t*8,(1-t)*6);
+    const x=mix(a.x,b.x,p), y=mix(a.y,b.y,p), unit=Math.max(.55,Math.min(w/650,h/420));
+    const r=n=>n*unit;
+    c.save(); c.globalAlpha=Math.max(0,envelope); c.strokeStyle=color; c.fillStyle=color; c.lineCap='round'; c.lineJoin='round';
+    function line(points,width=3,col=color) { c.strokeStyle=col;c.lineWidth=r(width);c.beginPath();points.forEach((v,i)=>i?c.lineTo(...v):c.moveTo(...v));c.stroke(); }
+    function dot(px,py,size,col=color) { c.fillStyle=col;c.beginPath();c.arc(px,py,r(Math.max(.1,size)),0,Math.PI*2);c.fill(); }
+    function ring(px,py,size,width=3,col=color) { c.strokeStyle=col;c.lineWidth=r(width);c.beginPath();c.ellipse(px,py,r(Math.max(1,size)),r(Math.max(1,size*.7)),0,0,Math.PI*2);c.stroke(); }
+    function text(s,px,py,size=26) { c.fillStyle=color;c.font=`bold ${r(size)}px sans-serif`;c.textAlign='center';c.fillText(s,px,py); }
+    function burst(px,py,n=9,size=32) { for(let i=0;i<n;i++){const v=i*Math.PI*2/n;line([[px+Math.cos(v)*r(size*.3),py+Math.sin(v)*r(size*.3)],[px+Math.cos(v)*r(size),py+Math.sin(v)*r(size)]],3);} }
+    function bolt(from,to,n,seed=0) { const points=[];for(let i=0;i<=n;i++){const q=i/n;points.push([mix(from.x,to.x,q)+(i&&i<n?Math.sin(i*13+Math.floor(t*10)+seed)*r(19):0),mix(from.y,to.y,q)]);}line(points,7,color);line(points,2,'#fffdea'); }
+    function crystal(px,py,size,angle=0) { c.save();c.translate(px,py);c.rotate(angle);line([[0,-r(size)],[r(size*.5),0],[0,r(size)],[-r(size*.5),0],[0,-r(size)]],2);c.restore(); }
+    if(kind==='bolt'||kind==='storm'||kind==='spark') {
+      for(let i=0;i<count;i++) { const from=kind==='storm'?{x:b.x+r((i-2)*28),y:0}:a;bolt(from,{x:mix(from.x,b.x,p),y:mix(from.y,b.y,p)},kind==='spark'?5:11,i*4); }
+      if(t>.55)burst(b.x,b.y,12,35+10*Math.sin(t*15));
+    } else if(kind==='electric-ring') { for(let i=0;i<count;i++)ring(x,y,12+i*10+Math.sin(t*14+i)*4,3); }
+    else if(['flame-stream','embers','water-jet','steam-jet'].includes(kind)) {
+      for(let i=0;i<count;i++) {const q=(t*1.7+i/count)%1;if(q>p)continue;const spread=kind==='embers'?16:8+q*16;const px=mix(a.x,b.x,q),py=mix(a.y,b.y,q)+Math.sin(i*7+t*12)*r(spread);dot(px,py,kind==='embers'?7:5+q*12,color);dot(px-r(2),py-r(3),kind==='water-jet'?3:3+q*5,kind.includes('flame')||kind==='embers'?'#ffe47b':'#e9fbff');if(kind==='steam-jet')ring(px,py-r(q*30),7+q*8,1,'#ffffff');}
+    } else if(kind==='fire-vortex') {for(let i=0;i<count;i++){const angle=i/count*Math.PI*4+t*11;dot(b.x+Math.cos(angle)*r(40),b.y+r(40-i*3)+Math.sin(angle)*r(12),6,'#ff792a');dot(b.x+Math.cos(angle)*r(34),b.y+r(36-i*3),3,'#ffe375');}}
+    else if(kind==='wave'){for(let j=0;j<count;j++){const pts=[];for(let i=0;i<=30;i++)pts.push([x+r((i-15)*7),y+r(j*7+Math.sin(i*.4-t*10+j*.3)*17)]);line(pts,j===0?5:9,j===0?'#edffff':color);}}
+    else if(kind==='ice-ray'||kind==='hyper-beam'||kind==='confuse-ray') {line([[a.x,a.y],[x,y]],kind==='hyper-beam'?24:kind==='ice-ray'?9:4,color);line([[a.x,a.y],[x,y]],kind==='hyper-beam'?9:2,'#fff');for(let i=0;i<count;i++){const q=(t+i/count)%1;const px=mix(a.x,x,q),py=mix(a.y,y,q);if(kind==='ice-ray')crystal(px,py,10,t*4);else ring(px,py,10+Math.sin(t*8+i)*5,2);}if(t>.6)burst(b.x,b.y,12,45);}
+    else if(kind==='snowstorm'||kind==='rocks'||kind==='rain'||kind==='sand') {for(let i=0;i<count;i++){const q=(t*1.3+i*.137)%1,px=kind==='rocks'?b.x+r(Math.sin(i*8)*55):((i*.173)%1)*w;const py=kind==='rocks'?mix(-30,b.y+25,q):q*h;if(kind==='snowstorm')crystal(px+Math.sin(q*5)*30,py,5+(i%4),t*4);else if(kind==='rocks')crystal(px,py,13+i%4,t+i);else if(kind==='rain')line([[px,py],[px-9,py+22]],2);else dot((px+t*300)%w,py,2+i%3);}}
+    else if(kind==='leaves'||kind==='seeds'||kind==='needles'||kind==='powder') {for(let i=0;i<count;i++){const q=clamp((t-i*.018)*1.5);const px=mix(a.x,b.x,q),py=mix(a.y,b.y,q)+Math.sin(q*Math.PI)*r((i-count/2)*8);if(kind==='leaves'){c.save();c.translate(px,py);c.rotate(t*8+i);c.fillStyle=color;c.beginPath();c.ellipse(0,0,r(13),r(5),0,0,Math.PI*2);c.fill();c.restore();}else if(kind==='needles')line([[px,py],[px-r(17),py+r(10)]],3);else dot(px,py,kind==='seeds'?5:2+i%3);}if(kind==='seeds'&&t>.6)for(let i=0;i<5;i++)line([[b.x+r(i*10-20),b.y+20],[b.x+r(i*10-25),b.y-r(15)]],3);}
+    else if(kind==='vine') {for(let j=0;j<2;j++){const pts=[];for(let i=0;i<=20;i++){const q=i/20;pts.push([mix(a.x,x,q),mix(a.y,y,q)+Math.sin(q*Math.PI*2+t*8+j*Math.PI)*r(22)*Math.sin(q*Math.PI)]);}line(pts,5);}}
+    else if(['psychic-rings','confusion-swirl','hypnotic-spiral','mind-aura','electric-ring'].includes(kind)) {const center=kind==='mind-aura'?a:b;for(let j=0;j<count;j++){const size=12+j*9+Math.sin(t*9+j)*6;if(kind==='hypnotic-spiral'){const pts=[];for(let i=0;i<50;i++){const angle=i*.22+t*8;pts.push([center.x+Math.cos(angle)*r(i*.8),center.y+Math.sin(angle)*r(i*.6)]);}line(pts,2);break;}ring(center.x+(kind==='confusion-swirl'?Math.sin(t*8+j)*12:0),center.y,size,2);}}
+    else if(kind==='shadow-orb'||kind==='sludge'||kind==='toxic-bubbles'||kind==='shade'){if(kind==='shadow-orb'){dot(x,y,24,'#392051');ring(x,y,29,5);for(let i=0;i<9;i++)dot(x+Math.cos(t*9+i)*r(30),y+Math.sin(t*9+i)*r(22),4);}else for(let i=0;i<count;i++){const q=(t+i/count)%1;dot(kind==='sludge'?mix(a.x,b.x,q):b.x+Math.sin(i*6+t)*r(35),kind==='sludge'?mix(a.y,b.y,q)-Math.sin(q*Math.PI)*r(60):b.y+r(35-q*90),kind==='shade'?14:5+i%6,kind==='shade'?'#4d286b':color);}}
+    else if(['shield','reflect-wall','light-wall','decoy'].includes(kind)){const center=a;if(kind==='shield')for(let i=0;i<3;i++)ring(center.x,center.y,40+i*5,2);else if(kind==='decoy'){for(let i=0;i<count;i++)dot(center.x+Math.cos(i*2+t*8)*r(25),center.y+Math.sin(i*2+t*8)*r(20),14);text('SUB',center.x,center.y,18);}else {for(let j=0;j<count;j++){const dx=r((j-count/2)*12);line([[center.x-r(30)+dx,center.y-r(48)],[center.x+r(30)+dx,center.y-r(48)],[center.x+r(30)+dx,center.y+r(48)],[center.x-r(30)+dx,center.y+r(48)],[center.x-r(30)+dx,center.y-r(48)]],2);}}}
+    else if(['sleep','notes','heal','swords','power-up','speed','help','sun','spikes'].includes(kind)) {for(let i=0;i<count;i++){const q=(t+i/count)%1,angle=i/count*Math.PI*2+t*2;const center=['notes','help'].includes(kind)?{x,y}:kind==='spikes'?b:a;const px=center.x+Math.cos(angle)*r(35),py=center.y-r(q*65);if(kind==='sleep')text('Z',px,py,17+i*5);else if(kind==='notes')text(i%2?'♫':'♪',px,py);else if(kind==='heal')text('+',px,py,23);else if(kind==='swords')line([[px,py+25],[px,py-22],[px-5,py-12],[px,py-22],[px+5,py-12],[px,py-22],[px,py+8],[px-9,py+8],[px+9,py+8]],3);else if(kind==='power-up')line([[px-5,py+10],[px,py],[px+5,py+10]],4);else if(kind==='speed')line([[px-r(25),py],[px+r(15),py]],2);else if(kind==='help')text('✦',px,py,32);else if(kind==='sun'){ring(w*.5,h*.23,35,4);line([[w*.5+Math.cos(angle)*r(45),h*.23+Math.sin(angle)*r(45)],[w*.5+Math.cos(angle)*r(65),h*.23+Math.sin(angle)*r(65)]],4);}else line([[px-6,b.y+30],[px,b.y+12],[px+6,b.y+30]],3);}}
+    else if(kind==='quake'){for(let j=0;j<count;j++){const pts=[];for(let i=0;i<8;i++)pts.push([b.x+r((j-3)*20+i*8),b.y+r(30+i*4+Math.sin(i*8+j)*12*t)]);line(pts,3,'#543d29');}ring(b.x,b.y+25,20+t*100,4);}
+    else if(kind==='jaws'){for(let j of [-1,1]){const pts=[];for(let i=0;i<13;i++)pts.push([b.x+r((i-6)*7),b.y+j*r(15+(i%2?12:0)+(1-p)*35)]);line(pts,5);}}
+    else if(['claws','dragon-claws','cross','wings','kicks','break','toss','dash','impact','slam','struggle'].includes(kind)) {
+      if(kind==='claws'||kind==='dragon-claws')for(let i=0;i<count;i++)line([[b.x-r(35)+i*r(14),b.y-r(40)],[b.x+r(15)+i*r(14)*p,b.y+r(35)*p]],kind==='dragon-claws'?7:4);
+      else if(kind==='cross')for(let j of [-1,1])line([[b.x-r(36),b.y+j*r(36)],[b.x+r(36)*p,b.y-j*r(36)*p]],7);
+      else if(kind==='wings')for(let j of [-1,1])for(let i=0;i<4;i++)line([[b.x,b.y],[b.x+j*r(15+i*10),b.y-r(35-i*7)]],4);
+      else if(kind==='kicks'){for(let i=0;i<2;i++)if(t>i*.35) {ring(b.x+r(i?18:-18),b.y+r(i?14:-14),10+((t-i*.35)*30),5);text('✦',b.x+r(i?18:-18),b.y+r(i?14:-14),25);}}
+      else if(kind==='toss'){const q=clamp(t*1.4);ring(b.x,b.y-Math.sin(q*Math.PI)*r(100),17,4);if(t>.7)burst(b.x,b.y,12,50);}
+      else if(kind==='break'){for(let i=0;i<count;i++)crystal(b.x+r((i-2)*18*t),b.y+r(t*t*55),10,t*5+i);line([[b.x,b.y-60],[b.x,b.y+10]],7);}
+      else {if(kind==='dash')for(let i=0;i<count;i++)line([[mix(a.x,b.x,t)-r(25),mix(a.y,b.y,t)+r(i*5-15)],[x,y+r(i*5-15)]],2);burst(b.x,b.y,kind==='slam'?14:kind==='struggle'?5:8,kind==='slam'?60:30);if(kind==='slam')ring(b.x,b.y+25,30+t*60,4);}
+    }
+    // Secondary impact layer: illuminated trails, debris and expanding shock rings.
+    const element=['bolt','storm','spark','vine','flame-stream','embers','fire-vortex','wave','water-jet','steam-jet','ice-ray','snowstorm','hyper-beam'].includes(kind);
+    if(element && t>.32){
+      const q=clamp((t-.32)/.68),spread=12+q*64;
+      c.globalAlpha=Math.max(0,envelope*(1-q)*.85);
+      ring(b.x,b.y+12,spread,kind==='storm'?5:2);
+      for(let i=0;i<18;i++){
+        const angle=i*2.399,reach=spread*(.45+(i%5)*.16);
+        const px=b.x+Math.cos(angle)*r(reach),py=b.y+Math.sin(angle)*r(reach*.8)+r(q*q*22);
+        if(['bolt','storm','spark'].includes(kind))line([[b.x,b.y],[px-r(6),py+r(7)],[px+r(3),py],[px,py-r(9)]],i%3===0?2:1,i%2?'#fffbd2':color);
+        else if(kind==='vine'){c.save();c.translate(px,py);c.rotate(angle+q*5);c.fillStyle=i%2?'#abf76e':color;c.fillRect(-r(4),-r(2),r(8),r(4));c.restore();}
+        else dot(px,py,Math.max(1,(1-q)*(3+i%4)),i%3?'#fff3cf':color);
+      }
+    }
+    c.restore();
+  }
+  let pending=null;
+  function cancel(){ if(pending)pending(); }
+  async function play(actor,target,move,outcome='hit') {
+    const arena=document.getElementById('battle-arena');
+    if(!arena || !arena.getBoundingClientRect || !window.requestAnimationFrame) return;
+    const id=Object.keys(MOVES).find(key=>MOVES[key]===move);
+    if(!recipes[id])return;
+    cancel();
+    const box=arena.getBoundingClientRect();
+    if(!box.width || !box.height)return;
+    const canvas=document.createElement('canvas');canvas.className='attack-canvas';canvas.setAttribute('aria-hidden','true');canvas.dataset.move=id;
+    const dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(box.width*dpr);canvas.height=Math.round(box.height*dpr);
+    let c;try { c=canvas.getContext('2d'); } catch { return; } if(!c)return;
+    c.scale(dpr,dpr);arena.append(canvas);
+    const current=battle, reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const baseDuration=['hyperBeam','thunder','surf','earthquake','fireSpin'].includes(id)?900:680;
+    const duration=reduced?260:Math.round(baseDuration*(window.BattlePolish?.scale||1));
+    const point=mon=>{const first=StadiumUpgrade.active(mon.side)[0]===mon;const sprite=document.getElementById(`${mon.side}${first?'':'-partner'}-sprite`);const rect=sprite.getBoundingClientRect(),root=arena.getBoundingClientRect();return{x:rect.left-root.left+rect.width*.5,y:rect.top-root.top+rect.height*.48};};
+    await new Promise(resolve=>{
+      let frame,watchdog,done=false;
+      const finish=()=>{if(done)return;done=true;window.cancelAnimationFrame(frame);clearTimeout(watchdog);canvas.remove();if(pending===finish)pending=null;resolve();};pending=finish;
+      const started=performance.now();
+      const tick=now=>{try{if(battle!==current || document.hidden){finish();return;}const t=clamp((now-started)/duration);c.clearRect(0,0,box.width,box.height);const a=point(actor),b=point(target);if(outcome==='miss'){b.x+=target.side==='enemy'?-65:65;b.y-=40;}draw(c,id,reduced ? .65 : t,a,b,box.width,box.height);if(t>=1)finish();else frame=window.requestAnimationFrame(tick);}catch{finish();}};
+      watchdog=setTimeout(finish,duration+250);frame=window.requestAnimationFrame(tick);
+    });
+  }
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)cancel();});
+  window.AttackEffects={recipes,draw,play,cancel};
+})();
+
+</script>
+    <script>
+"use strict";
+// Battle choreography, event audio and user-controlled pacing. Mechanics never
+// depend on this layer, so reduced-motion and blocked audio remain fully playable.
+(() => {
+  const speedKey = "yellow-stadium-battle-speed";
+  const speeds = [
+    { id: "quick", label: "QUICK", delay: .5, animation: .65 },
+    { id: "classic", label: "CLASSIC", delay: .84, animation: .92 },
+    { id: "cinematic", label: "CINEMATIC", delay: 1.12, animation: 1.08 }
+  ];
+  let speed = "classic";
+  try { speed = localStorage.getItem(speedKey) || "classic"; } catch { speed = "classic"; }
+  if (!speeds.some(entry => entry.id === speed)) speed = "classic";
+  const setting = () => speeds.find(entry => entry.id === speed);
+  const reduced = () => !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const muted = () => document.getElementById("music-toggle")?.getAttribute("aria-pressed") === "true";
+  const wait = ms => new Promise(resolve => setTimeout(resolve, reduced() ? 0 : Math.max(0, ms)));
+  const sprite = mon => {
+    if (!mon) return null;
+    const active = window.StadiumUpgrade?.active?.(mon.side) || [];
+    return document.getElementById(`${mon.side}${active[0] === mon ? "" : "-partner"}-sprite`);
+  };
+  async function animate(node, frames, options) {
+    if (!node?.animate || reduced()) return;
+    let animation;
+    try { animation = node.animate(frames, { fill: "both", ...options }); await animation.finished; } catch { /* A new scene may cancel an old animation. */ }
+    finally { animation?.cancel(); }
+  }
+
+  let audio;
+  function context() {
+    if (muted()) return null;
+    try {
+      const Audio = window.AudioContext || window.webkitAudioContext;
+      if (!Audio) return null;
+      audio ||= new Audio();
+      if (audio.state === "suspended") void audio.resume().catch(() => {});
+      return audio;
+    } catch { return null; }
+  }
+  function tone(frequency, duration = .12, waveform = "sine", volume = .025, endFrequency = frequency) {
+    const ctx = context(); if (!ctx) return;
+    const now = ctx.currentTime, oscillator = ctx.createOscillator(), gain = ctx.createGain();
+    oscillator.type = waveform; oscillator.frequency.setValueAtTime(Math.max(35, frequency), now);
+    oscillator.frequency.exponentialRampToValueAtTime(Math.max(35, endFrequency), now + duration);
+    gain.gain.setValueAtTime(volume, now); gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
+    oscillator.connect(gain).connect(ctx.destination); oscillator.start(now); oscillator.stop(now + duration + .02);
+  }
+  function noise(duration = .12, volume = .018) {
+    const ctx = context(); if (!ctx) return;
+    const length = Math.max(1, Math.floor(ctx.sampleRate * duration));
+    const buffer = ctx.createBuffer(1, length, ctx.sampleRate), data = buffer.getChannelData(0);
+    for (let i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / length);
+    const source = ctx.createBufferSource(), gain = ctx.createGain(); source.buffer = buffer; gain.gain.value = volume;
+    source.connect(gain).connect(ctx.destination); source.start();
+  }
+  const typeVoices = {
+    ELECTRIC: [920, "square", 1420], FIRE: [180, "sawtooth", 520], WATER: [430, "sine", 210],
+    GRASS: [620, "triangle", 820], ICE: [1100, "sine", 1540], PSYCHIC: [520, "sine", 980],
+    GHOST: [190, "sine", 95], POISON: [270, "sawtooth", 160], GROUND: [105, "square", 70],
+    ROCK: [130, "square", 85], FIGHTING: [155, "square", 110], BUG: [340, "sawtooth", 510],
+    FLYING: [760, "sine", 1020], DRAGON: [210, "sawtooth", 680], DARK: [145, "triangle", 75],
+    NORMAL: [360, "triangle", 250]
+  };
+  function moveSound(actor, move) {
+    if (window.YSAudioV56) return window.YSAudioV56.move(move);
+    if (!move) return;
+    const [start, waveform, end] = typeVoices[move.type] || typeVoices.NORMAL;
+    if (move.category === "PHYSICAL") noise(.08, .025);
+    tone(start, move.power >= 100 ? .28 : .16, waveform, .03, end);
+    if (move.effect && !move.power) setTimeout(() => tone(end, .2, "sine", .018, start), 80);
+  }
+  function eventSound(event) {
+    if (window.YSAudioV56) return window.YSAudioV56.event(event);
+    if (event === "send") { tone(330, .12, "square", .022, 760); setTimeout(() => tone(880, .1, "sine", .015, 1140), 80); }
+    if (event === "hit") { noise(.11, .03); tone(120, .1, "square", .018, 70); }
+    if (event === "critical") { noise(.2, .055); tone(165, .18, "square", .032, 52); setTimeout(() => tone(820,.12,"sawtooth",.022,1220),45); }
+    if (event === "dodge") { noise(.07, .012); tone(760,.1,"sine",.014,1180); }
+    if (event === "faint") { tone(430, .38, "sawtooth", .025, 75); }
+    if (event === "victory") [523,659,784,1047].forEach((note, i) => setTimeout(() => tone(note,.18,"square",.02,note), i * 105));
+    if (event === "defeat") [330,294,220].forEach((note, i) => setTimeout(() => tone(note,.28,"triangle",.02,note * .9), i * 145));
+  }
+
+  async function sendOut(mon) {
+    const node = sprite(mon); if (!node) return;
+    eventSound("send");
+    const pad = node.closest(".sprite-pad") || node.parentElement;
+    const ball = document.createElement("span"); ball.className = `sendout-ball ${mon.side}`; ball.setAttribute("aria-hidden", "true"); pad?.append(ball);
+    await Promise.all([
+      animate(ball, [{ transform: "translate(-45px,-55px) rotate(0) scale(.4)", opacity: 0 }, { transform: "translate(0,0) rotate(540deg) scale(1)", opacity: 1, offset: .72 }, { transform: "scale(2.2)", opacity: 0 }], { duration: 430 * setting().animation, easing: "cubic-bezier(.2,.7,.2,1)" }),
+      animate(node, [{ transform: "scale(.05)", opacity: 0, filter: "brightness(4)" }, { transform: "scale(1.14)", opacity: 1, filter: "brightness(1.7)", offset: .7 }, { transform: "scale(1)", opacity: 1, filter: "brightness(1)" }], { duration: 520 * setting().animation, easing: "ease-out", delay: 180 * setting().animation })
+    ]);
+    ball.remove(); node.style.removeProperty("transform"); node.style.removeProperty("opacity"); node.style.removeProperty("filter");
+  }
+  async function withdraw(mon) {
+    const node = sprite(mon); if (!node) return;
+    tone(720,.16,"sine",.018,280);
+    await animate(node, [{ transform: "scale(1)", opacity: 1 }, { transform: "scale(.08)", opacity: 0, filter: "brightness(3)" }], { duration: 260 * setting().animation, easing: "ease-in" });    node.style.removeProperty("transform"); node.style.removeProperty("opacity"); node.style.removeProperty("filter");
+  }
+  async function prepare(mon, move) {
+    const node = sprite(mon); if (!node) return;
+    moveSound(mon, move);
+    const direction = mon.side === "player" ? 1 : -1;
+    const frames = move.category === "PHYSICAL"
+      ? [{ transform: "translateX(0) scale(1)" }, { transform: `translateX(${-10 * direction}px) scale(.96)`, offset: .45 }, { transform: `translateX(${24 * direction}px) scale(1.08)` }]
+      : [{ transform: "translateY(0) scale(1)", filter: "brightness(1)" }, { transform: "translateY(-7px) scale(1.06)", filter: `brightness(1.6) drop-shadow(0 0 12px ${typeVoices[move.type] ? "#fff" : "#ffd65a"})` }, { transform: "translateY(0) scale(1)", filter: "brightness(1)" }];
+    await animate(node, frames, { duration: 260 * setting().animation, easing: "ease-out" });
+    node.style.removeProperty("transform"); node.style.removeProperty("filter");
+  }
+  async function impact(mon, outcome = "hit") {
+    const node = sprite(mon); if (!node) return;
+    if (outcome !== "miss" && outcome !== "critical") eventSound("hit");
+    if (outcome === "critical") eventSound("critical");
+    const direction = mon.side === "player" ? -1 : 1;
+    await animate(node, outcome === "miss"
+      ? [{ transform: "translateX(0)" }, { transform: `translateX(${18 * direction}px)` }, { transform: "translateX(0)" }]
+      : outcome === "critical"
+        ? [{ transform: "translate(0,0) scale(1)", filter: "brightness(1) contrast(1)" }, { transform: `translate(${28 * direction}px,-5px) scale(.92) rotate(${5 * direction}deg)`, filter: "brightness(3.2) contrast(1.5)", offset:.28 }, { transform: `translate(${-13 * direction}px,3px) scale(1.06) rotate(${-3 * direction}deg)`, filter: "brightness(.35) contrast(1.4)", offset:.58 }, { transform: `translate(${5 * direction}px,0) scale(.98)`, filter: "brightness(1.35)", offset:.78 }, { transform: "translate(0,0) scale(1)", filter: "brightness(1) contrast(1)" }]
+      : [{ transform: "translateX(0)", filter: "brightness(1)" }, { transform: `translateX(${14 * direction}px)`, filter: "brightness(2)" }, { transform: `translateX(${-7 * direction}px)`, filter: "brightness(.55)" }, { transform: "translateX(0)", filter: "brightness(1)" }],
+      { duration: (outcome === "miss" ? 260 : outcome === "critical" ? 470 : 340) * setting().animation, easing: outcome === "critical" ? "cubic-bezier(.12,.8,.2,1)" : "ease-out" });
+    node.style.removeProperty("transform"); node.style.removeProperty("filter");
+  }
+  async function faint(mon) {
+    const node = sprite(mon); if (!node) return;
+    await window.YSFlow?.emitAsync("presentation:beforeFaint", { mon });
+    eventSound("faint");
+    await animate(node, [{ transform: "translateY(0) rotate(0)", opacity: 1 }, { transform: `translateY(48px) rotate(${mon.side === "player" ? -8 : 8}deg)`, opacity: 0 }], { duration: 520 * setting().animation, easing: "ease-in" });
+    node.style.removeProperty("transform"); node.style.removeProperty("opacity");
+  }
+
+  let lowHpTimer;
+  function render() {
+    if (!window.battle && typeof battle === "undefined") return;
+    const current = typeof battle === "undefined" ? null : battle;
+    if (!current) return;
+    for (const side of ["player", "enemy"]) {
+      const holder = document.getElementById(`${side}-team-pips`); if (!holder) continue;
+      holder.replaceChildren(...current[side].map((mon, index) => {
+        const pip = document.createElement("i"); pip.className = mon.hp <= 0 ? "fainted" : current.slots?.[side]?.includes(index) ? "active" : "ready";
+        pip.title = `${mon.name}: ${Math.max(0, mon.hp)}/${mon.maxHp} HP`; return pip;
+      }));
+    }
+    const mon = current.player?.[current.pActive];
+    const low = mon && mon.hp > 0 && mon.hp <= mon.maxHp * .25 && !current.over && !muted();
+    if (low && !lowHpTimer) lowHpTimer = setInterval(() => { tone(392,.09,"square",.012,392); setTimeout(() => tone(330,.1,"square",.01,330),120); }, 1200);
+    if (!low &
