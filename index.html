@@ -1,1 +1,35 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Yellow Stadium</title><style>html,body{margin:0;height:100%;background:#111;color:#fff;font-family:system-ui;display:grid;place-items:center}#l{opacity:.75}</style></head><body><div id="l">Loading Yellow Stadium…</div><script>(async()=>{const p=['part-000.txt', 'part-001.txt', 'part-002.txt', 'part-003.txt', 'part-004.txt', 'part-005.txt', 'part-006.txt', 'part-007.txt', 'part-008.txt', 'part-009.txt', 'part-010.txt', 'part-011.txt', 'part-012-00.txt', 'part-012-01.txt', 'part-012-02.txt', 'part-012-03.txt', 'part-012-04.txt', 'part-012-05.txt', 'part-013.txt', 'part-014.txt', 'part-015-00.txt', 'part-015-01.txt', 'part-015-02.txt', 'part-015-03.txt', 'part-015-04.txt', 'part-015-05.txt'];const a=[];for(const n of p){const r=await fetch('payload/'+n,{cache:'no-store'});if(!r.ok)throw new Error(n+' '+r.status);a.push(await r.text())}document.open();document.write(a.join(''));document.close()})().catch(e=>{document.getElementById('l').textContent='Load failed: '+e.message;console.error(e)})</script></body></html>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yellow Stadium</title>
+<style>
+html,body{margin:0;height:100%;background:#111;color:#fff;font-family:system-ui;display:grid;place-items:center}
+#l{opacity:.78;text-align:center;padding:24px}
+</style>
+</head>
+<body>
+<div id="l">Loading Yellow Stadium…<br><small id="p">0%</small></div>
+<script>
+(async()=>{
+  const files=["part-000.txt","part-001.txt","part-002.txt","part-003.txt","part-004.txt","part-005.txt","part-006.txt","part-007.txt","part-008.txt","part-009.txt","part-010.txt","part-011.txt","part-012-00.txt","part-012-01.txt","part-012-02.txt","part-012-03.txt","part-012-04.txt","part-012-05.txt","part-013.txt","part-014.txt","part-015-00.txt","part-015-01.txt","part-015-02.txt","part-015-03.txt","part-015-04.txt","part-015-05.txt"];
+  let done=0;
+  const out=await Promise.all(files.map(async(n)=>{
+    const r=await fetch('payload/'+n+'?v=rc8',{cache:'force-cache'});
+    if(!r.ok) throw new Error(n+' '+r.status);
+    const t=await r.text();
+    done++;
+    document.getElementById('p').textContent=Math.round(done/files.length*100)+'%';
+    return t;
+  }));
+  document.open();
+  document.write(out.join(''));
+  document.close();
+})().catch(e=>{
+  document.getElementById('l').textContent='Load failed: '+e.message;
+  console.error(e);
+});
+</script>
+</body>
+</html>
