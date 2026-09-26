@@ -998,6 +998,7 @@ function setTeamSize(size) {
 
   window.PartyAutoFill = Object.freeze({ assignCaught, partyIds });
 })();
+
 </script>
 <script>
 function hideMainScreens() {
@@ -1996,7 +1997,8 @@ async function executeMove({ actor, target, index, side }) {
     return;
   }
   if (index < 0 || actor.pp[index] <= 0) return;
-  const move = MOVES[actor.moveIds[index]];  if (side === "player") battle.lastPlayerMove = move;
+  const move = MOVES[actor.moveIds[index]];
+  if (side === "player") battle.lastPlayerMove = move;
   actor.pp[index] -= 1;
   announce(`${actor.name} used ${move.name}!`);
   animateAttack(side);
@@ -2995,7 +2997,8 @@ function registerAgentControls() {
   async function withdraw(mon) {
     const node = sprite(mon); if (!node) return;
     tone(720,.16,"sine",.018,280);
-    await animate(node, [{ transform: "scale(1)", opacity: 1 }, { transform: "scale(.08)", opacity: 0, filter: "brightness(3)" }], { duration: 260 * setting().animation, easing: "ease-in" });    node.style.removeProperty("transform"); node.style.removeProperty("opacity"); node.style.removeProperty("filter");
+    await animate(node, [{ transform: "scale(1)", opacity: 1 }, { transform: "scale(.08)", opacity: 0, filter: "brightness(3)" }], { duration: 260 * setting().animation, easing: "ease-in" });
+    node.style.removeProperty("transform"); node.style.removeProperty("opacity"); node.style.removeProperty("filter");
   }
   async function prepare(mon, move) {
     const node = sprite(mon); if (!node) return;
