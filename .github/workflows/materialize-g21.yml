@@ -25,17 +25,17 @@ jobs:
         with:
           python-version: '3.12'
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
       - name: Expand canonical G2.1 source
         shell: bash
         run: |
           set -euo pipefail
           base64 -d .release/g2-1-source.tar.gz.b64 > /tmp/g2-1-source.tar.gz
           tar -xzf /tmp/g2-1-source.tar.gz -C .
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
 
       - name: Rehydrate immutable RC8 golden and E2 live assets
         shell: bash
