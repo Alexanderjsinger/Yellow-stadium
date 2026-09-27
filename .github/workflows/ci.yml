@@ -82,6 +82,15 @@ jobs:
           if old not in text:
               raise SystemExit('tutorial return patch target missing')
           ret.write_text(text.replace(old,new,1))
+          # Keep the source-integrity manifest synchronized with the late tutorial return fix.
+          import hashlib
+          mpath=Path('manifest.json')
+          manifest=json.loads(mpath.read_text())
+          entry=next(e for e in manifest['scripts'] if e['path']=='src/battle/return.js')
+          fixed=ret.read_text()
+          entry['chars']=len(fixed)
+          entry['sha256']=hashlib.sha256(ret.read_bytes()).hexdigest()
+          mpath.write_text(json.dumps(manifest,indent=2)+'\n')
           PY
           python tools/build.py
           python - <<'PY'
