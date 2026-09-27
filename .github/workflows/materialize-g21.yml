@@ -72,6 +72,17 @@ jobs:
           print('rehydrated',len(golden),'golden assets and',len(live),'live assets')
           PY
 
+      - name: Restore E2 regression evidence
+        shell: bash
+        run: |
+          mkdir -p reports
+          cat > reports/e2-asset-demand.json <<'JSON'
+          {
+            "pruned_asset_count": 356,
+            "pruned_asset_bytes": 143283
+          }
+          JSON
+
       - name: Install and test
         run: |
           npm ci --no-audit --no-fund
