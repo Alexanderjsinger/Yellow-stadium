@@ -1,0 +1,66 @@
+name: UI5.2 Release Promotion
+
+on:
+  push:
+    branches:
+      - ui5-2-release
+    paths:
+      - .release/ui52/READY
+
+permissions:
+  contents: write
+
+jobs:
+  build-test-promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ui5-2-release
+          fetch-depth: 0
+
+      - name: Restore UI5.2 source changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .release/ui52/part*.b64 | base64 -d > /tmp/ui52-changed.tar.gz
+          echo "a178c4236ec4589d711e333b684b89ec94378f5d8d3ad0e4a4b4f62e09966de6  /tmp/ui52-changed.tar.gz" | sha256sum -c -
+          tar -xzf /tmp/ui52-changed.tar.gz -C .
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build canonical UI5.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/build.py
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, json
+          p=Path('dist/index.html')
+          h=hashlib.sha256(p.read_bytes()).hexdigest()
+          m=json.loads(Path('manifest.json').read_text())
+          m['canonical_phase']='UI5.2'
+          m['canonical_sha256']=h
+          Path('manifest.json').write_text(json.dumps(m,indent=2)+'\n')
+          print('UI5.2 canonical sha256',h,'bytes',p.stat().st_size)
+          PY
+
+      - name: Full regression suite
+        run: npm test
+
+      - name: Promote tested build into repository root
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp dist/index.html index.html
+          printf 'Yellow Stadium UI5.2\nPersistent tutorial field-test contract + approved UI facelift phases.\n' > DEPLOY_MARKER.txt
+          rm -rf dist
+          rm -rf .release/ui52
+          rm -f .github/workflows/ui52-release.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "UI5.2: persistent tutorial + complete facelift [ui52-built]"
+          git push origin HEAD:ui5-2-release
