@@ -75,6 +75,13 @@ jobs:
           lock={'name':p['name'],'version':p['version'],'lockfileVersion':3,'requires':True,'packages':{'':{'name':p['name'],'version':p['version'],'engines':p.get('engines',{})}}}
           Path('package-lock.json').write_text(json.dumps(lock,indent=2)+'\n')
           Path('tools/minify_css.js').unlink(missing_ok=True)
+          ret=Path('src/battle/return.js')
+          text=ret.read_text()
+          old='  if (finished?.tutorialDemo) showCups();'
+          new='  if (finished?.tutorialDemo) { if (typeof showJourney === "function") showJourney(); else showCups(); }'
+          if old not in text:
+              raise SystemExit('tutorial return patch target missing')
+          ret.write_text(text.replace(old,new,1))
           PY
           python tools/build.py
           python - <<'PY'
