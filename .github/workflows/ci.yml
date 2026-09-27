@@ -24,66 +24,47 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-      - name: Materialize UI-5.2 source
+      - name: Materialize verified UI-5.2 source
         shell: bash
         run: |
-          curl -fsSL 'https://yellow-stadium-v4-refactor.floot.app/_cdn/static/2d8a7c5d-3c53-45ba-9e9b-d6fa8907778a-ui52_release_payload.txt' -o /tmp/ui52.b64
+          set -euo pipefail
+          count=$(find .release -maxdepth 1 -name 'ui52x-*.txt' | wc -l | tr -d ' ')
+          test "$count" -eq 17
+          cat .release/ui52x-*.txt > /tmp/ui52.b64
           python - <<'PY'
           from pathlib import Path
-          import base64,bz2,json
+          import base64,bz2,json,hashlib
           packed=''.join(Path('/tmp/ui52.b64').read_text().split())
-          payload=json.loads(bz2.decompress(base64.b64decode(packed)))
+          expected_packed='675af364da2e1163bb9c4892711007d3018fad4341be7b3272e5cf078b7357e4'
+          expected_raw='44cd746661d04cff705627a9af157c604363582f11f2a63738568fe785d98387'
+          if hashlib.sha256(packed.encode()).hexdigest() != expected_packed:
+              raise SystemExit('UI-5.2 base64 payload hash mismatch')
+          raw=base64.b64decode(packed)
+          if hashlib.sha256(raw).hexdigest() != expected_raw:
+              raise SystemExit('UI-5.2 compressed payload hash mismatch')
+          payload=json.loads(bz2.decompress(raw))
+          if len(payload.get('files',{})) != 42:
+              raise SystemExit('UI-5.2 release file count mismatch')
           for rel,body in payload['files'].items():
               p=Path(rel)
               p.parent.mkdir(parents=True,exist_ok=True)
               p.write_text(body,encoding='utf-8',newline='')
-          print('materialized',len(payload['files']),'release files')
+          print('materialized',len(payload['files']),'verified release files')
           PY
           rm -rf .release
       - name: Install build dependencies
         run: npm ci --no-audit --no-fund
       - name: Full canonical regression gate
         run: npm test
-      - name: Restore normal CI
+      - name: Build production artifact
+        run: python tools/build.py
+      - name: Promote validated UI-5.2 to main
         shell: bash
         run: |
-          cat > .github/workflows/ci.yml <<'YAML'
-          name: Yellow Stadium regression gate
-
-          on:
-            push:
-            pull_request:
-
-          jobs:
-            verify:
-              runs-on: ubuntu-latest
-              timeout-minutes: 10
-              steps:
-                - uses: actions/checkout@v4
-                - uses: actions/setup-python@v5
-                  with:
-                    python-version: '3.12'
-                - uses: actions/setup-node@v4
-                  with:
-                    node-version: '22'
-                    cache: 'npm'
-                - name: Install build dependencies
-                  run: npm ci
-                - name: Full canonical regression gate
-                  run: npm test
-                - name: Upload regression evidence
-                  if: always()
-                  uses: actions/upload-artifact@v4
-                  with:
-                    name: yellow-stadium-regression-reports
-                    path: reports/
-                    if-no-files-found: error
-          YAML
-      - name: Commit validated release to main
-        shell: bash
-        run: |
+          set -euo pipefail
+          cp dist/index.html index.html
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
-          git commit -m 'Promote UI-5.2 tutorial fix and facelift [skip ci]'
+          git commit -m 'Promote UI-5.2 tutorial fix and visual facelift [skip ci]'
           git push origin HEAD:main
