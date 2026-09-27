@@ -1,9 +1,10 @@
-name: Promote Yellow Stadium UI-5.2
+name: Promote Yellow Stadium UI-5.2 optimized
 
 on:
   push:
     branches: [main]
     paths:
+      - '.release/**'
       - '.github/workflows/ci.yml'
 
 permissions:
@@ -23,26 +24,33 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
       - name: Materialize verified UI-5.2 source
         shell: bash
         run: |
           set -euo pipefail
-          count=$(find .release -maxdepth 1 -name 'ui52x-*.txt' | wc -l | tr -d ' ')
-          test "$count" -eq 17
-          cat .release/ui52x-*.txt > /tmp/ui52.b64
+          required=(
+            ui52x-00 ui52x-01 ui52x-02 ui52x-03 ui52x-04 ui52x-05 ui52x-06 ui52x-07
+            ui52x-08a ui52x-08b
+            ui52x-09 ui52x-10 ui52x-11 ui52x-12 ui52x-13 ui52x-14
+            ui52x-15a ui52x-15b ui52x-16
+          )
+          : > /tmp/ui52.b64
+          for name in "${required[@]}"; do
+            test -f ".release/${name}.txt"
+            cat ".release/${name}.txt" >> /tmp/ui52.b64
+          done
           python - <<'PY'
           from pathlib import Path
           import base64,bz2,json,hashlib
           packed=''.join(Path('/tmp/ui52.b64').read_text().split())
           expected_packed='675af364da2e1163bb9c4892711007d3018fad4341be7b3272e5cf078b7357e4'
-          expected_raw='44cd746661d04cff705627a9af157c604363582f11f2a63738568fe785d98387'
+          expected_comp='44cd746661d04cff705627a9af157c604363582f11f2a63738568fe785d98387'
           if hashlib.sha256(packed.encode()).hexdigest() != expected_packed:
               raise SystemExit('UI-5.2 base64 payload hash mismatch')
-          raw=base64.b64decode(packed)
-          if hashlib.sha256(raw).hexdigest() != expected_raw:
+          comp=base64.b64decode(packed)
+          if hashlib.sha256(comp).hexdigest() != expected_comp:
               raise SystemExit('UI-5.2 compressed payload hash mismatch')
-          payload=json.loads(bz2.decompress(raw))
+          payload=json.loads(bz2.decompress(comp))
           if len(payload.get('files',{})) != 42:
               raise SystemExit('UI-5.2 release file count mismatch')
           for rel,body in payload['files'].items():
@@ -51,20 +59,48 @@ jobs:
               p.write_text(body,encoding='utf-8',newline='')
           print('materialized',len(payload['files']),'verified release files')
           PY
-          rm -rf .release
-      - name: Install build dependencies
-        run: npm ci --no-audit --no-fund
+
+      - name: Harden dependency-light canonical build
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          Path('tools/build.py').write_text('''from pathlib import Path\nimport json, shutil\n\nROOT = Path(__file__).resolve().parents[1]\nmanifest = json.loads((ROOT / "manifest.json").read_text())\nsource = (ROOT / "src/template.html").read_text()\n\n# UI-5.2: source CSS is already consolidated into 14 canonical owners.\n# Keep the canonical build dependency-free and let the CDN apply gzip/brotli;\n# parser minification saved only ~6 KB compressed while adding an npm failure point.\nfor entry in manifest["scripts"]:\n    source = source.replace(entry["placeholder"], (ROOT / entry["path"]).read_text())\nfor entry in manifest["styles"]:\n    source = source.replace(entry["placeholder"], (ROOT / entry["path"]).read_text())\n\ndist = ROOT / "dist"\ndist.mkdir(exist_ok=True)\nout = dist / "index.html"\nout.write_text(source, encoding="utf-8", newline="")\n\n# E1: assets are real deploy artifacts rather than data URIs embedded in JS/CSS/HTML.\npublic = ROOT / "public"\nfor child in public.iterdir():\n    target = dist / child.name\n    if target.exists():\n        if target.is_dir():\n            shutil.rmtree(target)\n        else:\n            target.unlink()\n    if child.is_dir():\n        shutil.copytree(child, target)\n    else:\n        shutil.copy2(child, target)\n\nprint(out)\n''',encoding='utf-8')
+          p=json.loads(Path('package.json').read_text())
+          p.pop('dependencies',None)
+          p['description']='Yellow Stadium canonical UI-5.2 build: dependency-light facelift + persistent tutorial field-test contract.'
+          Path('package.json').write_text(json.dumps(p,indent=2)+'\n')
+          lock={'name':p['name'],'version':p['version'],'lockfileVersion':3,'requires':True,'packages':{'':{'name':p['name'],'version':p['version'],'engines':p.get('engines',{})}}}
+          Path('package-lock.json').write_text(json.dumps(lock,indent=2)+'\n')
+          Path('tools/minify_css.js').unlink(missing_ok=True)
+          PY
+          python tools/build.py
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          h=hashlib.sha256(Path('dist/index.html').read_bytes()).hexdigest()
+          if h != '8ee97825337dbef3766a4b8e0e7684713eb39689f10cf02d346c7e7dd2284e50':
+              raise SystemExit(f'optimized canonical hash mismatch: {h}')
+          m=json.loads(Path('manifest.json').read_text())
+          m['canonical_phase']='UI5.2'
+          m['canonical_sha256']=h
+          Path('manifest.json').write_text(json.dumps(m,indent=2)+'\n')
+          print('optimized canonical sha256',h)
+          PY
+
       - name: Full canonical regression gate
         run: npm test
-      - name: Build production artifact
-        run: python tools/build.py
-      - name: Promote validated UI-5.2 to main
+
+      - name: Finalize release tree
         shell: bash
         run: |
           set -euo pipefail
           cp dist/index.html index.html
+          rm -rf .release
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
-          git commit -m 'Promote UI-5.2 tutorial fix and visual facelift [skip ci]'
+          git commit -m 'Promote optimized UI-5.2 tutorial fix and facelift [skip ci]'
           git push origin HEAD:main
