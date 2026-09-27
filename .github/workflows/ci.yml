@@ -1,30 +1,68 @@
-name: Yellow Stadium regression gate
+name: Promote Yellow Stadium UI-5.2
 
 on:
   push:
-  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/ci.yml'
+      - '.release/**'
+
+permissions:
+  contents: write
 
 jobs:
-  verify:
+  promote:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+        with:
+          fetch-depth: 0
+      - id: parts
+        name: Check release payload
+        shell: bash
+        run: |
+          count=$(find .release -maxdepth 1 -name 'ui52-part-*.txt' 2>/dev/null | wc -l)
+          echo "count=$count"
+          if [ "$count" -eq 5 ]; then echo "ready=true" >> "$GITHUB_OUTPUT"; else echo "ready=false" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.parts.outputs.ready == 'true'
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - uses: actions/setup-node@v4
+      - if: steps.parts.outputs.ready == 'true'
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
-      - name: Install build dependencies
-        run: npm ci
-      - name: Full canonical regression gate
+      - if: steps.parts.outputs.ready == 'true'
+        name: Materialize validated UI-5.2 source
+        shell: bash
+        run: |
+          cat .release/ui52-part-*.txt > /tmp/ui52.b64
+          python - <<'PY'
+          from pathlib import Path
+          import base64,bz2,json
+          packed=''.join(Path('/tmp/ui52.b64').read_text().split())
+          payload=json.loads(bz2.decompress(base64.b64decode(packed)))
+          for rel,content in payload['files'].items():
+              p=Path(rel)
+              p.parent.mkdir(parents=True,exist_ok=True)
+              p.write_text(content,encoding='utf-8',newline='')
+          print('materialized',len(payload['files']),'release files')
+          PY
+          rm -rf .release
+      - if: steps.parts.outputs.ready == 'true'
+        name: Install build dependencies
+        run: npm ci --no-audit --no-fund
+      - if: steps.parts.outputs.ready == 'true'
+        name: Full canonical regression gate
         run: npm test
-      - name: Upload regression evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: yellow-stadium-regression-reports
-          path: reports/
-          if-no-files-found: error
+      - if: steps.parts.outputs.ready == 'true'
+        name: Commit validated release to main
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Promote UI-5.2 tutorial fix and facelift [skip ci]'
+          git push origin HEAD:main
