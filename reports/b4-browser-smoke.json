@@ -1,0 +1,23 @@
+{
+  "base": {
+    "runtime": true,
+    "locked": true,
+    "selectedCopy": true,
+    "facadeSave": true,
+    "facadeBattle": true,
+    "version": 9
+  },
+  "flows": {
+    "journeyOpen": true,
+    "journeyParty": true,
+    "safariOpen": true,
+    "safariBallCount": true,
+    "centerOpen": true,
+    "battleStarted": true,
+    "presentation": true,
+    "facadeCurrent": true,
+    "selected": 3
+  },
+  "pageErrors": [],
+  "console": []
+}

@@ -1,0 +1,38 @@
+{
+  "intro-ui": [
+    "./assets/trainers/prof.oak.png",
+    "./assets/gen3/front/pikachu.png",
+    "./assets/gen3/front/charmander.png",
+    "./assets/gen3/front/squirtle.png",
+    "./assets/gen3/front/bulbasaur.png"
+  ],
+  "journey-ui": [
+    "./assets/journey-v50/player_icon_red.png",
+    "./assets/journey-v50/gym_sign.png",
+    "./assets/journey-v50/leader_brock_front_pic.png",
+    "./assets/journey-v50/leader_misty_front_pic.png",
+    "./assets/journey-v50/leader_lt_surge_front_pic.png",
+    "./assets/journey-v50/leader_erika_front_pic.png",
+    "./assets/journey-v50/leader_koga_front_pic.png",
+    "./assets/journey-v50/leader_sabrina_front_pic.png",
+    "./assets/journey-v50/leader_blaine_front_pic.png",
+    "./assets/journey-v50/leader_giovanni_front_pic.png"
+  ],
+  "safari-ui": [
+    "./assets/journey-v50/player_icon_red.png",
+    "./assets/balls/poke.png",
+    "./assets/balls/great.png",
+    "./assets/balls/ultra.png",
+    "./assets/balls/master.png",
+    "./assets/items/poke_ball.png",
+    "./assets/items/super_ball.png"
+  ],
+  "battle-ui": [
+    "./assets/balls/poke.png",
+    "./assets/balls/great.png",
+    "./assets/balls/ultra.png",
+    "./assets/balls/master.png",
+    "./assets/balls/safari.png",
+    "./assets/balls/premier.png"
+  ]
+}

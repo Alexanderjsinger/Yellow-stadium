@@ -1,0 +1,2034 @@
+{
+  "build": {
+    "script_count": 82,
+    "style_count": 14,
+    "golden_sha256": "f13a9c4e7f16aa85a64954cf14b0502c341c2cfca3258c4196162c8d42a0bb0c",
+    "canonical_sha256": "6b30a8c5ad53da1975cb5cf3a0a33fe5cc919a95682bb4b612e8c03e3c682529",
+    "canonical_phase": "G2.1"
+  },
+  "summary": {
+    "source_js_files_audited": 81,
+    "public_window_exports": 36,
+    "duplicate_window_exports": {},
+    "direct_global_state_refs": {
+      "save": 432,
+      "battle": 658,
+      "selected": 112,
+      "els": 160
+    },
+    "boundary_global_state_refs": {
+      "save": 10,
+      "battle": 119,
+      "selected": 11,
+      "els": 0
+    },
+    "runtime_gateway_modules": 20,
+    "ysflow_subscribed_events": 32,
+    "ysflow_emitted_events": 39
+  },
+  "runtime_gateway_modules": [
+    "src/api/yellow-stadium.js",
+    "src/audio/audio-manager.js",
+    "src/journey/journey-controller.js",
+    "src/journey/journey.js",
+    "src/journey/kanto-map.js",
+    "src/pokecenter/pokecenter.js",
+    "src/presentation/battle-decorators.js",
+    "src/presentation/battle-presentation-director.js",
+    "src/presentation/battle-runtime.js",
+    "src/presentation/move-effects.js",
+    "src/presentation/trainer-scenes.js",
+    "src/safari/legacy-safari.js",
+    "src/safari/safari-b62.js",
+    "src/ui/app-shell.js",
+    "src/ui/battle-entry-mobile.js",
+    "src/ui/interface-v42.js",
+    "src/ui/mobile-shell.js",
+    "src/ui/navigation.js",
+    "src/ui/settings.js",
+    "src/ui/ui2-final.js"
+  ],
+  "assignments": {
+    "AppShell": [
+      "src/ui/app-shell.js"
+    ],
+    "AudioManager": [
+      "src/audio/audio-manager.js"
+    ],
+    "BagSystem": [
+      "src/bag/bag.js"
+    ],
+    "BattleEntryUX": [
+      "src/ui/battle-entry-mobile.js"
+    ],
+    "BattlePresentationDirector": [
+      "src/presentation/battle-presentation-director.js"
+    ],
+    "GEN1_SPECIES": [
+      "src/data/gen1-species.js"
+    ],
+    "InterfaceV42": [
+      "src/ui/interface-v42.js"
+    ],
+    "IntroGuide": [
+      "src/onboarding/intro-guide.js"
+    ],
+    "ItemSystem": [
+      "src/items/item-system.js"
+    ],
+    "JourneyController": [
+      "src/journey/journey-controller.js"
+    ],
+    "KantoMap": [
+      "src/journey/kanto-map.js"
+    ],
+    "MobileShell": [
+      "src/ui/mobile-shell.js"
+    ],
+    "MobileUX": [
+      "src/ui/battle-entry-mobile.js"
+    ],
+    "PartyAutoFill": [
+      "src/party/auto-fill.js"
+    ],
+    "PartyMobile": [
+      "src/party/party-mobile.js"
+    ],
+    "PartyTray": [
+      "src/party/party-tray.js"
+    ],
+    "PlayerAvatar": [
+      "src/player/avatar.js"
+    ],
+    "PokeCenter": [
+      "src/pokecenter/pokecenter.js"
+    ],
+    "PokemonDetails": [
+      "src/pokemon/details.js"
+    ],
+    "SafariController": [
+      "src/safari/safari-b62.js"
+    ],
+    "SaveTools": [
+      "src/save/save-tools.js"
+    ],
+    "StadiumUpgrade": [
+      "src/battle/stadium-upgrade.js"
+    ],
+    "TrainerScenes": [
+      "src/presentation/trainer-scenes.js"
+    ],
+    "UI2": [
+      "src/ui/ui2-final.js"
+    ],
+    "YSAdventureV57": [
+      "src/progression/adventure-v58.js"
+    ],
+    "YSAdventureV58": [
+      "src/progression/adventure-v58.js"
+    ],
+    "YSB62Safari": [
+      "src/safari/safari-b62.js"
+    ],
+    "YSFlow": [
+      "src/core/ys-flow.js"
+    ],
+    "YSRuntime": [
+      "src/core/runtime-state.js"
+    ],
+    "YS_SOURCE_ITEM_ICONS": [
+      "src/items/source-icons.js"
+    ],
+    "YellowChallenge": [
+      "src/battle/challenge.js"
+    ],
+    "YellowStadium": [
+      "src/api/yellow-stadium.js"
+    ],
+    "__YS_B62_SAFARI__": [
+      "src/safari/safari-b62.js"
+    ],
+    "__YS_INTERFACE_V42__": [
+      "src/ui/interface-v42.js"
+    ],
+    "__YS_UI2_FINAL__": [
+      "src/ui/ui2-final.js"
+    ],
+    "startLegendaryBattle": [
+      "src/progression/adventure-v58.js"
+    ]
+  },
+  "event_subscribers": {
+    "app:rendered": [
+      "src/battle/stadium-upgrade.js",
+      "src/player/avatar.js",
+      "src/onboarding/intro-guide.js",
+      "src/journey/journey-controller.js",
+      "src/ui/ui2-final.js"
+    ],
+    "bag:rendered": [
+      "src/presentation/battle-decorators.js"
+    ],
+    "battle:announced": [
+      "src/presentation/battle-decorators.js"
+    ],
+    "battle:beforeEnd": [
+      "src/battle/stadium-upgrade.js",
+      "src/pokemon/details.js",
+      "src/progression/adventure-v58.js"
+    ],
+    "battle:beforeStart": [
+      "src/presentation/assets.js",
+      "src/battle/challenge.js",
+      "src/progression/adventure-v58.js"
+    ],
+    "battle:beforeUI": [
+      "src/battle/stadium-upgrade.js"
+    ],
+    "battle:ended": [
+      "src/battle/stadium-upgrade.js",
+      "src/presentation/battle-decorators.js",
+      "src/onboarding/intro-guide.js",
+      "src/pokemon/details.js",
+      "src/ui/mobile-shell.js",
+      "src/progression/adventure-v58.js",
+      "src/pokecenter/pokecenter.js",
+      "src/ui/interface-v42.js"
+    ],
+    "battle:item:after": [
+      "src/presentation/battle-decorators.js"
+    ],
+    "battle:item:before": [
+      "src/presentation/battle-decorators.js"
+    ],
+    "battle:modelCreated": [
+      "src/presentation/assets.js",
+      "src/battle/stadium-upgrade.js",
+      "src/progression/adventure-v58.js"
+    ],
+    "battle:moves": [
+      "src/presentation/battle-decorators.js",
+      "src/pokemon/details.js"
+    ],
+    "battle:startFinished": [
+      "src/progression/adventure-v58.js"
+    ],
+    "battle:started": [
+      "src/battle/stadium-upgrade.js",
+      "src/onboarding/intro-guide.js",
+      "src/battle/challenge.js",
+      "src/progression/adventure-v58.js",
+      "src/ui/ui2-final.js"
+    ],
+    "battle:ui": [
+      "src/presentation/battle-runtime.js",
+      "src/battle/stadium-upgrade.js",
+      "src/presentation/battle-decorators.js",
+      "src/ui/battle-entry-mobile.js",
+      "src/progression/adventure-v58.js",
+      "src/ui/ui2-final.js"
+    ],
+    "journey:rendered": [
+      "src/player/avatar.js",
+      "src/journey/journey-controller.js",
+      "src/ui/ui2-final.js"
+    ],
+    "nav:changed": [
+      "src/presentation/assets.js",
+      "src/player/avatar.js",
+      "src/ui/app-shell.js",
+      "src/pokecenter/pokecenter.js",
+      "src/ui/ui2-final.js"
+    ],
+    "party-tray:rendered": [
+      "src/ui/battle-entry-mobile.js"
+    ],
+    "party:rendered": [
+      "src/battle/stadium-upgrade.js",
+      "src/pokemon/details.js",
+      "src/party/party-mobile.js",
+      "src/progression/adventure-v58.js",
+      "src/journey/journey-controller.js"
+    ],
+    "party:shown": [
+      "src/presentation/battle-decorators.js",
+      "src/journey/journey-controller.js"
+    ],
+    "pokecenter:completed": [
+      "src/ui/interface-v42.js"
+    ],
+    "pokemon:added": [
+      "src/pokemon/details.js",
+      "src/ui/interface-v42.js"
+    ],
+    "presentation:beforeFaint": [
+      "src/presentation/move-effects.js"
+    ],
+    "presentation:capture": [
+      "src/audio/audio-manager.js"
+    ],
+    "presentation:result": [
+      "src/presentation/move-effects.js"
+    ],
+    "presentation:status": [
+      "src/audio/audio-manager.js",
+      "src/presentation/move-effects.js",
+      "src/presentation/battle-decorators.js"
+    ],
+    "presentation:trainerIntro": [
+      "src/presentation/battle-decorators.js"
+    ],
+    "safari:capture": [
+      "src/ui/interface-v42.js"
+    ],
+    "safari:escape": [
+      "src/ui/interface-v42.js"
+    ],
+    "safari:evade": [
+      "src/ui/interface-v42.js"
+    ],
+    "screens:hidden": [
+      "src/ui/battle-entry-mobile.js",
+      "src/pokecenter/pokecenter.js",
+      "src/safari/safari-b62.js"
+    ],
+    "shop:rendered": [
+      "src/presentation/battle-decorators.js"
+    ],
+    "trainer:shown": [
+      "src/ui/battle-entry-mobile.js"
+    ]
+  },
+  "event_emitters": {
+    "app:rendered": [
+      "src/core/render-app.js"
+    ],
+    "audio:muted": [
+      "src/audio/audio-manager.js"
+    ],
+    "bag:rendered": [
+      "src/bag/bag.js"
+    ],
+    "battle:announced": [
+      "src/battle/announce.js"
+    ],
+    "battle:beforeEnd": [
+      "src/battle/end.js"
+    ],
+    "battle:beforeStart": [
+      "src/battle/start.js"
+    ],
+    "battle:beforeUI": [
+      "src/battle/ui.js"
+    ],
+    "battle:ended": [
+      "src/battle/end.js"
+    ],
+    "battle:item:after": [
+      "src/battle/items-capture.js"
+    ],
+    "battle:item:before": [
+      "src/battle/items-capture.js"
+    ],
+    "battle:modelCreated": [
+      "src/battle/model.js"
+    ],
+    "battle:moves": [
+      "src/battle/ui.js"
+    ],
+    "battle:startAborted": [
+      "src/battle/start.js"
+    ],
+    "battle:startFinished": [
+      "src/battle/start.js"
+    ],
+    "battle:started": [
+      "src/battle/start.js"
+    ],
+    "battle:ui": [
+      "src/battle/ui.js"
+    ],
+    "journey:rendered": [
+      "src/journey/journey.js"
+    ],
+    "nav:changed": [
+      "src/ui/navigation.js"
+    ],
+    "party-tray:rendered": [
+      "src/party/party-tray.js"
+    ],
+    "party:autoFilled": [
+      "src/party/auto-fill.js"
+    ],
+    "party:rendered": [
+      "src/party/roster.js"
+    ],
+    "party:shown": [
+      "src/ui/navigation.js"
+    ],
+    "pokecenter:completed": [
+      "src/pokecenter/pokecenter.js"
+    ],
+    "pokecenter:healed": [
+      "src/pokecenter/pokecenter.js"
+    ],
+    "pokecenter:opened": [
+      "src/pokecenter/pokecenter.js"
+    ],
+    "pokecenter:sessionStarted": [
+      "src/pokecenter/pokecenter.js"
+    ],
+    "pokemon:added": [
+      "src/onboarding/core.js"
+    ],
+    "presentation:beforeFaint": [
+      "src/presentation/battle-runtime.js"
+    ],
+    "presentation:capture": [
+      "src/presentation/battle-runtime.js"
+    ],
+    "presentation:miss": [
+      "src/presentation/battle-runtime.js"
+    ],
+    "presentation:result": [
+      "src/presentation/battle-runtime.js"
+    ],
+    "presentation:status": [
+      "src/presentation/battle-runtime.js"
+    ],
+    "presentation:trainerIntro": [
+      "src/presentation/trainer-scenes.js"
+    ],
+    "safari:capture": [
+      "src/safari/safari-b62.js"
+    ],
+    "safari:escape": [
+      "src/safari/safari-b62.js"
+    ],
+    "safari:evade": [
+      "src/safari/safari-b62.js"
+    ],
+    "screens:hidden": [
+      "src/ui/navigation.js"
+    ],
+    "shop:rendered": [
+      "src/shop/shop.js"
+    ],
+    "trainer:shown": [
+      "src/cups/arcade-cups.js"
+    ]
+  },
+  "modules": [
+    {
+      "path": "src/data/gen1-species.js",
+      "chars": 24841,
+      "window_exports": [
+        "GEN1_SPECIES"
+      ],
+      "window_refs": [
+        "GEN1_SPECIES"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/data/moves.js",
+      "chars": 21171,
+      "window_exports": [],
+      "window_refs": [
+        "GEN1_SPECIES"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/data/evolution-stones.js",
+      "chars": 733,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/core/ys-flow.js",
+      "chars": 1133,
+      "window_exports": [
+        "YSFlow"
+      ],
+      "window_refs": [
+        "YSFlow"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/core/constants.js",
+      "chars": 273,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 2,
+        "battle": 0,
+        "selected": 0,
+        "els": 1
+      }
+    },
+    {
+      "path": "src/core/pokemon-records.js",
+      "chars": 7393,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 32,
+        "battle": 0,
+        "selected": 1,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/core/save.js",
+      "chars": 6329,
+      "window_exports": [],
+      "window_refs": [
+        "SaveTools"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 4,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/core/runtime-state.js",
+      "chars": 2134,
+      "window_exports": [
+        "YSRuntime"
+      ],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 10,
+        "battle": 8,
+        "selected": 6,
+        "els": 2
+      }
+    },
+    {
+      "path": "src/audio/audio-manager.js",
+      "chars": 18777,
+      "window_exports": [
+        "AudioManager"
+      ],
+      "window_refs": [
+        "AudioContext",
+        "MOVES",
+        "SPECIES",
+        "YSFlow",
+        "YSRuntime",
+        "clearInterval",
+        "setInterval",
+        "speechSynthesis",
+        "webkitAudioContext"
+      ],
+      "events_on": [
+        "presentation:capture",
+        "presentation:status"
+      ],
+      "events_emit": [
+        "audio:muted"
+      ],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 10,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/core/progression.js",
+      "chars": 1360,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 8,
+        "battle": 0,
+        "selected": 0,
+        "els": 7
+      }
+    },
+    {
+      "path": "src/presentation/assets.js",
+      "chars": 5566,
+      "window_exports": [],
+      "window_refs": [
+        "STADIUM_ASSETS",
+        "YSFlow"
+      ],
+      "events_on": [
+        "battle:beforeStart",
+        "battle:modelCreated",
+        "nav:changed"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 5,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/party/roster.js",
+      "chars": 4646,
+      "window_exports": [],
+      "window_refs": [
+        "PartyTray",
+        "PokemonDetails",
+        "YSFlow"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "party:rendered"
+      ],
+      "global_state_refs": {
+        "save": 6,
+        "battle": 3,
+        "selected": 20,
+        "els": 14
+      }
+    },
+    {
+      "path": "src/party/auto-fill.js",
+      "chars": 1163,
+      "window_exports": [
+        "PartyAutoFill"
+      ],
+      "window_refs": [
+        "JourneyController",
+        "PartyAutoFill",
+        "PartyTray",
+        "YSFlow"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "party:autoFilled"
+      ],
+      "global_state_refs": {
+        "save": 8,
+        "battle": 0,
+        "selected": 4,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/ui/navigation.js",
+      "chars": 954,
+      "window_exports": [],
+      "window_refs": [
+        "PartyTray",
+        "YSFlow",
+        "YSRuntime",
+        "clearTimeout"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "nav:changed",
+        "party:shown",
+        "screens:hidden"
+      ],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 2,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/shop/show-shop.js",
+      "chars": 178,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 1,
+        "battle": 1,
+        "selected": 0,
+        "els": 1
+      }
+    },
+    {
+      "path": "src/onboarding/core.js",
+      "chars": 3360,
+      "window_exports": [],
+      "window_refs": [
+        "YSFlow"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "pokemon:added"
+      ],
+      "global_state_refs": {
+        "save": 37,
+        "battle": 0,
+        "selected": 1,
+        "els": 9
+      }
+    },
+    {
+      "path": "src/shop/shop.js",
+      "chars": 2055,
+      "window_exports": [],
+      "window_refs": [
+        "YSFlow",
+        "YS_SOURCE_ITEM_ICONS"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "shop:rendered"
+      ],
+      "global_state_refs": {
+        "save": 10,
+        "battle": 0,
+        "selected": 0,
+        "els": 2
+      }
+    },
+    {
+      "path": "src/journey/journey.js",
+      "chars": 6399,
+      "window_exports": [],
+      "window_refs": [
+        "KantoMap",
+        "YSFlow",
+        "YSRuntime",
+        "startLegendaryBattle"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "journey:rendered"
+      ],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/cups/arcade-cups.js",
+      "chars": 4049,
+      "window_exports": [],
+      "window_refs": [
+        "BattleEntryUX",
+        "PartyTray",
+        "YSFlow"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "trainer:shown"
+      ],
+      "global_state_refs": {
+        "save": 10,
+        "battle": 1,
+        "selected": 6,
+        "els": 8
+      }
+    },
+    {
+      "path": "src/safari/legacy-safari.js",
+      "chars": 6061,
+      "window_exports": [],
+      "window_refs": [
+        "BattleEntryUX",
+        "SafariController",
+        "YSAdventureV58",
+        "YSRuntime",
+        "clearTimeout",
+        "setTimeout"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 2,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/pokedex/pokedex.js",
+      "chars": 1314,
+      "window_exports": [],
+      "window_refs": [
+        "PokemonDetails"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 5,
+        "battle": 1,
+        "selected": 0,
+        "els": 5
+      }
+    },
+    {
+      "path": "src/core/render-app.js",
+      "chars": 558,
+      "window_exports": [],
+      "window_refs": [
+        "PartyTray",
+        "YSFlow"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "app:rendered"
+      ],
+      "global_state_refs": {
+        "save": 4,
+        "battle": 0,
+        "selected": 2,
+        "els": 1
+      }
+    },
+    {
+      "path": "src/battle/model.js",
+      "chars": 3396,
+      "window_exports": [],
+      "window_refs": [
+        "YSFlow"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "battle:modelCreated"
+      ],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 1,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/battle/start.js",
+      "chars": 4899,
+      "window_exports": [],
+      "window_refs": [
+        "AudioManager",
+        "BattleEntryUX",
+        "YSFlow",
+        "scrollTo"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "battle:beforeStart",
+        "battle:startAborted",
+        "battle:startFinished",
+        "battle:started"
+      ],
+      "global_state_refs": {
+        "save": 3,
+        "battle": 22,
+        "selected": 4,
+        "els": 2
+      }
+    },
+    {
+      "path": "src/battle/ui.js",
+      "chars": 5067,
+      "window_exports": [],
+      "window_refs": [
+        "YSFlow"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "battle:beforeUI",
+        "battle:moves",
+        "battle:ui"
+      ],
+      "global_state_refs": {
+        "save": 1,
+        "battle": 31,
+        "selected": 0,
+        "els": 31
+      }
+    },
+    {
+      "path": "src/battle/announce.js",
+      "chars": 205,
+      "window_exports": [],
+      "window_refs": [
+        "YSFlow"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "battle:announced"
+      ],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 2,
+        "selected": 0,
+        "els": 1
+      }
+    },
+    {
+      "path": "src/battle/ai.js",
+      "chars": 4787,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 14,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/battle/turns.js",
+      "chars": 6806,
+      "window_exports": [],
+      "window_refs": [
+        "BattlePresentationDirector"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 20,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/battle/damage-status.js",
+      "chars": 3304,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/battle/legacy-animation.js",
+      "chars": 616,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 7
+      }
+    },
+    {
+      "path": "src/battle/faint-end-turn.js",
+      "chars": 1856,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 4,
+        "selected": 0,
+        "els": 2
+      }
+    },
+    {
+      "path": "src/battle/items-capture.js",
+      "chars": 3469,
+      "window_exports": [],
+      "window_refs": [
+        "PartyAutoFill",
+        "YSFlow"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "battle:item:after",
+        "battle:item:before"
+      ],
+      "global_state_refs": {
+        "save": 4,
+        "battle": 26,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/battle/switch.js",
+      "chars": 531,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 7,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/battle/experience-evolution.js",
+      "chars": 1009,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 5,
+        "battle": 2,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/battle/end.js",
+      "chars": 9054,
+      "window_exports": [],
+      "window_refs": [
+        "YSFlow"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "battle:beforeEnd",
+        "battle:ended"
+      ],
+      "global_state_refs": {
+        "save": 37,
+        "battle": 75,
+        "selected": 0,
+        "els": 5
+      }
+    },
+    {
+      "path": "src/battle/return.js",
+      "chars": 3800,
+      "window_exports": [],
+      "window_refs": [
+        "AudioManager",
+        "PartyTray",
+        "YSAdventureV57",
+        "confirm",
+        "scrollTo"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 4,
+        "battle": 16,
+        "selected": 1,
+        "els": 26
+      }
+    },
+    {
+      "path": "src/integrations/webmcp.js",
+      "chars": 3223,
+      "window_exports": [],
+      "window_refs": [
+        "PartyTray"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 4,
+        "battle": 7,
+        "selected": 6,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/save/save-tools.js",
+      "chars": 3754,
+      "window_exports": [
+        "SaveTools"
+      ],
+      "window_refs": [
+        "SaveTools",
+        "StadiumUpgrade",
+        "TrainerScenes",
+        "addEventListener",
+        "confirm"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 17,
+        "battle": 4,
+        "selected": 1,
+        "els": 1
+      }
+    },
+    {
+      "path": "src/journey/kanto-map-legacy.js",
+      "chars": 567,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/trainer-scenes.js",
+      "chars": 5462,
+      "window_exports": [
+        "TrainerScenes"
+      ],
+      "window_refs": [
+        "BattlePresentationDirector",
+        "TrainerScenes",
+        "YSFlow",
+        "YSRuntime"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "presentation:trainerIntro"
+      ],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 5,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/battle-runtime.js",
+      "chars": 28148,
+      "window_exports": [],
+      "window_refs": [
+        "AudioManager",
+        "BattlePresentationDirector",
+        "StadiumUpgrade",
+        "YSFlow",
+        "YSRuntime",
+        "matchMedia"
+      ],
+      "events_on": [
+        "battle:ui"
+      ],
+      "events_emit": [
+        "presentation:beforeFaint",
+        "presentation:capture",
+        "presentation:miss",
+        "presentation:result",
+        "presentation:status"
+      ],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 18,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/move-effects.js",
+      "chars": 34661,
+      "window_exports": [],
+      "window_refs": [
+        "BattlePresentationDirector",
+        "MOVES",
+        "StadiumUpgrade",
+        "YSFlow",
+        "YSRuntime",
+        "cancelAnimationFrame",
+        "devicePixelRatio",
+        "matchMedia",
+        "requestAnimationFrame"
+      ],
+      "events_on": [
+        "presentation:beforeFaint",
+        "presentation:result",
+        "presentation:status"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 1,
+        "battle": 8,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/activation/battle-polish.js",
+      "chars": 133,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/battle/stadium-upgrade.js",
+      "chars": 71401,
+      "window_exports": [
+        "StadiumUpgrade"
+      ],
+      "window_refs": [
+        "AudioManager",
+        "BattlePresentationDirector",
+        "StadiumUpgrade",
+        "TrainerScenes",
+        "YSFlow",
+        "cancelAnimationFrame",
+        "confirm",
+        "matchMedia",
+        "requestAnimationFrame",
+        "setTimeout"
+      ],
+      "events_on": [
+        "app:rendered",
+        "battle:beforeEnd",
+        "battle:beforeUI",
+        "battle:ended",
+        "battle:modelCreated",
+        "battle:started",
+        "battle:ui",
+        "party:rendered"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 24,
+        "battle": 218,
+        "selected": 1,
+        "els": 31
+      }
+    },
+    {
+      "path": "src/presentation/battle-decorators.js",
+      "chars": 35505,
+      "window_exports": [],
+      "window_refs": [
+        "AudioManager",
+        "BattlePresentationDirector",
+        "StadiumUpgrade",
+        "TrainerScenes",
+        "YSFlow",
+        "YSRuntime",
+        "speechSynthesis"
+      ],
+      "events_on": [
+        "bag:rendered",
+        "battle:announced",
+        "battle:ended",
+        "battle:item:after",
+        "battle:item:before",
+        "battle:moves",
+        "battle:ui",
+        "party:shown",
+        "presentation:status",
+        "presentation:trainerIntro",
+        "shop:rendered"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 45,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/party/party-tray.js",
+      "chars": 7692,
+      "window_exports": [
+        "PartyTray"
+      ],
+      "window_refs": [
+        "PartyTray",
+        "PokemonDetails",
+        "YSFlow"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "party-tray:rendered"
+      ],
+      "global_state_refs": {
+        "save": 11,
+        "battle": 2,
+        "selected": 19,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/player/avatar.js",
+      "chars": 3251,
+      "window_exports": [
+        "PlayerAvatar"
+      ],
+      "window_refs": [
+        "PlayerAvatar",
+        "YSFlow"
+      ],
+      "events_on": [
+        "app:rendered",
+        "journey:rendered",
+        "nav:changed"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 3,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/onboarding/intro-guide.js",
+      "chars": 21128,
+      "window_exports": [
+        "IntroGuide"
+      ],
+      "window_refs": [
+        "IntroGuide",
+        "PlayerAvatar",
+        "YSFlow"
+      ],
+      "events_on": [
+        "app:rendered",
+        "battle:ended",
+        "battle:started"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 46,
+        "battle": 11,
+        "selected": 1,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/pokemon/details.js",
+      "chars": 19281,
+      "window_exports": [
+        "PokemonDetails"
+      ],
+      "window_refs": [
+        "BattlePresentationDirector",
+        "PokemonDetails",
+        "YSFlow"
+      ],
+      "events_on": [
+        "battle:beforeEnd",
+        "battle:ended",
+        "battle:moves",
+        "party:rendered",
+        "pokemon:added"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 61,
+        "battle": 19,
+        "selected": 0,
+        "els": 2
+      }
+    },
+    {
+      "path": "src/ui/battle-entry-mobile.js",
+      "chars": 9481,
+      "window_exports": [
+        "BattleEntryUX",
+        "MobileUX"
+      ],
+      "window_refs": [
+        "BattleEntryUX",
+        "MobileUX",
+        "PartyTray",
+        "YSFlow",
+        "YSRuntime"
+      ],
+      "events_on": [
+        "battle:ui",
+        "party-tray:rendered",
+        "screens:hidden",
+        "trainer:shown"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 8,
+        "selected": 2,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/activation/battle-atmosphere.js",
+      "chars": 137,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/activation/decorator-battle-clarity.js",
+      "chars": 136,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 1,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/ui/mobile-shell.js",
+      "chars": 3802,
+      "window_exports": [
+        "MobileShell"
+      ],
+      "window_refs": [
+        "MobileShell",
+        "YSFlow",
+        "YSRuntime"
+      ],
+      "events_on": [
+        "battle:ended"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 2,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/activation/battle-cinematics.js",
+      "chars": 137,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/activation/decorator-battle-environments.js",
+      "chars": 141,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 1,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/bag/bag.js",
+      "chars": 8295,
+      "window_exports": [
+        "BagSystem"
+      ],
+      "window_refs": [
+        "BagSystem",
+        "ItemSystem",
+        "KantoMap",
+        "StadiumUpgrade",
+        "YSFlow",
+        "YS_SOURCE_ITEM_ICONS"
+      ],
+      "events_on": [],
+      "events_emit": [
+        "bag:rendered"
+      ],
+      "global_state_refs": {
+        "save": 12,
+        "battle": 2,
+        "selected": 1,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/ui/app-shell.js",
+      "chars": 4960,
+      "window_exports": [
+        "AppShell"
+      ],
+      "window_refs": [
+        "AppShell",
+        "SaveTools",
+        "YSFlow",
+        "YSRuntime"
+      ],
+      "events_on": [
+        "nav:changed"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 5,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/activation/decorator-battle-readout.js",
+      "chars": 136,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 1,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/party/party-mobile.js",
+      "chars": 9939,
+      "window_exports": [
+        "PartyMobile"
+      ],
+      "window_refs": [
+        "PartyMobile",
+        "PartyTray",
+        "PokemonDetails",
+        "YSFlow"
+      ],
+      "events_on": [
+        "party:rendered"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 1,
+        "battle": 0,
+        "selected": 21,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/activation/battle-flow.js",
+      "chars": 131,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/activation/battle-choreography.js",
+      "chars": 139,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/activation/decorator-battle-refinement.js",
+      "chars": 139,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 1,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/activation/capture-effects.js",
+      "chars": 135,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/items/source-icons.js",
+      "chars": 2540,
+      "window_exports": [
+        "YS_SOURCE_ITEM_ICONS"
+      ],
+      "window_refs": [
+        "ITEMS",
+        "YS_SOURCE_ITEM_ICONS"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/items/item-system.js",
+      "chars": 6814,
+      "window_exports": [
+        "ItemSystem"
+      ],
+      "window_refs": [
+        "BagSystem",
+        "ItemSystem",
+        "PartyTray",
+        "PokemonDetails",
+        "StadiumUpgrade"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 13,
+        "battle": 4,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/journey/kanto-map.js",
+      "chars": 7364,
+      "window_exports": [
+        "KantoMap"
+      ],
+      "window_refs": [
+        "KantoMap",
+        "PartyTray",
+        "PokeCenter",
+        "TrainerScenes",
+        "YSRuntime"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/activation/source-effects.js",
+      "chars": 138,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/battle/challenge.js",
+      "chars": 2799,
+      "window_exports": [
+        "YellowChallenge"
+      ],
+      "window_refs": [
+        "YSFlow",
+        "YellowChallenge"
+      ],
+      "events_on": [
+        "battle:beforeStart",
+        "battle:started"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 3,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/ui/settings.js",
+      "chars": 1641,
+      "window_exports": [],
+      "window_refs": [
+        "YSRuntime"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 4,
+        "battle": 1,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/activation/signature-effects.js",
+      "chars": 137,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/battle-presentation-director.js",
+      "chars": 4481,
+      "window_exports": [
+        "BattlePresentationDirector"
+      ],
+      "window_refs": [
+        "MOVES",
+        "YSRuntime"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 3,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/audio/retired-audio-v56-slot.js",
+      "chars": 79,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/progression/adventure-v58.js",
+      "chars": 11942,
+      "window_exports": [
+        "YSAdventureV57",
+        "YSAdventureV58",
+        "startLegendaryBattle"
+      ],
+      "window_refs": [
+        "PartyTray",
+        "PokeCenter",
+        "YSAdventureV57",
+        "YSAdventureV58",
+        "YSFlow",
+        "startLegendaryBattle"
+      ],
+      "events_on": [
+        "battle:beforeEnd",
+        "battle:beforeStart",
+        "battle:ended",
+        "battle:modelCreated",
+        "battle:startFinished",
+        "battle:started",
+        "battle:ui",
+        "party:rendered"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 38,
+        "battle": 22,
+        "selected": 4,
+        "els": 2
+      }
+    },
+    {
+      "path": "src/core/retired-v61-slot.js",
+      "chars": 212,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/journey/journey-controller.js",
+      "chars": 8667,
+      "window_exports": [
+        "JourneyController"
+      ],
+      "window_refs": [
+        "BagSystem",
+        "JourneyController",
+        "PokemonDetails",
+        "YSAdventureV58",
+        "YSFlow",
+        "YSRuntime"
+      ],
+      "events_on": [
+        "app:rendered",
+        "journey:rendered",
+        "party:rendered",
+        "party:shown"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 0,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/pokecenter/pokecenter.js",
+      "chars": 17639,
+      "window_exports": [
+        "PokeCenter"
+      ],
+      "window_refs": [
+        "AudioManager",
+        "JourneyController",
+        "PartyAutoFill",
+        "PartyTray",
+        "PokeCenter",
+        "YSAdventureV58",
+        "YSFlow",
+        "YSRuntime",
+        "scrollTo"
+      ],
+      "events_on": [
+        "battle:ended",
+        "nav:changed",
+        "screens:hidden"
+      ],
+      "events_emit": [
+        "pokecenter:completed",
+        "pokecenter:healed",
+        "pokecenter:opened",
+        "pokecenter:sessionStarted"
+      ],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 2,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/ui/interface-v42.js",
+      "chars": 23560,
+      "window_exports": [
+        "InterfaceV42",
+        "__YS_INTERFACE_V42__"
+      ],
+      "window_refs": [
+        "BagSystem",
+        "InterfaceV42",
+        "ItemSystem",
+        "JourneyController",
+        "PokemonDetails",
+        "StadiumUpgrade",
+        "YSAdventureV58",
+        "YSFlow",
+        "YSRuntime",
+        "YS_SOURCE_ITEM_ICONS",
+        "__YS_INTERFACE_V42__"
+      ],
+      "events_on": [
+        "battle:ended",
+        "pokecenter:completed",
+        "pokemon:added",
+        "safari:capture",
+        "safari:escape",
+        "safari:evade"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 4,
+        "selected": 4,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/presentation/activation/decorator-polish-v62.js",
+      "chars": 132,
+      "window_exports": [],
+      "window_refs": [],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 1,
+        "selected": 0,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/safari/safari-b62.js",
+      "chars": 28091,
+      "window_exports": [
+        "SafariController",
+        "YSB62Safari",
+        "__YS_B62_SAFARI__"
+      ],
+      "window_refs": [
+        "PartyAutoFill",
+        "SafariController",
+        "YSB62Safari",
+        "YSFlow",
+        "YSRuntime",
+        "__YS_B62_SAFARI__",
+        "scrollTo"
+      ],
+      "events_on": [
+        "screens:hidden"
+      ],
+      "events_emit": [
+        "safari:capture",
+        "safari:escape",
+        "safari:evade"
+      ],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 3,
+        "selected": 1,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/api/yellow-stadium.js",
+      "chars": 2883,
+      "window_exports": [
+        "YellowStadium"
+      ],
+      "window_refs": [
+        "AudioManager",
+        "BagSystem",
+        "BattlePresentationDirector",
+        "PartyAutoFill",
+        "PokeCenter",
+        "YSB62Safari",
+        "YSRuntime"
+      ],
+      "events_on": [],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 1,
+        "battle": 3,
+        "selected": 2,
+        "els": 0
+      }
+    },
+    {
+      "path": "src/ui/ui2-final.js",
+      "chars": 8911,
+      "window_exports": [
+        "UI2",
+        "__YS_UI2_FINAL__"
+      ],
+      "window_refs": [
+        "PokeCenter",
+        "UI2",
+        "YSFlow",
+        "YSRuntime",
+        "__YS_UI2_FINAL__"
+      ],
+      "events_on": [
+        "app:rendered",
+        "battle:started",
+        "battle:ui",
+        "journey:rendered",
+        "nav:changed"
+      ],
+      "events_emit": [],
+      "global_state_refs": {
+        "save": 0,
+        "battle": 8,
+        "selected": 2,
+        "els": 0
+      }
+    }
+  ]
+}

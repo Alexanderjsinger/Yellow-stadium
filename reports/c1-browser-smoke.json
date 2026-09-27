@@ -1,0 +1,30 @@
+{
+  "base": {
+    "director": true,
+    "version": "C1",
+    "publicFacade": true,
+    "legacySentinel": false,
+    "v55Audio": false,
+    "captureOwner": true,
+    "atmosphereCapture": false
+  },
+  "battleBefore": {
+    "turn": 1,
+    "locked": false,
+    "hpP": 20,
+    "hpE": 20,
+    "selected": 3
+  },
+  "battleAfter": {
+    "alive": true,
+    "turn": 2,
+    "locked": false,
+    "hpP": 20,
+    "hpE": 12,
+    "phase": "action",
+    "fxLayers": 1
+  },
+  "captureChoreographyReturnedCleanly": true,
+  "pageErrors": [],
+  "consoleErrors": []
+}

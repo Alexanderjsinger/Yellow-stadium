@@ -1,0 +1,61 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "path": "index.html",
+      "status": 200,
+      "bytes": 851077,
+      "content_type": "text/html",
+      "ok": true
+    },
+    {
+      "path": "asset-manifest.json",
+      "status": 200,
+      "bytes": 172009,
+      "content_type": "application/json",
+      "ok": true
+    },
+    {
+      "path": "assets/maps/kanto.png",
+      "status": 200,
+      "bytes": 7393259,
+      "content_type": "image/png",
+      "ok": true
+    },
+    {
+      "path": "assets/maps/kanto-journey-v36.png",
+      "status": 200,
+      "bytes": 3444864,
+      "content_type": "image/png",
+      "ok": true
+    },
+    {
+      "path": "assets/stadium/arena.png",
+      "status": 200,
+      "bytes": 1994026,
+      "content_type": "image/png",
+      "ok": true
+    },
+    {
+      "path": "assets/gen3/front/pikachu.png",
+      "status": 200,
+      "bytes": 600,
+      "content_type": "image/png",
+      "ok": true
+    },
+    {
+      "path": "assets/items/poke_ball.png",
+      "status": 200,
+      "bytes": 262,
+      "content_type": "image/png",
+      "ok": true
+    },
+    {
+      "path": "assets/environments/grasslands.webp",
+      "status": 200,
+      "bytes": 36246,
+      "content_type": "image/webp",
+      "ok": true
+    }
+  ]
+}

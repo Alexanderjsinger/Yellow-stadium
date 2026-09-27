@@ -1,0 +1,660 @@
+/* modal-rewards.css — consolidated from RC8 recovery style slots (G1 CSS consolidation). */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: rgba(3,9,17,.82);
+  padding: 12px;
+  max-height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.modal-card {
+  width: min(480px, 100%);
+  background: var(--navy);
+  border: 1px solid rgba(245,197,66,.7);
+  box-shadow: 0 24px 90px #000a;
+  padding: 34px;
+  max-height: calc(100dvh - 30px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 14px;
+}
+
+.modal-card h2 {
+  font-size: clamp(2.5rem, 9vw, 4.6rem);
+  color: var(--yellow);
+}
+
+.modal-card p:not(.eyebrow) {
+  color: #c1ccd4;
+  line-height: 1.55;
+}
+
+.modal-card .primary-button {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.reward {
+  min-height: 20px;
+  display: grid;
+  gap: 7px;
+  color: var(--cream);
+  font-size: .78rem;
+  letter-spacing: .04em;
+}
+
+.reward span {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 7px;
+}
+
+.reward span b {
+  color: var(--mint);
+  text-align: right;
+}
+
+.reward > strong {
+  margin-top: 8px;
+  color: var(--yellow);
+  letter-spacing: .08em;
+}
+
+#result-modal .modal-card {
+  width: min(560px,100%);
+  max-height: min(88dvh,760px);
+  overflow: auto;
+  padding: clamp(16px,3vw,28px);
+  position: relative;
+  display: grid;
+  gap: 12px;
+}
+
+#result-modal .reward {
+  gap: 8px;
+  margin-top: 4px;
+  letter-spacing: 0;
+}
+
+.reward-summary {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px;
+}
+
+.reward-chip {
+  display: grid !important;
+  align-items: center;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  padding: 10px 12px !important;
+  border: 1px solid #34516d !important;
+  background: linear-gradient(180deg,#17314b,#11253a) !important;
+  border-radius: 14px;
+  position: relative;
+  grid-template-columns: 44px 1fr;
+  min-height: 70px;
+  box-shadow: inset 0 1px 0 #ffffff10;
+}
+
+.reward-chip .reward-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 34px;
+  border-radius: 12px;
+  background: linear-gradient(180deg,#274761,#183149);
+  color: #07111f;
+  font-size: 18px;
+  font-weight: 1000;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.09);
+  position: relative;
+  min-width: 40px;
+}
+
+.reward-chip.loss .reward-icon {
+  background: #ff8b7a;
+  filter: hue-rotate(-20deg) saturate(.85);
+}
+
+.reward-chip b {
+  display: block;
+  color: var(--cream) !important;
+  font-size: 1rem;
+  line-height: 1.05;
+}
+
+.reward-chip small {
+  display: block;
+  color: var(--muted);
+  font-size: .62rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.xp-rewards {
+  display: grid;
+  gap: 8px;
+}
+
+.xp-card {
+  display: grid !important;
+  grid-template-columns: 42px 1fr;
+  gap: 9px !important;
+  align-items: center;
+  padding: 9px 10px !important;
+  border: 1px solid #294763 !important;
+  background: linear-gradient(180deg,#09192a,#0f2237) !important;
+  border-radius: 14px;
+  box-shadow: inset 0 1px 0 #ffffff0a;
+}
+
+.xp-card img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.xp-card-main {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.xp-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+
+.xp-card-head strong {
+  font-size: .78rem;
+}
+
+.xp-card-head b {
+  color: #84edc3;
+  font-size: .8rem;
+  line-height: 1;
+}
+
+.xp-track {
+  height: 10px;
+  margin-top: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  background: linear-gradient(180deg,#14283d,#0b1726);
+  box-shadow: inset 0 1px 3px #0009;
+  position: relative;
+}
+
+.xp-fill {
+  height: 100%;
+  width: var(--xp-from,0%);
+  background: linear-gradient(90deg,#3fd6b0 0%,#72e4ca 55%,#d6ffe6 100%);
+  border-radius: inherit;
+  transition: width .9s cubic-bezier(.2,.8,.2,1);
+  box-shadow: 0 0 12px rgba(95,224,183,.4);
+}
+
+.xp-card.level-up {
+  border-color: #f5c542aa !important;
+  box-shadow: 0 0 0 1px rgba(245,197,66,.12), inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.xp-card.level-up .xp-card-head b {
+  color: #ffe06c;
+}
+
+.reward-major {
+  display: flex !important;
+  align-items: center;
+  gap: 10px !important;
+  padding: 12px 14px !important;
+  border: 1px solid #f5c54266 !important;
+  background: #f5c54212;
+  border-radius: 14px !important;
+  color: var(--yellow) !important;
+}
+
+.reward-major .reward-icon {
+  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: #f5c542;
+  color: #07111f;
+}
+
+.reward-major small {
+  display: block;
+  color: #d6dee5;
+  margin-top: 3px;
+  font-size: .68rem;
+  letter-spacing: 0;
+}
+
+.loot-reward {
+  border-radius: 10px !important;
+  border: 1px solid #f5c54288 !important;
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  color: #07111f !important;
+  background: #f5c542 !important;
+  padding: 12px !important;
+}
+
+.loot-reward .item-glyph {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #07111f;
+  color: #f5c542;
+  font-size: 17px;
+}
+
+.quick-party-modal {
+  z-index: 80;
+  padding: clamp(8px,2vw,24px);
+  overflow: auto;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.pokemon-detail-modal {
+  z-index: 200;
+  overflow: hidden !important;
+  padding: 0 !important;
+  align-items: end !important;
+  background: #000b !important;
+}
+
+.modal-card #continue-button {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+}
+
+.result-close {
+  position: absolute;
+  z-index: 4;
+  top: 12px;
+  float: none;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  border: 1px solid #ffffff55;
+  background: #071829;
+  color: #fff;
+  font-size: 27px;
+  right: 12px;
+  border-radius: 10px;
+}
+
+.loot-reward small {
+  margin-left: auto;
+}
+
+.reward-icon.source-backed {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.reward-icon .source-item-img {
+  width: 34px;
+  height: 34px;
+}
+
+.v57-progression-reward {
+  margin-top: 8px;
+}
+
+.item-use-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  background: rgba(2,9,20,.82);
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+
+.item-use-modal[hidden] {
+  display: none;
+}
+
+#result-modal .eyebrow {
+  margin: 0;
+}
+
+#result-title {
+  margin: 0;
+  font-size: clamp(2.4rem,8vw,4rem);
+  line-height: .92;
+}
+
+#result-copy {
+  margin: 0;
+  font-size: clamp(1rem,2.8vw,1.15rem);
+  line-height: 1.42;
+}
+
+.reward-chip .reward-icon::before {
+  content: '';
+  position: absolute;
+}
+
+.reward-chip .reward-icon::after {
+  content: '';
+  position: absolute;
+}
+
+.reward-chip.coins .reward-icon {
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%,#ffe792 0 28%,#f5c542 29% 68%,#c38915 69% 100%);
+  box-shadow: inset 0 0 0 2px rgba(7,17,31,.2),0 2px 8px rgba(0,0,0,.25);
+}
+
+.reward-chip.coins .reward-icon::before {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  left: -7px;
+  top: 7px;
+  background: radial-gradient(circle at 35% 35%,#ffefae 0 28%,#f3cb59 29% 68%,#bd8718 69% 100%);
+  opacity: .96;
+}
+
+.reward-chip.coins .reward-icon::after {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  right: 7px;
+  top: 14px;
+  background: #0b1a2c;
+  border: 2px solid rgba(11,26,44,.9);
+}
+
+.reward-chip.team-xp .reward-icon {
+  background: linear-gradient(180deg,#f5c542,#c88f14);
+  color: #07111f;
+  font: 900 16px/1 ui-sans-serif,system-ui,sans-serif;
+  letter-spacing: .02em;
+}
+
+.reward-chip.team-xp .reward-icon::before {
+  content: 'XP';
+  position: static;
+}
+
+.xp-card-topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+
+.xp-card-topline strong {
+  font-size: .84rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.xp-card-topline em {
+  font-style: normal;
+  font-weight: 800;
+  font-size: .64rem;
+  letter-spacing: .08em;
+  color: #f5c542;
+  white-space: nowrap;
+}
+
+.xp-card-head small {
+  display: block;
+  color: #b8d0dc;
+  font-size: .62rem;
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+
+.xp-cap {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,rgba(255,255,255,.16),transparent 55%);
+  pointer-events: none;
+}
+
+.xp-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.xp-meta small {
+  font-size: .58rem;
+  letter-spacing: .08em;
+  color: #88a7bb;
+}
+
+.xp-card.level-up .xp-fill {
+  background: linear-gradient(90deg,#f5c542 0%,#ffe06c 55%,#fff2af 100%);
+  box-shadow: 0 0 12px rgba(245,197,66,.35);
+}
+
+.xp-card.level-up .xp-card-topline em {
+  color: #ffe06c;
+}
+
+.reward>strong:not(.reward-major) {
+  display: block;
+  padding: 10px 12px;
+  border: 1px solid #294763;
+  background: #0d2135;
+  border-radius: 12px;
+  color: #f5f7eb;
+}
+
+.yellow-ui2 #result-modal .modal-card {
+  border: 2px solid #4dc9de !important;
+  border-radius: 15px !important;
+  background: linear-gradient(180deg,#f8fdff,#dcebf3) !important;
+  color: #123047 !important;
+}
+
+.yellow-ui2 #result-title {
+  color: #123047 !important;
+}
+
+.yellow-ui2 #result-copy {
+  color: #526f80 !important;
+}
+
+@media (max-width: 500px) {
+  .modal-card {
+    padding: 25px;
+  }
+
+}
+
+@media (max-width:520px) {
+  .reward-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .xp-card {
+    grid-template-columns: 40px 1fr;
+  }
+
+  .xp-card img {
+    width: 40px;
+    height: 40px;
+  }
+
+  #result-modal.modal {
+    padding: 10px;
+  }
+
+  #result-modal .modal-card {
+    max-height: 92dvh;
+  }
+
+}
+
+@media (max-width:800px) {
+  .pokemon-detail-modal {
+    padding: 0 !important;
+    align-items: stretch;
+  }
+
+}
+
+@media (min-width:700px) {
+  .pokemon-detail-modal {
+    align-items: center !important;
+    padding: 18px !important;
+  }
+
+}
+
+@media (max-width:560px) {
+  #result-modal.modal {
+    padding: 8px;
+  }
+
+  #result-modal .modal-card {
+    width: min(100%,420px);
+    max-height: min(90dvh,740px);
+    padding: 14px;
+    gap: 10px;
+    border-width: 1px;
+  }
+
+  .result-close {
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+  }
+
+  #result-title {
+    padding-right: 48px;
+    font-size: clamp(2rem,11vw,3.25rem);
+  }
+
+  #result-copy {
+    font-size: .96rem;
+    line-height: 1.35;
+  }
+
+  .reward-summary {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .reward-chip {
+    grid-template-columns: 36px 1fr;
+    gap: 8px !important;
+    padding: 8px 9px !important;
+    min-height: 62px;
+  }
+
+  .reward-chip .reward-icon {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+  }
+
+  .reward-chip b {
+    font-size: .88rem;
+  }
+
+  .reward-chip small {
+    font-size: .56rem;
+  }
+
+  .xp-card {
+    grid-template-columns: 36px 1fr;
+    padding: 8px !important;
+    gap: 8px !important;
+  }
+
+  .xp-card img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .xp-card-topline {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .xp-card-topline strong {
+    font-size: .78rem;
+    line-height: 1;
+  }
+
+  .xp-card-topline em {
+    font-size: .56rem;
+  }
+
+  .xp-card-head {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+
+  .xp-card-head b {
+    font-size: .76rem;
+  }
+
+  .xp-card-head small {
+    font-size: .54rem;
+  }
+
+  .xp-track {
+    height: 9px;
+  }
+
+  .xp-meta small {
+    font-size: .52rem;
+  }
+
+  .reward-major {
+    font-size: .86rem;
+  }
+
+  .reward-major small {
+    font-size: .6rem;
+  }
+
+  #continue-button {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    margin-top: 4px;
+    padding: 14px 12px;
+  }
+
+}

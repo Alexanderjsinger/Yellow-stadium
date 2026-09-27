@@ -1,0 +1,30 @@
+name: Yellow Stadium regression gate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - name: Install build dependencies
+        run: npm ci
+      - name: Full canonical regression gate
+        run: npm test
+      - name: Upload regression evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yellow-stadium-regression-reports
+          path: reports/
+          if-no-files-found: error

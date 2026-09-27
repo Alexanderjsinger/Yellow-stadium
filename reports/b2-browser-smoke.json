@@ -1,0 +1,13 @@
+{
+  "phase": "B2",
+  "method": "Chromium DevTools Protocol via Page.setDocumentContent",
+  "console_errors": 0,
+  "checks": {
+    "boot": "BagSystem and ItemSystem loaded; 5 canonical Bag tabs; single bag-panel-root",
+    "open": "Bag opens directly through BagSystem; Capture tab renders inventory and action state",
+    "healing": "Recovery tab renders Potion with USE action",
+    "growth": "Growth tab renders Mew egg progress from save.mewEgg",
+    "record": "Record tab renders trainer record and 8 badge cards",
+    "ownership": "0 cloned navigation nodes; YellowStadium.bag.open exposed"
+  }
+}

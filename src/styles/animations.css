@@ -1,0 +1,680 @@
+/* animations.css — every @keyframes referenced by the presentation layer (G1 CSS consolidation). */
+
+@keyframes attackRight {
+  50% {
+    transform: translate(32px, -8px);
+  }
+}
+
+@keyframes attackLeft {
+  50% {
+    transform: translate(-32px, 8px);
+  }
+}
+
+@keyframes hit {
+  25%, 75% {
+    transform: translateX(-8px);
+    filter: brightness(3);
+  }
+
+  50% {
+    transform: translateX(8px);
+  }
+}
+
+@keyframes flash {
+  50% {
+    opacity: .45;
+  }
+}
+
+@keyframes eggWobble {
+  25% {
+    transform: rotate(-6deg);
+  }
+
+  50% {
+    transform: rotate(7deg);
+  }
+
+  75% {
+    transform: rotate(-3deg);
+  }
+}
+
+@keyframes safariIdle {
+  from {
+    margin-top: -3px;
+  }
+
+  to {
+    margin-top: 4px;
+  }
+}
+
+@keyframes safariAggressive {
+  from {
+    margin-left: -4px;
+  }
+
+  to {
+    margin-left: 5px;
+    filter: brightness(1.15);
+  }
+}
+
+@keyframes status-breathe {
+  from {
+    opacity: .65;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bw-idle {
+  0%, 100% {
+    transform: translateY(0) scaleY(1);
+  }
+
+  50% {
+    transform: translateY(-4px) scaleY(1.025);
+  }
+}
+
+@keyframes trainer-arrival {
+  from {
+    transform: translateX(160px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes badge-award {
+  from {
+    transform: scale(.4) rotate(-25deg);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(2);
+    opacity: 1;
+  }
+}
+
+@keyframes ace-spotlight {
+  0% {
+    filter: brightness(.65) contrast(1.2);
+  }
+
+  42% {
+    filter: brightness(1.35) saturate(1.35);
+  }
+
+  100% {
+    filter: none;
+  }
+}
+
+@keyframes stadium-wave {
+  0%, 100% {
+    transform: translateY(4px);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes kanto-flight {
+  0% {
+    opacity: 1;
+    transform: scale(1.05) translate(-2%,2%);
+  }
+
+  55% {
+    opacity: 1;
+    transform: scale(1.55) translate(5%,-6%);
+  }
+
+  72%, 100% {
+    opacity: 0;
+    transform: scale(2.1) translate(8%,-9%);
+  }
+}
+
+@keyframes stadium-arrival {
+  0%, 52% {
+    opacity: 0;
+    transform: scale(1.65);
+  }
+
+  72% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes evolution-reveal {
+  0% {
+    filter: brightness(8);
+    transform: scale(.2);
+  }
+
+  60% {
+    filter: brightness(3);
+    transform: scale(1.15);
+  }
+
+  100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes arena-rain {
+  to {
+    top: 110%;
+    translate: -70px 0;
+  }
+}
+
+@keyframes scar-arrive {
+  from {
+    opacity: 0;
+    scale: .7;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes fatigue-idle {
+  0%, 100% {
+    transform: translateY(3px) scaleY(.97);
+  }
+
+  50% {
+    transform: translateY(5px) scaleY(.95);
+  }
+}
+
+@keyframes injured-idle {
+  0%, 100% {
+    transform: translateY(6px) rotate(-7deg) scaleY(.91);
+  }
+
+  50% {
+    transform: translateY(8px) rotate(-9deg) scaleY(.89);
+  }
+}
+
+@keyframes clarity-pop {
+  from {
+    opacity: 0;
+    scale: .9;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes critical-shake {
+  0%, 100% {
+    translate: 0 0;
+  }
+
+  18% {
+    translate: -4px 2px;
+  }
+
+  34% {
+    translate: 5px -3px;
+  }
+
+  52% {
+    translate: -3px -1px;
+  }
+
+  70% {
+    translate: 2px 2px;
+  }
+}
+
+@keyframes dodge-word {
+  0% {
+    opacity: 0;
+    transform: translate(-42%,-35%) skewX(-8deg);
+  }
+
+  35% {
+    opacity: 1;
+    transform: translate(-50%,-50%) skewX(-8deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-58%,-65%) skewX(-8deg);
+  }
+}
+
+@keyframes effectiveness-pulse {
+  from {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes wind-light {
+  from {
+    translate: -1% 0;
+    opacity: .75;
+  }
+
+  to {
+    translate: 1% 0;
+    opacity: 1;
+  }
+}
+
+@keyframes magma-light {
+  from {
+    opacity: .58;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cue-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes v44-quake {
+  0%, 100% {
+    transform: translate(0);
+  }
+
+  25% {
+    transform: translate(-2px,1px);
+  }
+
+  75% {
+    transform: translate(2px,-1px);
+  }
+}
+
+@keyframes v44-pop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%,-50%) scale(.25) rotate(-12deg);
+  }
+
+  22% {
+    opacity: 1;
+    transform: translate(-50%,-50%) scale(1.25) rotate(3deg);
+  }
+
+  68% {
+    opacity: 1;
+    transform: translate(-50%,-50%) scale(.95);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%,-50%) scale(1.18);
+  }
+}
+
+@keyframes v46-action-word {
+  0% {
+    opacity: 0;
+    scale: .82;
+  }
+
+  18% {
+    opacity: 1;
+    scale: 1.08;
+  }
+
+  35% {
+    scale: 1;
+  }
+
+  78% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    translate: -50% -68%;
+  }
+}
+
+@keyframes ball-flash {
+  from {
+    transform: scale(.2);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+@keyframes ball-sparks {
+  from {
+    transform: translate(-50%,-50%) scale(.3) rotate(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translate(-50%,-50%) scale(1.5) rotate(35deg);
+    opacity: 0;
+  }
+}
+
+@keyframes caught-stars {
+  0% {
+    transform: translate(-50%,-50%) scale(.3);
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%,-50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes v50pulse {
+  50% {
+    box-shadow: 0 4px 0 #08131f,0 0 0 8px #f6c94d22;
+  }
+}
+
+@keyframes v51-critical-kick {
+  0%, 100% {
+    transform: translate(0);
+  }
+
+  25% {
+    transform: translate(-3px,1px);
+  }
+
+  75% {
+    transform: translate(3px,-1px);
+  }
+}
+
+@keyframes v55-heavy {
+  20% {
+    translate: -3px 1px;
+  }
+
+  40% {
+    translate: 4px -2px;
+  }
+
+  65% {
+    translate: -2px 2px;
+  }
+}
+
+@keyframes v55-critical {
+  15% {
+    translate: -6px 2px;
+    filter: brightness(1.5);
+  }
+
+  30% {
+    translate: 7px -4px;
+  }
+
+  48% {
+    translate: -5px -1px;
+  }
+
+  68% {
+    translate: 3px 3px;
+  }
+
+  100% {
+    translate: 0;
+    filter: none;
+  }
+}
+
+@keyframes v57-pulse {
+  50% {
+    scale: 1.12;
+    box-shadow: 0 3px 14px #fff9;
+  }
+}
+
+@keyframes pc-ball-load {
+  0% {
+    opacity: 0;
+    transform: translateY(-36px) scale(.72);
+  }
+
+  72% {
+    opacity: 1;
+    transform: translateY(3px) scale(1.05);
+  }
+
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pc-ball-heal {
+  from {
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+
+  to {
+    transform: translateY(-5px) scale(1.07);
+    filter: brightness(1.7) drop-shadow(0 0 8px #8effbf);
+  }
+}
+
+@keyframes pc-lamp-chase {
+  0%, 45% {
+    background: #385168;
+    box-shadow: none;
+  }
+
+  46%, 100% {
+    background: #8effbf;
+    box-shadow: 0 0 14px #8effbf;
+  }
+}
+
+@keyframes pc-screen-flicker {
+  0% {
+    filter: brightness(1);
+  }
+
+  50% {
+    filter: brightness(1.28);
+  }
+}
+
+@keyframes ys-throw-arc {
+  0% {
+    transform: translate(-130px,92px) scale(.45) rotate(-320deg);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  55% {
+    transform: translate(-12px,-52px) scale(.82) rotate(-90deg);
+  }
+
+  100% {
+    transform: translate(0,0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes ys-ball-shake {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-14deg);
+  }
+
+  75% {
+    transform: rotate(14deg);
+  }
+}
+
+@keyframes ys-ball-catch-glow {
+  0% {
+    filter: drop-shadow(0 0 0 #fff);
+  }
+
+  35% {
+    filter: drop-shadow(0 0 12px #ffe86e);
+  }
+
+  100% {
+    filter: drop-shadow(0 0 4px #fff);
+  }
+}
+
+@keyframes ys-ball-burst {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  70% {
+    transform: scale(1.28);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(.72);
+    opacity: 0;
+  }
+}
+
+@keyframes ys-burst {
+  0% {
+    transform: scale(.3);
+    opacity: 0;
+  }
+
+  30% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+@keyframes b62-ball-arc {
+  0% {
+    transform: translate(0,0) scale(.5) rotate(-260deg);
+    opacity: .2;
+  }
+
+  55% {
+    transform: translate(105px,-135px) scale(1) rotate(-90deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(176px,-92px) scale(.78) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes b62-catchflash {
+  0% {
+    scale: .2;
+    opacity: 0;
+  }
+
+  35% {
+    scale: 1;
+    opacity: 1;
+  }
+
+  100% {
+    scale: 1.35;
+    opacity: 0;
+  }
+}
+
+@keyframes b62-water-pixel {
+  50% {
+    background-position: 5px 2px;
+  }
+}
+
+@keyframes b62-box-idle {
+  0%, 49% {
+    transform: translateY(0);
+  }
+
+  50%, 100% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes b62-dart-idle {
+  0%, 49% {
+    transform: translate(-1px,0);
+  }
+
+  50%, 100% {
+    transform: translate(2px,-1px);
+  }
+}

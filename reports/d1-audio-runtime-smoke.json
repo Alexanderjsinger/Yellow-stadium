@@ -1,0 +1,17 @@
+{
+  "mode": "Node VM Web Audio runtime contract smoke",
+  "audioManager": true,
+  "singleAudioContext": true,
+  "contextCountAfterMusicAndSfx": 1,
+  "muteRoundTrip": true,
+  "routesExercised": [
+    "music scene scheduling",
+    "move SFX",
+    "critical event SFX",
+    "Pokemon cry",
+    "crowd cheer",
+    "PokeCenter chime"
+  ],
+  "legacyYSAudioV56": false,
+  "browserHarnessNote": "The execution environment's managed Chromium policy blocks local/file test pages, so D1 uses the deterministic Node Web Audio mock in tests/audio_manager_runtime_smoke.js rather than claiming a browser smoke run."
+}

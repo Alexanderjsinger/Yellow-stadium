@@ -1,0 +1,88 @@
+{
+  "base": {
+    "director": true,
+    "version": "C3",
+    "publicFacade": true,
+    "privateRegistryOnWindow": "undefined",
+    "installerRegistryOnWindow": "undefined",
+    "privateKeys": [
+      "AttackEffects",
+      "BattleAtmosphere",
+      "BattleChoreography",
+      "BattleCinematics",
+      "BattleFlow",
+      "BattlePolish",
+      "BattlePresentation",
+      "CaptureEffects",
+      "MoveSourceEffects",
+      "SignatureEffects"
+    ],
+    "installerKeys": [
+      "AttackEffects",
+      "BattleAtmosphere",
+      "BattleChoreography",
+      "BattleCinematics",
+      "BattleFlow",
+      "BattlePolish",
+      "BattlePresentation",
+      "CaptureEffects",
+      "MoveSourceEffects",
+      "SignatureEffects"
+    ],
+    "oldServices": {
+      "BattleEffectsV51": "undefined",
+      "BattleDirectorV55": "undefined",
+      "BattleCaptureV47": "undefined"
+    }
+  },
+  "setup": {
+    "owned": [
+      "pikachu",
+      "omanyte",
+      "eevee"
+    ],
+    "selected": [
+      "ys-pikachu-1",
+      "ys-omanyte-1",
+      "ys-eevee-1"
+    ],
+    "speed": "quick"
+  },
+  "battleBefore": {
+    "turn": 1,
+    "locked": false,
+    "over": false,
+    "hpP": 20,
+    "hpE": 35,
+    "move": "thunderShock",
+    "services": [
+      "AttackEffects",
+      "BattleAtmosphere",
+      "BattleChoreography",
+      "BattleCinematics",
+      "BattleFlow",
+      "BattlePolish",
+      "BattlePresentation",
+      "CaptureEffects",
+      "MoveSourceEffects",
+      "SignatureEffects"
+    ]
+  },
+  "battleAfter": {
+    "alive": true,
+    "turn": 2,
+    "locked": false,
+    "over": false,
+    "hpP": 20,
+    "hpE": 32,
+    "fxLayers": 0,
+    "focus": "wide"
+  },
+  "capture": {
+    "balls": 0,
+    "enemyOpacity": "",
+    "captureService": "function"
+  },
+  "pageErrors": [],
+  "consoleErrors": []
+}

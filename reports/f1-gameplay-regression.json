@@ -1,0 +1,107 @@
+{
+  "seed": 1592594996,
+  "results": {
+    "onboarding_save": {
+      "owned": [
+        "pikachu",
+        "geodude",
+        "krabby"
+      ],
+      "party": [
+        "ys-pikachu-1",
+        "ys-geodude-1",
+        "ys-krabby-1"
+      ]
+    },
+    "battle": {
+      "damage": {
+        "damage": 149,
+        "critical": false,
+        "attackerHp": 110,
+        "defenderHp": 130
+      },
+      "turn": {
+        "turn": 2,
+        "locked": false,
+        "playerHp": 60,
+        "enemyHp": 117,
+        "playerPp": 15,
+        "over": false,
+        "lastMove": "QUICK ATTACK"
+      }
+    },
+    "journey_gym": {
+      "launch": {
+        "mode": "cup",
+        "config": {
+          "enemyIds": [
+            "geodude",
+            "rhyhorn",
+            "onix"
+          ],
+          "trainer": {
+            "name": "BROCK",
+            "sprite": "brock"
+          },
+          "encounter": "boulderFinal",
+          "cupIndex": 0,
+          "cupRound": 2,
+          "levelBonus": 1
+        }
+      },
+      "state": {
+        "cupsCompleted": 1,
+        "coins": 550,
+        "wins": 1,
+        "losses": 0,
+        "streak": 1,
+        "over": true,
+        "victory": true,
+        "resultTitle": "VICTORY!"
+      }
+    },
+    "safari": {
+      "captured": true,
+      "victory": true,
+      "ended": true,
+      "balls": 0,
+      "owned": [
+        "pikachu",
+        "caterpie"
+      ],
+      "pokemon": [
+        "pikachu",
+        "caterpie"
+      ],
+      "caughtNew": true
+    },
+    "arcade": {
+      "cleared": true,
+      "progress": 0,
+      "focusBand": 1,
+      "coins": 800,
+      "complete": true
+    },
+    "pokecenter": {
+      "before": {
+        "hurt": 1,
+        "fainted": false,
+        "state": {
+          "hp": 1,
+          "status": "PSN",
+          "sleep": 2
+        }
+      },
+      "after": {
+        "hurt": 0,
+        "fainted": false,
+        "state": {
+          "hp": 50,
+          "status": null,
+          "sleep": 0
+        },
+        "max": 50
+      }
+    }
+  }
+}
