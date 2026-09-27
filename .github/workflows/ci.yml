@@ -24,7 +24,7 @@ jobs:
         run: |
           count=$(find .release -maxdepth 1 -name 'ui52-part-*.txt' 2>/dev/null | wc -l)
           echo "count=$count"
-          if [ "$count" -eq 5 ]; then echo "ready=true" >> "$GITHUB_OUTPUT"; else echo "ready=false" >> "$GITHUB_OUTPUT"; fi
+          if [ "$count" -eq 15 ]; then echo "ready=true" >> "$GITHUB_OUTPUT"; else echo "ready=false" >> "$GITHUB_OUTPUT"; fi
       - if: steps.parts.outputs.ready == 'true'
         uses: actions/setup-python@v5
         with:
@@ -57,6 +57,42 @@ jobs:
       - if: steps.parts.outputs.ready == 'true'
         name: Full canonical regression gate
         run: npm test
+      - if: steps.parts.outputs.ready == 'true'
+        name: Restore normal CI
+        shell: bash
+        run: |
+          cat > .github/workflows/ci.yml <<'YAML'
+          name: Yellow Stadium regression gate
+
+          on:
+            push:
+            pull_request:
+
+          jobs:
+            verify:
+              runs-on: ubuntu-latest
+              timeout-minutes: 10
+              steps:
+                - uses: actions/checkout@v4
+                - uses: actions/setup-python@v5
+                  with:
+                    python-version: '3.12'
+                - uses: actions/setup-node@v4
+                  with:
+                    node-version: '22'
+                    cache: 'npm'
+                - name: Install build dependencies
+                  run: npm ci
+                - name: Full canonical regression gate
+                  run: npm test
+                - name: Upload regression evidence
+                  if: always()
+                  uses: actions/upload-artifact@v4
+                  with:
+                    name: yellow-stadium-regression-reports
+                    path: reports/
+                    if-no-files-found: error
+          YAML
       - if: steps.parts.outputs.ready == 'true'
         name: Commit validated release to main
         shell: bash
