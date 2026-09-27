@@ -1,0 +1,81 @@
+{
+  "checks": [
+    {
+      "path": "index.html",
+      "status": 200,
+      "bytes": 855220
+    },
+    {
+      "path": "asset-manifest.json",
+      "status": 200,
+      "bytes": 96341
+    },
+    {
+      "path": "asset-groups.json",
+      "status": 200,
+      "bytes": 1268
+    },
+    {
+      "path": "assets/maps/kanto.png",
+      "status": 200,
+      "bytes": 7393259
+    },
+    {
+      "path": "assets/maps/kanto-journey-v36.png",
+      "status": 200,
+      "bytes": 3444864
+    },
+    {
+      "path": "assets/stadium/arena.png",
+      "status": 200,
+      "bytes": 1994026
+    },
+    {
+      "path": "assets/gen3/front/pikachu.png",
+      "status": 200,
+      "bytes": 600
+    },
+    {
+      "path": "assets/gen3/back/pikachu.png",
+      "status": 200,
+      "bytes": 587
+    },
+    {
+      "path": "assets/journey-v50/player_icon_red.png",
+      "status": 200,
+      "bytes": 233
+    },
+    {
+      "path": "assets/items/poke_ball.png",
+      "status": 200,
+      "bytes": 262
+    },
+    {
+      "path": "assets/gen1/front/pikachu.png",
+      "status": 404,
+      "bytes": 335,
+      "expected_missing": true
+    },
+    {
+      "path": "assets/rs/front/pikachu.png",
+      "status": 404,
+      "bytes": 335,
+      "expected_missing": true
+    },
+    {
+      "path": "assets/front/pikachu.png",
+      "status": 404,
+      "bytes": 335,
+      "expected_missing": true
+    },
+    {
+      "path": "assets/ui/bag.png",
+      "status": 404,
+      "bytes": 335,
+      "expected_missing": true
+    }
+  ],
+  "all_live_ok": true,
+  "all_pruned_missing": true,
+  "browser_note": "Managed Chromium in this environment blocks local HTTP/file pages; E2 browser-network verification could not be run here."
+}

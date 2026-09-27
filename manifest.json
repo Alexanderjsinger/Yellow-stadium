@@ -1,0 +1,688 @@
+{
+  "source": "yellow-stadium-v4-ui2-rc8-deploy(1).zip/index.html",
+  "golden_sha256": "f13a9c4e7f16aa85a64954cf14b0502c341c2cfca3258c4196162c8d42a0bb0c",
+  "golden_bytes": 23962736,
+  "script_count": 82,
+  "style_count": 14,
+  "scripts": [
+    {
+      "index": 0,
+      "path": "src/generated/assets-inline.js",
+      "placeholder": "__YS_SCRIPT_000__",
+      "chars": 41,
+      "sha256": "21a22643757a9aec6d6b98dd5e816a4bf5cdc1cec7fb0da969213c9d116ffc64"
+    },
+    {
+      "index": 1,
+      "path": "src/data/gen1-species.js",
+      "placeholder": "__YS_SCRIPT_001__",
+      "chars": 24841,
+      "sha256": "6e9dbb6fa408ba7ff7559bfee08339075ba8dfc7df27b1e75b14c8dc00ede273"
+    },
+    {
+      "index": 2,
+      "path": "src/data/moves.js",
+      "placeholder": "__YS_SCRIPT_002__",
+      "chars": 21171,
+      "sha256": "f20db5003a4d23995bb93cd88df9d771d68a1a6ac57f008f7ff31c42ffac945d"
+    },
+    {
+      "index": 3,
+      "path": "src/data/evolution-stones.js",
+      "placeholder": "__YS_SCRIPT_003__",
+      "chars": 733,
+      "sha256": "13f1fc8fccf985676c4bc29ea273c7cf6da21ec7ddbff0f9cd4f1cfb482f1d66"
+    },
+    {
+      "index": 4,
+      "path": "src/core/ys-flow.js",
+      "placeholder": "__YS_SCRIPT_004__",
+      "chars": 1133,
+      "sha256": "68546e216872d59536246a6b550fa1afbee59ada6ebe21146311054d6a8cf170"
+    },
+    {
+      "index": 5,
+      "path": "src/core/constants.js",
+      "placeholder": "__YS_SCRIPT_005__",
+      "chars": 273,
+      "sha256": "2475bd31c4bb996f22b097763cbebd8de4bfbdaf72665a82343d58687a60f212"
+    },
+    {
+      "index": 6,
+      "path": "src/core/pokemon-records.js",
+      "placeholder": "__YS_SCRIPT_006__",
+      "chars": 7393,
+      "sha256": "5028fd93dccfdf33785b73f6571855dd0deaabea068555f253da6fc1a8f53189"
+    },
+    {
+      "index": 7,
+      "path": "src/core/save.js",
+      "placeholder": "__YS_SCRIPT_007__",
+      "chars": 6329,
+      "sha256": "52764195a9c227fa4abc633c4eb68ce97f14b28b00cc7e0f3bac9b4700ed5962"
+    },
+    {
+      "index": 8,
+      "path": "src/core/runtime-state.js",
+      "placeholder": "__YS_SCRIPT_008__",
+      "chars": 2134,
+      "sha256": "f90dbb5dc163026d15c64f8dcb8c280eb4f5d83370fee8ac2b76e4fe6ba80519"
+    },
+    {
+      "index": 9,
+      "path": "src/audio/audio-manager.js",
+      "placeholder": "__YS_SCRIPT_009__",
+      "chars": 18777,
+      "sha256": "44f6a3d895ffabe203da64e61a6a6e4a63968c12d4a0906b33d4152e2d483db3"
+    },
+    {
+      "index": 10,
+      "path": "src/core/progression.js",
+      "placeholder": "__YS_SCRIPT_010__",
+      "chars": 1360,
+      "sha256": "200731904bb1a025a748a784ec0e96930d16da32aa6ef16df25fa8575880b60e"
+    },
+    {
+      "index": 11,
+      "path": "src/presentation/assets.js",
+      "placeholder": "__YS_SCRIPT_011__",
+      "chars": 5566,
+      "sha256": "ce2fc511906205c2131ed5a33f8d27817c546fad51f8bf41b716a19b7cf3cb76"
+    },
+    {
+      "index": 12,
+      "path": "src/party/roster.js",
+      "placeholder": "__YS_SCRIPT_012__",
+      "chars": 4646,
+      "sha256": "0ef9782325fe72a4b3e165d26d630f3479eb8928225c3bb1e3f818f400993a4b"
+    },
+    {
+      "index": 13,
+      "path": "src/party/auto-fill.js",
+      "placeholder": "__YS_SCRIPT_013__",
+      "chars": 1163,
+      "sha256": "ad12521d120a4b9aa1506432f3be2277b9e64e92d2e043c2c5e7cc16caf64219"
+    },
+    {
+      "index": 14,
+      "path": "src/ui/navigation.js",
+      "placeholder": "__YS_SCRIPT_014__",
+      "chars": 954,
+      "sha256": "d276219c555068278856405eff7951eb7b3cb2d4baeb55378e2860be8edad731"
+    },
+    {
+      "index": 15,
+      "path": "src/shop/show-shop.js",
+      "placeholder": "__YS_SCRIPT_015__",
+      "chars": 178,
+      "sha256": "e02e63f861d1bab8472033c6871c0fda640b25ad5a612f5934d10c356196df8e"
+    },
+    {
+      "index": 16,
+      "path": "src/onboarding/core.js",
+      "placeholder": "__YS_SCRIPT_016__",
+      "chars": 3360,
+      "sha256": "4afaab7c0c9c9f56bfe8c969a7b4a72cd25cf6d14142ec8cb1fd873b653fd9d7"
+    },
+    {
+      "index": 17,
+      "path": "src/shop/shop.js",
+      "placeholder": "__YS_SCRIPT_017__",
+      "chars": 2055,
+      "sha256": "c5caba5d1ae84758d8a837f7142da8b796ae8abba46bc9707aae807a8de137f6"
+    },
+    {
+      "index": 18,
+      "path": "src/journey/journey.js",
+      "placeholder": "__YS_SCRIPT_018__",
+      "chars": 6399,
+      "sha256": "43fbef096948e1c9a3145edc404ad7780643dd4d46d6aa6e30a7294010f23a12"
+    },
+    {
+      "index": 19,
+      "path": "src/cups/arcade-cups.js",
+      "placeholder": "__YS_SCRIPT_019__",
+      "chars": 4049,
+      "sha256": "92d01fe338e405f3267a7a0ead7f5eeeba96f738a2420e501d38778bc439abfa"
+    },
+    {
+      "index": 20,
+      "path": "src/safari/legacy-safari.js",
+      "placeholder": "__YS_SCRIPT_020__",
+      "chars": 6061,
+      "sha256": "1bf354c981b86876c883816c12a489b8abe6ddccce1a5812740524faff9d5f89"
+    },
+    {
+      "index": 21,
+      "path": "src/pokedex/pokedex.js",
+      "placeholder": "__YS_SCRIPT_021__",
+      "chars": 1314,
+      "sha256": "dd5082f5732ac2e627275e5b26c74785f6fc1b0ab78b18d032a95928396056b7"
+    },
+    {
+      "index": 22,
+      "path": "src/core/render-app.js",
+      "placeholder": "__YS_SCRIPT_022__",
+      "chars": 558,
+      "sha256": "a84d183edee7e7730de8f59d27b39d51711cbc69f373f1425e44adc062fb368b"
+    },
+    {
+      "index": 23,
+      "path": "src/battle/model.js",
+      "placeholder": "__YS_SCRIPT_023__",
+      "chars": 3396,
+      "sha256": "af84e11688cd8d30856c63649781c681f29f74b128706f63ae23f1691d5ad8b4"
+    },
+    {
+      "index": 24,
+      "path": "src/battle/start.js",
+      "placeholder": "__YS_SCRIPT_024__",
+      "chars": 4899,
+      "sha256": "504b234231ab8b77df4c37e33f309031db8072cdeff1baa8f558b7d2c6878424"
+    },
+    {
+      "index": 25,
+      "path": "src/battle/ui.js",
+      "placeholder": "__YS_SCRIPT_025__",
+      "chars": 5067,
+      "sha256": "dc5c10c09ea7cc6957c294d4db3ed6d627a9303465e3027543cc0beb5387970f"
+    },
+    {
+      "index": 26,
+      "path": "src/battle/announce.js",
+      "placeholder": "__YS_SCRIPT_026__",
+      "chars": 205,
+      "sha256": "167317a17aa5deb0f7522827526f36758d0098d97f081a2cc5a7ccc135a82584"
+    },
+    {
+      "index": 27,
+      "path": "src/battle/ai.js",
+      "placeholder": "__YS_SCRIPT_027__",
+      "chars": 4787,
+      "sha256": "4e18d8d8ea1d9e73024b9ebed753a111c15c3dea82cfcd986264f6ed57847f33"
+    },
+    {
+      "index": 28,
+      "path": "src/battle/turns.js",
+      "placeholder": "__YS_SCRIPT_028__",
+      "chars": 6806,
+      "sha256": "bf9946209dd8a434adfe08b555ce810aeb7b3006e5ff77d328b8e7ae6805ab2e"
+    },
+    {
+      "index": 29,
+      "path": "src/battle/damage-status.js",
+      "placeholder": "__YS_SCRIPT_029__",
+      "chars": 3304,
+      "sha256": "f0bb02b77f30dbde85737426dd3b0d1e32b0a8df4249ba352cc3813aa8d91a47"
+    },
+    {
+      "index": 30,
+      "path": "src/battle/legacy-animation.js",
+      "placeholder": "__YS_SCRIPT_030__",
+      "chars": 616,
+      "sha256": "d019d3866cc2c86ef1634efb2a529a9aa60b84846ef2ee5bf83568886b2b32b3"
+    },
+    {
+      "index": 31,
+      "path": "src/battle/faint-end-turn.js",
+      "placeholder": "__YS_SCRIPT_031__",
+      "chars": 1856,
+      "sha256": "a9d29d4b4280e1b0e01be498fdb0df3967c7265904d0818a3eb882510392510a"
+    },
+    {
+      "index": 32,
+      "path": "src/battle/items-capture.js",
+      "placeholder": "__YS_SCRIPT_032__",
+      "chars": 3469,
+      "sha256": "6201053e8c1d2824e52fcf8d54290975b8581a9e5e9bf3499d153352c39d25d0"
+    },
+    {
+      "index": 33,
+      "path": "src/battle/switch.js",
+      "placeholder": "__YS_SCRIPT_033__",
+      "chars": 531,
+      "sha256": "1945be43dfa51d611f3e5aa2a2ea56a1c77954c3ca898f3f1589231775ec477b"
+    },
+    {
+      "index": 34,
+      "path": "src/battle/experience-evolution.js",
+      "placeholder": "__YS_SCRIPT_034__",
+      "chars": 1009,
+      "sha256": "c754c4363a7026642c566878c7cb11bb982fc480763ac91f45506bf50e865714"
+    },
+    {
+      "index": 35,
+      "path": "src/battle/end.js",
+      "placeholder": "__YS_SCRIPT_035__",
+      "chars": 9054,
+      "sha256": "213a27c6453d9915530651618ffe2b73099a4a521fd195a95474fc74dd83e3b4"
+    },
+    {
+      "index": 36,
+      "path": "src/battle/return.js",
+      "placeholder": "__YS_SCRIPT_036__",
+      "chars": 3800,
+      "sha256": "2d8b69ce356e7488a7473af950efacf440e2c81aaa38437882773125bc4b8959"
+    },
+    {
+      "index": 37,
+      "path": "src/integrations/webmcp.js",
+      "placeholder": "__YS_SCRIPT_037__",
+      "chars": 3223,
+      "sha256": "06d921e250d648b5e6caa6d81ce346e20817238fa3c2f883ec064d6eae07a5e6"
+    },
+    {
+      "index": 38,
+      "path": "src/save/save-tools.js",
+      "placeholder": "__YS_SCRIPT_038__",
+      "chars": 3754,
+      "sha256": "a8f9e2af8216e70c385a4e6ea2ccec3422131a88e5ed3b56fa2fb5ca382adaef"
+    },
+    {
+      "index": 39,
+      "path": "src/journey/kanto-map-legacy.js",
+      "placeholder": "__YS_SCRIPT_039__",
+      "chars": 567,
+      "sha256": "fabdb1ef1dde6e95e262334fbcc8240da0d6b2b0e4126369408a33867db0c90c"
+    },
+    {
+      "index": 40,
+      "path": "src/presentation/trainer-scenes.js",
+      "placeholder": "__YS_SCRIPT_040__",
+      "chars": 5462,
+      "sha256": "8cebb73bf6235cc8f2ee753b89f76626417a0ab0f0454ff930c545ba64cd1a6d"
+    },
+    {
+      "index": 41,
+      "path": "src/presentation/battle-runtime.js",
+      "placeholder": "__YS_SCRIPT_041__",
+      "chars": 28148,
+      "sha256": "fa28b104bf178dd97735ef737e3fa76a60a28ebfddfb1fc24e77b53bdafb92a7"
+    },
+    {
+      "index": 42,
+      "path": "src/presentation/move-effects.js",
+      "placeholder": "__YS_SCRIPT_042__",
+      "chars": 34661,
+      "sha256": "8545e28649dbf31ccde79dfa1ca990a38cca4d46c2b833fdd4f0acc2d823fe70"
+    },
+    {
+      "index": 43,
+      "path": "src/presentation/activation/battle-polish.js",
+      "placeholder": "__YS_SCRIPT_043__",
+      "chars": 133,
+      "sha256": "757b01278b0bd6255eee362dc511dbe34e9aed60a1f789406e3f02b7ebcb13ea"
+    },
+    {
+      "index": 44,
+      "path": "src/battle/stadium-upgrade.js",
+      "placeholder": "__YS_SCRIPT_044__",
+      "chars": 71401,
+      "sha256": "b661a899f8846dc0689bda5467b0f81ac5dcc69f57e7bdd92d13b9f02301243f"
+    },
+    {
+      "index": 45,
+      "path": "src/presentation/battle-decorators.js",
+      "placeholder": "__YS_SCRIPT_045__",
+      "chars": 35505,
+      "sha256": "7c7637f57922eadc24837d02393fee239e1477d50a221309969210ca4a455c74"
+    },
+    {
+      "index": 46,
+      "path": "src/party/party-tray.js",
+      "placeholder": "__YS_SCRIPT_046__",
+      "chars": 7692,
+      "sha256": "bbab609e9a8b1c74fb8f63b2dd13b7ad591af2fd18fe12b94e1c53f355de9737"
+    },
+    {
+      "index": 47,
+      "path": "src/player/avatar.js",
+      "placeholder": "__YS_SCRIPT_047__",
+      "chars": 3251,
+      "sha256": "cc476f026b396a2afdf3b415f30f771addead40b5daf8f97b07b2776b3ce410e"
+    },
+    {
+      "index": 48,
+      "path": "src/onboarding/intro-guide.js",
+      "placeholder": "__YS_SCRIPT_048__",
+      "chars": 21128,
+      "sha256": "d692b120f253fd7585e30cd4eafb0d4946a2026da203caebd13ed62017a590ad"
+    },
+    {
+      "index": 49,
+      "path": "src/pokemon/details.js",
+      "placeholder": "__YS_SCRIPT_049__",
+      "chars": 19281,
+      "sha256": "7ea463833a6773f004d3c9f9df7e9d9f8ee8a2159408173eed06a545d35d6323"
+    },
+    {
+      "index": 50,
+      "path": "src/ui/battle-entry-mobile.js",
+      "placeholder": "__YS_SCRIPT_050__",
+      "chars": 9481,
+      "sha256": "ea0435234877776ba46926ceeca0c0f31c19d66848d304dade8d86af8de71317"
+    },
+    {
+      "index": 51,
+      "path": "src/presentation/activation/battle-atmosphere.js",
+      "placeholder": "__YS_SCRIPT_051__",
+      "chars": 137,
+      "sha256": "dd757e7c370ca15e9f557cb9dedb97f42218b304a9ba6312969ed669e80bcca0"
+    },
+    {
+      "index": 52,
+      "path": "src/presentation/activation/decorator-battle-clarity.js",
+      "placeholder": "__YS_SCRIPT_052__",
+      "chars": 136,
+      "sha256": "4acacebc986e4e5f162fd56d4860f00867464c9560583a526d10ae247ca6f75a"
+    },
+    {
+      "index": 53,
+      "path": "src/ui/mobile-shell.js",
+      "placeholder": "__YS_SCRIPT_053__",
+      "chars": 3802,
+      "sha256": "59216a27ba60631a6024fe8cb9ef4752e9c4084cc63a68774ad721873bb7670a"
+    },
+    {
+      "index": 54,
+      "path": "src/presentation/activation/battle-cinematics.js",
+      "placeholder": "__YS_SCRIPT_054__",
+      "chars": 137,
+      "sha256": "bc86a3b2b84ef3b36aef3e0a0b4dc31db0fc0d368096e97a0d06098e08b70358"
+    },
+    {
+      "index": 55,
+      "path": "src/presentation/activation/decorator-battle-environments.js",
+      "placeholder": "__YS_SCRIPT_055__",
+      "chars": 141,
+      "sha256": "a08dc620c6194653e2e9584e240d5f45a3c909583ebda3f7cdf8bc4a0e62f305"
+    },
+    {
+      "index": 56,
+      "path": "src/bag/bag.js",
+      "placeholder": "__YS_SCRIPT_056__",
+      "chars": 8295,
+      "sha256": "2b9e025e36963a55f8ec0f33cf3bbe9c0e0639e8efcbc3da3c4921eef1b894dc"
+    },
+    {
+      "index": 57,
+      "path": "src/ui/app-shell.js",
+      "placeholder": "__YS_SCRIPT_057__",
+      "chars": 4960,
+      "sha256": "b6af861f351dbdeb9a768478823f9432e57c990e46fc89e7a0cdf343969b0aa5"
+    },
+    {
+      "index": 58,
+      "path": "src/presentation/activation/decorator-battle-readout.js",
+      "placeholder": "__YS_SCRIPT_058__",
+      "chars": 136,
+      "sha256": "5885943204c95e53626a4f76b0cb9a7bde63375ec9ca266d534bcf8908a76bf1"
+    },
+    {
+      "index": 59,
+      "path": "src/party/party-mobile.js",
+      "placeholder": "__YS_SCRIPT_059__",
+      "chars": 9939,
+      "sha256": "26f983504ced7c4b2271c64234db6a53e80f6351afb69da4ddf00e822cf843f6"
+    },
+    {
+      "index": 60,
+      "path": "src/presentation/activation/battle-flow.js",
+      "placeholder": "__YS_SCRIPT_060__",
+      "chars": 131,
+      "sha256": "5403603a4a80becdc94d1834fe6b3fe6d8967c0c4a98d5f1508379bec6f7c589"
+    },
+    {
+      "index": 61,
+      "path": "src/presentation/activation/battle-choreography.js",
+      "placeholder": "__YS_SCRIPT_061__",
+      "chars": 139,
+      "sha256": "f3fafacfa371af0655f421062cf07dedf5fe69a251307df03377e27d4ec7246d"
+    },
+    {
+      "index": 62,
+      "path": "src/presentation/activation/decorator-battle-refinement.js",
+      "placeholder": "__YS_SCRIPT_062__",
+      "chars": 139,
+      "sha256": "95f8b45ed5a638f567dbe34f1dfd8490b1bf9160e568a31c3db64b5a72d10ee8"
+    },
+    {
+      "index": 63,
+      "path": "src/presentation/activation/capture-effects.js",
+      "placeholder": "__YS_SCRIPT_063__",
+      "chars": 135,
+      "sha256": "ac6b00ef22107af0215927121fb56676c50668947e38a8f21859dde2a5dab7fd"
+    },
+    {
+      "index": 64,
+      "path": "src/items/source-icons.js",
+      "placeholder": "__YS_SCRIPT_064__",
+      "chars": 2540,
+      "sha256": "6ef5518ca55b259269bbc2b32e90c1c3eaccea37ddade9266086bd63b30243fe"
+    },
+    {
+      "index": 65,
+      "path": "src/items/item-system.js",
+      "placeholder": "__YS_SCRIPT_065__",
+      "chars": 6814,
+      "sha256": "eb96ca66448d375e4123fdf31f51af2a31828273a5fa5f68bc64d2cb9421ba06"
+    },
+    {
+      "index": 66,
+      "path": "src/journey/kanto-map.js",
+      "placeholder": "__YS_SCRIPT_066__",
+      "chars": 7364,
+      "sha256": "ecf6c2064338ecc45fe47d67775881064f822525350773e9053e408c30ceb4a0"
+    },
+    {
+      "index": 67,
+      "path": "src/presentation/activation/source-effects.js",
+      "placeholder": "__YS_SCRIPT_067__",
+      "chars": 138,
+      "sha256": "53dd68d6521dfbd907d94a6f2fab43a0cd21e93ceffb1032a96726fb2157f519"
+    },
+    {
+      "index": 68,
+      "path": "src/battle/challenge.js",
+      "placeholder": "__YS_SCRIPT_068__",
+      "chars": 2799,
+      "sha256": "7ba8c27440c28e5ab93b69d0992b12fcc414af29ee3af79e92f52f1b9d8d540c"
+    },
+    {
+      "index": 69,
+      "path": "src/ui/settings.js",
+      "placeholder": "__YS_SCRIPT_069__",
+      "chars": 1641,
+      "sha256": "28f89950176dafa180725de3a9aa7d6b7c6d95998d62164d414586203b4a0809"
+    },
+    {
+      "index": 70,
+      "path": "src/presentation/activation/signature-effects.js",
+      "placeholder": "__YS_SCRIPT_070__",
+      "chars": 137,
+      "sha256": "c0344ee65b123e6ebdd2fcdea4aad2da3a86b697e7e909bbdfb80d7940decb8d"
+    },
+    {
+      "index": 71,
+      "path": "src/presentation/battle-presentation-director.js",
+      "placeholder": "__YS_SCRIPT_071__",
+      "chars": 4481,
+      "sha256": "9b1a802a0d74e2e839ed892b01e709198b4c1fb406be7be787ba494f813af6eb"
+    },
+    {
+      "index": 72,
+      "path": "src/audio/retired-audio-v56-slot.js",
+      "placeholder": "__YS_SCRIPT_072__",
+      "chars": 79,
+      "sha256": "547fd4974adc5c97426d7e958545746fc7626de07c664420064b6450ae7c6a0b"
+    },
+    {
+      "index": 73,
+      "path": "src/progression/adventure-v58.js",
+      "placeholder": "__YS_SCRIPT_073__",
+      "chars": 11942,
+      "sha256": "0ca002ed4ccaf9eda1b2e1d7a2c77c4ff48335fde307ddffb1b6437c310640ce"
+    },
+    {
+      "index": 74,
+      "path": "src/core/retired-v61-slot.js",
+      "placeholder": "__YS_SCRIPT_074__",
+      "chars": 212,
+      "sha256": "fa761fa4a698975bf556a7cce881b6b9975212f5d6cf2cce719299a653121e8b"
+    },
+    {
+      "index": 75,
+      "path": "src/journey/journey-controller.js",
+      "placeholder": "__YS_SCRIPT_075__",
+      "chars": 8667,
+      "sha256": "e2c89e2b4e0a530823196597babaea9b039f030cacc2b780dfeaaa448941b770"
+    },
+    {
+      "index": 76,
+      "path": "src/pokecenter/pokecenter.js",
+      "placeholder": "__YS_SCRIPT_076__",
+      "chars": 17639,
+      "sha256": "71603f9001c5c58626385bfbe09444af24756ddbdb78f9c9bba98d3d78a93df9"
+    },
+    {
+      "index": 77,
+      "path": "src/ui/interface-v42.js",
+      "placeholder": "__YS_SCRIPT_077__",
+      "chars": 23560,
+      "sha256": "905887b22c821046d7e7dc5989afe9f91abd94dffecf47fccf12269c583157aa"
+    },
+    {
+      "index": 78,
+      "path": "src/presentation/activation/decorator-polish-v62.js",
+      "placeholder": "__YS_SCRIPT_078__",
+      "chars": 132,
+      "sha256": "7bafaf0f9ec44067bffe2e558128cc1edab396fe6dc611d066cc02dba14dddb8"
+    },
+    {
+      "index": 79,
+      "path": "src/safari/safari-b62.js",
+      "placeholder": "__YS_SCRIPT_079__",
+      "chars": 28091,
+      "sha256": "679f9a42324f75b9043aeb82398588d66b95e2f1d370132a3722dfee13e4de08"
+    },
+    {
+      "index": 80,
+      "path": "src/api/yellow-stadium.js",
+      "placeholder": "__YS_SCRIPT_080__",
+      "chars": 2883,
+      "sha256": "f5a4af99260cf4fe5c8434431348f2ccad3460ca59e8aa796fa89a578c7a520e"
+    },
+    {
+      "index": 81,
+      "path": "src/ui/ui2-final.js",
+      "placeholder": "__YS_SCRIPT_081__",
+      "chars": 8911,
+      "sha256": "1c6de4ea22bd2f1b7b0bba5978eb0075fb3da37ba21b384ec046f29d48912809"
+    }
+  ],
+  "styles": [
+    {
+      "index": 0,
+      "path": "src/styles/tokens.css",
+      "placeholder": "__YS_STYLE_TOKENS__",
+      "chars": 2161,
+      "sha256": "718214fad480074f908167fb9837f8acb7c572c9aab03bad1ec6ed31468b7714"
+    },
+    {
+      "index": 1,
+      "path": "src/styles/layout.css",
+      "placeholder": "__YS_STYLE_LAYOUT__",
+      "chars": 36287,
+      "sha256": "ea0b5087826b2af2c52cc7fcd4dec1645dc540511a742b02074b86ee81a0d6ca"
+    },
+    {
+      "index": 2,
+      "path": "src/styles/onboarding.css",
+      "placeholder": "__YS_STYLE_ONBOARDING__",
+      "chars": 24457,
+      "sha256": "3591c19ce8f471462d8cc293a347080c7f30849c84cec5b90838bf95df972f76"
+    },
+    {
+      "index": 3,
+      "path": "src/styles/party.css",
+      "placeholder": "__YS_STYLE_PARTY__",
+      "chars": 42908,
+      "sha256": "b27a4900e16d7acb59cf52084915ac99adf7765a3d7751b3a1f2350c731a9e85"
+    },
+    {
+      "index": 4,
+      "path": "src/styles/shop.css",
+      "placeholder": "__YS_STYLE_SHOP__",
+      "chars": 2684,
+      "sha256": "91e89da45e0d2b79ea18566262a5465d3043efba64ef0d224c0bfb7778e9347f"
+    },
+    {
+      "index": 5,
+      "path": "src/styles/cups.css",
+      "placeholder": "__YS_STYLE_CUPS__",
+      "chars": 12903,
+      "sha256": "a6ad0bd62952e9058c422a36730874069d69ab0042d26368d524d7eba74254d6"
+    },
+    {
+      "index": 6,
+      "path": "src/styles/journey.css",
+      "placeholder": "__YS_STYLE_JOURNEY__",
+      "chars": 32467,
+      "sha256": "8e84747b817916810a1509f05f6ecf58283ede7a46a686186b516dd4f750e4c2"
+    },
+    {
+      "index": 7,
+      "path": "src/styles/safari.css",
+      "placeholder": "__YS_STYLE_SAFARI__",
+      "chars": 24572,
+      "sha256": "366b0f004835a289b7925709a4ac5098ea13463b8e531b7514e6bdf33ac4fc56"
+    },
+    {
+      "index": 8,
+      "path": "src/styles/pokedex.css",
+      "placeholder": "__YS_STYLE_POKEDEX__",
+      "chars": 3876,
+      "sha256": "3a6ffffb515295d55ab65c965a66b511f57db82efb49906dcda9bb4430274d2a"
+    },
+    {
+      "index": 9,
+      "path": "src/styles/bag.css",
+      "placeholder": "__YS_STYLE_BAG__",
+      "chars": 20732,
+      "sha256": "02f721d0e43ed8624a9af55340fa8715dacc5c902f8fa7812138a8ea94b6b2fa"
+    },
+    {
+      "index": 10,
+      "path": "src/styles/pokecenter.css",
+      "placeholder": "__YS_STYLE_POKECENTER__",
+      "chars": 12983,
+      "sha256": "4cd1300f0bc1c15518bc16ad8de3c975f160e75e2886abd8dea0b6f9f63010a6"
+    },
+    {
+      "index": 11,
+      "path": "src/styles/battle.css",
+      "placeholder": "__YS_STYLE_BATTLE__",
+      "chars": 74996,
+      "sha256": "c355718625c6717d82460fc40cc737ecd0ea69ef3eff2523645cca43d9fc0c1f"
+    },
+    {
+      "index": 12,
+      "path": "src/styles/modal-rewards.css",
+      "placeholder": "__YS_STYLE_MODAL_REWARDS__",
+      "chars": 11592,
+      "sha256": "2e154cfe06401997760531838ce1d19246d1cdd9cd2a059a1c470de0b3c9a0d4"
+    },
+    {
+      "index": 13,
+      "path": "src/styles/animations.css",
+      "placeholder": "__YS_STYLE_ANIMATIONS__",
+      "chars": 8579,
+      "sha256": "dc1b7e52d9f8b7b42f157c2a03ee1172946f4d7782fb95bf5798c20c7f20b6f4"
+    }
+  ],
+  "canonical_sha256": "6b30a8c5ad53da1975cb5cf3a0a33fe5cc919a95682bb4b612e8c03e3c682529",
+  "canonical_phase": "G2.1",
+  "canonical_assets_sha256": "5f8d08c81123556f2215272530fb85f980d485fa3c0d0b13fcc7dc8fd1175deb",
+  "asset_count": 450,
+  "asset_bytes": 13405715
+}

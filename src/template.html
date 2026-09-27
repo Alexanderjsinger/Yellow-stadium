@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+  <head><script>__YS_SCRIPT_000__</script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#07111f" />
+    <meta name="description" content="Build a team from the original 151, battle for experience and coins, shop for items, and catch wild Pokémon in Safari mode." />
+    <title>Yellow Stadium</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='29' fill='%23f5c542' stroke='%2307111f' stroke-width='6'/%3E%3Cpath d='M4 32h56' stroke='%2307111f' stroke-width='6'/%3E%3Ccircle cx='32' cy='32' r='10' fill='%23f5f7eb' stroke='%2307111f' stroke-width='6'/%3E%3C/svg%3E" />
+    <style>__YS_STYLE_TOKENS__</style>
+    <style>__YS_STYLE_LAYOUT__</style>
+    <style>__YS_STYLE_ONBOARDING__</style>
+    <style>__YS_STYLE_PARTY__</style>
+    <style>__YS_STYLE_SHOP__</style>
+    <style>__YS_STYLE_CUPS__</style>
+    <style>__YS_STYLE_JOURNEY__</style>
+    <style>__YS_STYLE_SAFARI__</style>
+    <style>__YS_STYLE_POKEDEX__</style>
+    <style>__YS_STYLE_BAG__</style>
+    <style>__YS_STYLE_POKECENTER__</style>
+    <style>__YS_STYLE_BATTLE__</style>
+    <style>__YS_STYLE_MODAL_REWARDS__</style>
+    <style>__YS_STYLE_ANIMATIONS__</style>
+</head>
+  <body>
+  <noscript><div style="margin:16px;padding:16px;border:1px solid #8fa7ba;background:#102235;color:#fff;font:600 16px/1.4 system-ui,-apple-system,sans-serif">Yellow Stadium needs JavaScript to run. This file preview cannot play the game. Open the hosted HTTPS game link in Safari instead.</div></noscript>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand" aria-label="Yellow Stadium">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>YELLOW <b>STADIUM</b></span>
+        </div>
+        <div class="record" aria-label="Player record">
+          <span class="coin-bank"><i aria-hidden="true">●</i><b id="coins">0</b> COINS</span>
+          <span><b id="collection-count">0</b> / 151</span>
+          <span><b id="wins">0</b> WINS</span>
+          <span><b id="streak">0</b> STREAK</span>
+          <span class="trainer-identity"><b id="trainer-name">ROOKIE</b> TRAINER</span>
+          <button id="music-toggle" class="music-button" type="button" aria-pressed="false" aria-label="Mute music">
+            <span aria-hidden="true">♪</span><b>MUSIC ON</b>
+          </button>
+          <button id="reset-save" class="text-button" type="button">RESET SAVE</button>
+        </div>
+      </header>
+      <details class="save-tools" id="save-tools">
+        <summary>PROGRESS · <span id="save-status" role="status">Starting…</span></summary>
+        <p>Progress saves in this browser on this device. Use the same browser and game link each time. Export a backup before switching browsers or clearing website data.</p>
+        <div class="save-actions">
+          <button id="save-now" type="button" class="secondary-button">SAVE NOW</button>
+          <button id="export-save" type="button" class="secondary-button">EXPORT BACKUP</button>
+          <label class="secondary-button">RESTORE BACKUP <input id="import-save" type="file" accept=".json,application/json"></label>
+          <a href="https://yellow-stadium.alexander-jeffrey-si.chatgpt.site" target="_blank" rel="noopener">Open game directly ↗</a>
+        </div>
+        <p id="save-help" aria-live="polite"></p>
+      </details>
+
+      <nav id="mode-nav" class="mode-nav" aria-label="Game areas" hidden>
+        <button id="collection-tab" class="nav-button active" type="button">POKÉMON BOX</button>
+        <button id="cups-tab" class="nav-button" type="button">JOURNEY</button>
+        <button id="trainer-tab" class="nav-button" type="button">CUPS</button>
+        <button id="safari-tab" class="nav-button" type="button">SAFARI</button>
+        <button id="pokedex-tab" class="nav-button" type="button">POKÉDEX</button>
+        <button id="shop-tab" class="nav-button" type="button">POKÉ MART</button><button id="bag-tab" class="nav-button" type="button">BAG</button><button id="settings-tab" class="nav-button" type="button">SETTINGS</button>
+        <button id="joke-guide" class="nav-button guide-button" type="button">PROF. JOKE</button>
+      </nav>
+
+      <section id="onboarding-screen" class="screen onboarding-screen" hidden>
+        <div id="partner-step">
+          <p class="eyebrow">BEGIN YOUR JOURNEY</p>
+          <h1>Choose your partner.</h1>
+          <p class="onboarding-copy">Professor Joke has offered you one Pokémon. Choose carefully—then investigate the two eggs rustling in your bag.</p>
+          <div id="starter-grid" class="starter-grid"></div>
+        </div>
+        <div id="egg-step" hidden>
+          <p class="eyebrow">SOMETHING IS RUSTLING IN YOUR BAG</p>
+          <h1>Your eggs are hatching.</h1>
+          <p class="onboarding-copy">Tap each egg to discover two different, unevolved Pokémon from the original 151.</p>
+          <div id="egg-grid" class="egg-grid"></div>
+          <button id="begin-journey" class="primary-button" type="button" disabled>OPEN PARTY <span>›</span></button>
+        </div>
+      </section>
+
+      <section id="select-screen" class="screen select-screen" hidden>
+        <div class="screen-heading">
+          <div>
+            <p class="eyebrow">YOUR PARTY</p>
+            <h1>Build your team.</h1>
+            <p class="rules-note">Your Pokémon Box: tap MANAGE PARTY to add, remove, or load a saved team. Tap a Pokémon to view its details.</p><button id="box-manage-party" class="primary-button" type="button">MANAGE PARTY · ADD / REMOVE / PRESETS ›</button>
+          </div>
+          <div class="team-builder-controls">
+            <span>PARTY CAPACITY</span>
+            <div><button id="team-size-3" type="button" hidden>3</button><button id="team-size-6" class="active" type="button">6</button></div>
+            <div class="selection-readout"><span id="pick-count">0</span> / <b id="pick-limit">6</b></div>
+          </div>
+        </div>
+
+        <div id="roster" class="roster" aria-label="Party Pokémon"></div>
+        <details id="party-workshop" class="workshop"><summary>TRAINING · MOVES & HELD ITEMS</summary><div id="training-content"></div></details>
+        <div class="selection-footer">
+          <div id="selection-note" class="selection-note">Build an adventure party of up to six Pokémon. Kanto Cups use a temporary three-Pokémon roster.</div>
+          <div class="mode-actions">
+            <button id="start-safari" class="secondary-button" type="button" disabled>SAFARI FIELD</button>
+            <button id="start-battle" class="primary-button" type="button" disabled>ENTER CUP ARCADE <span aria-hidden="true">›</span></button>
+            <button id="start-duo" class="primary-button" type="button" disabled hidden>DOUBLES <span aria-hidden="true">›</span></button>
+          </div>
+        </div>
+      </section>
+
+      <section id="settings-screen" class="screen" hidden><div class="screen-heading"><div><p class="eyebrow">PLAYER OPTIONS</p><h1>Settings.</h1></div></div><label class="exp-setting"><input id="shared-exp" type="checkbox" checked><span><strong>SHARED EXP</strong><small>When on, your whole battle team earns experience. When off, only Pokémon that entered the field earn experience.</small></span></label></section>
+
+      <section id="cups-screen" class="screen cups-screen" hidden>
+        <div class="screen-heading"><div><p class="eyebrow">KANTO JOURNEY</p><h1>Travel the region. Earn all eight badges.</h1><p id="cup-summary" class="rules-note"></p></div><div id="badge-count" class="selection-readout"><span>0</span> / 8</div></div>
+        <p class="map-help">Tap a destination to travel there. Completed Gym challenges can be replayed.</p>
+        <div class="kanto-scroll" tabindex="0" aria-label="Kanto journey map. Tap a badge to inspect or replay a Cup.">
+          <div class="kanto-map" id="kanto-map">
+            <img loading="lazy" decoding="async" data-demand-src="./assets/maps/kanto-journey-v36.png" alt="Illustrated Kanto region, from Pallet Town to the Indigo Plateau" width="1536" height="1024">
+            <svg class="journey-route" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="30,25 59,17 61,55 43,41 61,82 61,36 24,86 17,54 10,10" /></svg>
+            <div id="kanto-markers"></div><div id="journey-avatar" class="journey-avatar" aria-label="Your trainer location" aria-hidden="true"><img src="./assets/trainers/cooltrainerm.png" alt=""></div>
+          </div>
+        </div>
+        <div class="map-legend"><span>● Next challenge</span><span>✓ Badge earned</span><span>○ Still to unlock</span></div>
+        <div id="map-stop" class="map-stop" aria-live="polite"></div>
+        <div id="badge-grid" class="badge-grid" hidden></div>
+        <div id="elite-panel" class="elite-panel"></div>
+      </section>
+
+      <section id="trainer-screen" class="screen trainer-screen" hidden>
+        <div class="screen-heading"><div><p class="eyebrow">KANTO CUP ARCADE</p><h1>Choose a Cup. Survive every stage.</h1><p class="rules-note">Fight through trainers, legendary interruptions and bizarre roadblocks. Every run ends with a boss battle.</p></div><div class="streak-panel"><span>CUPS CLEARED</span><b id="arcade-clear-count">0 / 3</b><b id="trainer-streak" hidden>0</b></div></div>
+        <div id="arcade-cup-grid" class="arcade-cup-grid" aria-label="Arcade Cups"></div>
+        <section class="arcade-run-panel" aria-live="polite">
+          <header><div><p class="eyebrow">SELECTED RUN</p><h2 id="arcade-run-title">POKÉ CUP</h2><p id="arcade-run-copy"></p></div><div id="arcade-boss" class="arcade-boss"></div></header>
+          <div id="arcade-stage-track" class="arcade-stage-track"></div>
+          <button id="arcade-start" class="primary-button" type="button">START POKÉ CUP <span>›</span></button>
+        </section>
+        <button id="prepare-singles" type="button" hidden>BUILD TEAM</button><button id="prepare-duos" type="button" hidden>BUILD TEAM</button><div id="trainer-gallery" hidden></div><span id="tower-run" hidden></span><span id="tower-milestone" hidden></span>
+      </section>
+
+      <section id="safari-screen" class="screen safari-screen" hidden>
+        <div class="screen-heading"><div><p class="eyebrow">SAFARI SAVANNAH</p><h1>Choose your encounter.</h1><p id="safari-tier-copy" class="rules-note"></p></div><button id="refresh-safari" class="secondary-button" type="button">NEW AREA</button></div>
+        <div id="safari-team-warning" class="field-warning" hidden>Add at least one healthy Pokémon to your six-slot Party before entering an encounter.</div>
+        <div id="safari-field" class="safari-field" aria-label="Safari Pokémon field"></div>
+        <p class="safari-legend"><span>CALM</span> Pokémon wait for you to approach. <b>AGGRESSIVE</b> Pokémon may rush into battle.</p>
+      </section>
+
+      <section id="pokedex-screen" class="screen pokedex-screen" hidden>
+        <div class="screen-heading"><div><p class="eyebrow">KANTO POKÉDEX</p><h1>Seen and caught.</h1><p class="rules-note">Evolved forms count as caught only after you evolve them.</p></div><div class="dex-totals"><span>SEEN <b id="seen-count">0</b></span><span>CAUGHT <b id="caught-count">0</b></span></div></div>
+        <div id="pokedex-grid" class="pokedex-grid"></div>
+      </section>
+
+      <section id="shop-screen" class="screen shop-screen" hidden>
+        <div class="screen-heading">
+          <div>
+            <p class="eyebrow">POKÉ MART</p>
+            <h1>Stock up for your journey.</h1>
+            <p class="rules-note">Spend coins earned in battle. Items stay in your bag until used.</p>
+          </div>
+          <div class="shop-balance"><span>●</span><b id="shop-coins">0</b></div>
+        </div>
+        <div id="shop-grid" class="shop-grid"></div>
+      </section>
+
+      <section id="bag-screen" class="screen bag-screen" hidden><div class="screen-heading"><div><p class="eyebrow">TRAINER GEAR</p><h1>Your Bag.</h1><p class="rules-note">Your items and earned badges. Buy supplies at the Poké Mart.</p></div><button id="bag-shop-link" class="secondary-button" type="button">VISIT POKÉ MART ›</button></div><div class="bag-tabs" role="tablist" aria-label="Bag sections"><button type="button" role="tab" data-bag-tab="balls" aria-selected="true">CAPTURE</button><button type="button" role="tab" data-bag-tab="healing" aria-selected="false">RECOVERY</button><button type="button" role="tab" data-bag-tab="evo" aria-selected="false">GROWTH</button><button type="button" role="tab" data-bag-tab="held" aria-selected="false">HELD</button><button type="button" role="tab" data-bag-tab="record" aria-selected="false">RECORD</button></div><div id="bag-panel-root" class="bag-grid"></div></section>
+
+      <section id="battle-screen" class="screen battle-screen" hidden>
+        <div class="match-strip">
+          <span id="match-type">EXHIBITION</span>
+          <strong id="opponent-profile"><img id="trainer-sprite" alt=""> <span>EXHIBITION MATCH</span></strong>
+          <span id="turn-count">TURN 1</span>
+        </div>
+
+        <div class="arena-wrap">
+          <div class="crowd" aria-hidden="true"></div>
+          <div class="arena" id="battle-arena">
+            <div id="battle-world" class="battle-world" aria-hidden="true"><div class="battle-floor"></div></div>
+            <div class="camera-controls"><button id="camera-toggle" type="button" aria-pressed="true">CAMERA · DYNAMIC</button><button id="battle-speed" type="button">SPEED · CLASSIC</button></div>
+            <div id="move-banner" class="move-banner" hidden></div>
+            <div id="impact-label" class="impact-label" hidden></div>
+            <div id="enemy-panel" class="fighter enemy-fighter">
+              <div class="status-card">
+                <div class="status-title"><strong id="enemy-name">RHYDON</strong><span id="enemy-level">L50</span></div>
+                <div class="hp-line"><span>HP</span><div class="hp-track"><i id="enemy-hp-bar"></i></div></div>
+                <div id="enemy-status" class="status-tag"></div>
+                <div id="enemy-battle-detail" class="battle-detail"></div>
+                <div id="enemy-team-pips" class="team-pips" aria-label="Opponent team"></div>
+              </div>
+              <div class="sprite-pad enemy-pad">
+                <img id="enemy-sprite" class="battle-sprite enemy-sprite" alt="" />
+                <span class="shadow"></span>
+              </div>
+              <div id="enemy-partner" class="duo-partner enemy-duo" hidden><img id="enemy-partner-sprite" alt=""><span id="enemy-partner-name"></span></div>
+            </div>
+
+            <div id="player-panel" class="fighter player-fighter">
+              <div class="sprite-pad player-pad">
+                <img id="player-sprite" class="battle-sprite player-sprite" alt="" />
+                <span class="shadow"></span>
+              </div>
+              <div class="status-card player-status-card">
+                <div class="status-title"><strong id="player-name">PIKACHU</strong><span id="player-level">L50</span></div>
+                <div class="hp-line"><span>HP</span><div class="hp-track"><i id="player-hp-bar"></i></div></div>
+                <div class="hp-numbers"><span id="player-hp">0</span> / <span id="player-max-hp">0</span></div>
+                <div id="player-status" class="status-tag"></div>
+                <div id="player-battle-detail" class="battle-detail"></div>
+                <div id="player-team-pips" class="team-pips" aria-label="Your team"></div>
+              </div>
+              <div id="player-partner" class="duo-partner player-duo" hidden><img id="player-partner-sprite" alt=""><span id="player-partner-name"></span></div>
+            </div>
+
+            <div id="effect-flash" class="effect-flash" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <div class="battle-console">
+          <div id="field-readout" class="field-readout" aria-live="polite"></div><div class="battle-exit-actions"><button id="battle-retreat" class="secondary-button" type="button">RETREAT</button></div>
+          <div class="announcer">
+            <span class="announcer-label">ANNOUNCER</span>
+            <p id="message" aria-live="polite">The crowd is ready. Choose a move!</p>
+            <details class="battle-history"><summary>BATTLE LOG</summary><ol id="battle-log"></ol></details>
+          </div>
+          <div class="command-area">
+            <div id="moves" class="moves" aria-label="Moves"></div>
+            <div class="team-column">
+              <span class="command-label">YOUR TEAM</span>
+              <div id="team-buttons" class="team-buttons"></div>
+              <span class="command-label bag-label">BAG</span>
+              <div id="battle-items" class="battle-items"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="trainer-scene" class="modal trainer-scene" hidden>
+      <section class="scene-card" role="dialog" aria-modal="true" aria-labelledby="scene-title">
+        <p id="scene-kicker" class="eyebrow"></p>
+        <h2 id="scene-title"></h2>
+        <div class="scene-stage"><img id="scene-trainer" alt=""><span id="scene-badge" class="kanto-badge" hidden></span></div>
+        <div class="scene-dialogue">
+          <p id="scene-quote"></p>
+          <div id="scene-plan" class="encounter-plan" hidden>
+            <p><strong>THE PLAN</strong><span id="scene-plan-copy"></span></p>
+            <p><strong>YOUR OPENING</strong><span id="scene-counter-copy"></span></p>
+          </div>
+          <button id="scene-continue" type="button" class="primary-button">LET’S BATTLE ▸</button>
+        </div>
+      </section>
+    </div>
+    <div id="result-modal" class="modal" hidden>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="result-title">
+        <p class="eyebrow">MATCH COMPLETE</p>
+        <h2 id="result-title">VICTORY!</h2>
+        <p id="result-copy"></p>
+        <div id="reward" class="reward"></div>
+        <button id="continue-button" class="primary-button" type="button">BACK TO PARTY <span>›</span></button>
+      </div>
+    </div>
+
+    <script>__YS_SCRIPT_001__</script>
+    <script>__YS_SCRIPT_002__</script><script>__YS_SCRIPT_003__</script><script>__YS_SCRIPT_004__</script><script>__YS_SCRIPT_005__</script><script>__YS_SCRIPT_006__</script><script>__YS_SCRIPT_007__</script><script>__YS_SCRIPT_008__</script><script>__YS_SCRIPT_009__</script><script>__YS_SCRIPT_010__</script><script>__YS_SCRIPT_011__</script><script>__YS_SCRIPT_012__</script><script>__YS_SCRIPT_013__</script>
+<script>__YS_SCRIPT_014__</script><script>__YS_SCRIPT_015__</script><script>__YS_SCRIPT_016__</script><script>__YS_SCRIPT_017__</script><script>__YS_SCRIPT_018__</script><script>__YS_SCRIPT_019__</script><script>__YS_SCRIPT_020__</script><script>__YS_SCRIPT_021__</script><script>__YS_SCRIPT_022__</script><script>__YS_SCRIPT_023__</script><script>__YS_SCRIPT_024__</script><script>__YS_SCRIPT_025__</script><script>__YS_SCRIPT_026__</script><script>__YS_SCRIPT_027__</script><script>__YS_SCRIPT_028__</script><script>__YS_SCRIPT_029__</script><script>__YS_SCRIPT_030__</script><script>__YS_SCRIPT_031__</script><script>__YS_SCRIPT_032__</script><script>__YS_SCRIPT_033__</script><script>__YS_SCRIPT_034__</script><script>__YS_SCRIPT_035__</script><script>__YS_SCRIPT_036__</script><script>__YS_SCRIPT_037__</script>
+    <script>__YS_SCRIPT_038__</script>
+    <script>__YS_SCRIPT_039__</script>
+    <script>__YS_SCRIPT_040__</script>
+    <script>__YS_SCRIPT_041__</script>
+    <script>__YS_SCRIPT_042__</script>
+    <script>__YS_SCRIPT_043__</script>
+    <script>__YS_SCRIPT_044__</script>
+    <script>__YS_SCRIPT_045__</script>
+    <script>__YS_SCRIPT_046__</script>
+    <script>__YS_SCRIPT_047__</script>
+    <script>__YS_SCRIPT_048__</script>
+    <script>__YS_SCRIPT_049__</script>
+    <script>__YS_SCRIPT_050__</script>
+    <script>__YS_SCRIPT_051__</script>
+    <script>__YS_SCRIPT_052__</script>
+    <script>__YS_SCRIPT_053__</script>
+    <script>__YS_SCRIPT_054__</script>
+    <script>__YS_SCRIPT_055__</script>
+    <script>__YS_SCRIPT_056__</script>
+    <script>__YS_SCRIPT_057__</script>
+    <script>__YS_SCRIPT_058__</script>
+    <script>__YS_SCRIPT_059__</script>
+    <script>__YS_SCRIPT_060__</script>
+    <script>__YS_SCRIPT_061__</script>
+<script>__YS_SCRIPT_062__</script>
+<script>__YS_SCRIPT_063__</script>
+<script>__YS_SCRIPT_064__</script>
+
+<script>__YS_SCRIPT_065__</script>
+<script>__YS_SCRIPT_066__</script>
+<script>__YS_SCRIPT_067__</script>
+<script>__YS_SCRIPT_068__</script>
+<script>__YS_SCRIPT_069__</script>
+<script>__YS_SCRIPT_070__</script>
+<script>__YS_SCRIPT_071__</script>
+<script>__YS_SCRIPT_072__</script>
+<script>__YS_SCRIPT_073__</script>
+
+<script>__YS_SCRIPT_074__</script>
+<script>__YS_SCRIPT_075__</script>
+<script>__YS_SCRIPT_076__</script>
+<script>__YS_SCRIPT_077__</script>
+
+<script>__YS_SCRIPT_078__</script>
+
+
+<script>__YS_SCRIPT_079__</script>
+
+
+<script>__YS_SCRIPT_080__</script>
+<script>__YS_SCRIPT_081__</script>
+</body>
+</html>

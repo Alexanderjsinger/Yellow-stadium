@@ -1,0 +1,58 @@
+{
+  "base": {
+    "director": true,
+    "version": "C2",
+    "publicFacade": true,
+    "internalOnWindow": "undefined",
+    "privateRegistry": "object",
+    "privateKeys": [
+      "AttackEffects",
+      "BattleAtmosphere",
+      "BattleCaptureV47",
+      "BattleChoreography",
+      "BattleCinematics",
+      "BattleDirectorV55",
+      "BattleEffectsV51",
+      "BattleFlow",
+      "BattlePolish",
+      "BattlePresentation"
+    ],
+    "retiredGlobals": {
+      "AttackEffects": "undefined",
+      "BattlePolish": "undefined",
+      "BattleFlow": "undefined",
+      "BattlePresentation": "undefined",
+      "BattleChoreography": "undefined",
+      "BattleEffectsV51": "undefined",
+      "BattleDirectorV55": "undefined",
+      "BattleCinematics": "undefined",
+      "BattleAtmosphere": "undefined",
+      "BattleCaptureV47": "undefined",
+      "BattleEnvironments": "undefined",
+      "BattleReadout": "undefined",
+      "BattleClarity": "undefined",
+      "BattleRefinement": "undefined",
+      "StadiumShow": "undefined",
+      "V62Polish": "undefined"
+    }
+  },
+  "battleBefore": {
+    "turn": 1,
+    "locked": false,
+    "hpP": 110,
+    "hpE": 187,
+    "selected": 3
+  },
+  "battleAfter": {
+    "alive": true,
+    "turn": 2,
+    "locked": false,
+    "over": false,
+    "hpP": 53,
+    "hpE": 164,
+    "phase": "recovery",
+    "fxLayers": 0
+  },
+  "pageErrors": [],
+  "consoleErrors": []
+}

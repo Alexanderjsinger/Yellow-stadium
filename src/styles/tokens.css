@@ -1,0 +1,109 @@
+/* tokens.css — consolidated from RC8 recovery style slots (G1 CSS consolidation). */
+
+:root {
+  --ink: #07111f;
+  --navy: #0b1e35;
+  --navy-2: #102b49;
+  --blue: #1b5f88;
+  --yellow: #f5c542;
+  --cream: #f5f7eb;
+  --mint: #75e0b1;
+  --red: #ef5c5c;
+  --muted: #bbcad7;
+  --line: rgba(192,216,230,.18);
+  font-family: "Arial Narrow", "Roboto Condensed", system-ui, sans-serif;
+  color: var(--cream);
+  background: var(--ink);
+  --mobile-dock: 70px;
+  --ui-bg: #08101d;
+  --ui-surface-1: #0b1526;
+  --ui-surface-2: #0f1b2e;
+  --ui-surface-3: #15243b;
+  --ui-line: #1c2c45;
+  --ui-line-strong: #2d4262;
+  --ui-text: #eef2f8;
+  --ui-muted: #9fb0c8;
+  --ui-accent: #f2c14e;
+  --ui-on-accent: #1a1407;
+  --ui-hp: #6fdcaa;
+  --ui-xp: #6aa9ee;
+  --ui-danger: #ff8a7a;
+  --ui-gutter: 16px;
+  --ui-gap: 12px;
+  --ui-group: 8px;
+  --ui-radius: 18px;
+  --ui-touch: 44px;
+  --ui-header: 56px;
+  --ui-nav: 64px;
+  --ui-column: 480px;
+  --ui-border: #2c4863;
+  --ui-panel: #0d2134;
+  --ui-panel-2: #10283f;
+  --ui-copy: #b9ccda;
+  --ui-strong: #f6f8fb;
+  --ui2-bg: #071421;
+  --ui2-navy: #0b3552;
+  --ui2-blue: #0f6b94;
+  --ui2-cyan: #41d9ef;
+  --ui2-cyan-soft: #bfefff;
+  --ui2-paper: #f5fbff;
+  --ui2-paper-2: #dcecf5;
+  --ui2-ink: #10263b;
+  --ui2-yellow: #ffd84d;
+  --ui2-gold: #d99b26;
+  --ui2-red: #ee5f62;
+  --ui2-green: #54c978;
+  --ui2-line: #62cfe2;
+  --ui2-muted: #8daabd;
+  --ui2-radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 50% -15%,#1c3c57 0,#0b1929 48%,#07111f 100%);
+  line-height: 1.4;
+}
+
+button {
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+
+  *::before {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+
+  *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+
+}
+
+@media (max-width:359px) {
+  :root {
+    --ui-gutter: 12px;
+  }
+
+}

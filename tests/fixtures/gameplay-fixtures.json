@@ -1,0 +1,26 @@
+{
+  "rng_seed": 1592594996,
+  "damage": {
+    "attacker": "pikachu",
+    "defender": "squirtle",
+    "level": 50,
+    "move": "thunderbolt",
+    "expected_damage": 149,
+    "expected_critical": false
+  },
+  "journey": {
+    "gym_index": 0,
+    "boss_round": 2,
+    "expected_badges_after_win": 1,
+    "expected_coin_gain": 250
+  },
+  "safari": {
+    "species": "caterpie",
+    "level": 8,
+    "ball": "masterBall"
+  },
+  "turn": {
+    "enemy_hp": 117,
+    "player_hp": 60
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "yellow-stadium-rc8-recovered",
+  "version": "4.0.0-g2.1",
+  "private": true,
+  "description": "Canonical Yellow Stadium build with F1.1 Journey service isolation plus G1 CSS consolidation and G2 build-time CSS minification.",
+  "scripts": {
+    "build": "python tools/build.py",
+    "verify": "python tools/verify.py",
+    "test:syntax": "python tools/check_source.py",
+    "test:contracts": "python tests/contracts.py",
+    "audit": "python tools/architecture_audit.py",
+    "test": "npm run verify && npm run test:syntax && npm run test:contracts && npm run test:kanto-map && npm run test:bag && npm run test:b3 && npm run test:b4 && npm run audit && npm run test:c1 && npm run test:c2 && npm run test:c3 && npm run test:c4 && npm run test:d1 && npm run test:d1-runtime && npm run test:e1 && npm run test:e2 && npm run test:f1 && npm run audit:assets && npm run test:journey-services",
+    "test:kanto-map": "python tests/kanto_map_contract.py",
+    "test:bag": "python tests/bag_contract.py",
+    "test:b3": "python tests/regression_absorption_contract.py",
+    "test:b4": "python tests/api_boundary_contract.py",
+    "test:c1": "python tests/presentation_boundary_contract.py",
+    "test:c2": "python tests/presentation_privacy_contract.py",
+    "test:c3": "python tests/presentation_absorption_contract.py",
+    "test:c4": "python tests/presentation_decorators_contract.py",
+    "test:d1": "python tests/audio_manager_contract.py",
+    "test:d1-runtime": "node tests/audio_manager_runtime_smoke.js",
+    "test:e1": "python tests/asset_externalization_contract.py",
+    "recover:assets": "python tools/extract_assets_from_golden.py",
+    "audit:assets": "python tools/asset_audit.py",
+    "test:e2": "python tests/asset_demand_contract.py",
+    "test:gameplay": "node tests/gameplay_regression_runtime.js",
+    "test:f1": "python tests/gameplay_regression_contract.py && npm run test:gameplay",
+    "test:journey-services": "python tests/journey_services_contract.py"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "css": "3.0.0"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "phase": "B3",
+  "method": "Chromium DevTools Protocol via Page.setDocumentContent",
+  "console_errors": 0,
+  "errors": [],
+  "checks": {
+    "boot": "{\"ready\":\"complete\",\"journey\":true,\"journeyParty\":false,\"settingsReset\":true,\"runtimePatch\":\"undefined\"}",
+    "journey": "{\"panel\":true,\"slots\":6,\"api\":true}",
+    "settings": "{\"visible\":true,\"reset\":true,\"shared\":true}",
+    "settings_reset_route": "1",
+    "safari_difficulty": "{\"safariHidden\":true,\"exhibitionHidden\":false}"
+  }
+}

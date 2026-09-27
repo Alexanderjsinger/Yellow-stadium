@@ -1,0 +1,208 @@
+/* pokedex.css — consolidated from RC8 recovery style slots (G1 CSS consolidation). */
+
+.dex-totals {
+  display: flex;
+  gap: 16px;
+}
+
+.dex-totals span {
+  display: grid;
+  color: var(--muted);
+  font-size: .66rem;
+  letter-spacing: .1em;
+}
+
+.dex-totals b {
+  color: var(--yellow);
+  font-size: 1.6rem;
+}
+
+.pokedex-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 7px;
+}
+
+.dex-entry {
+  min-height: 126px;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  border: 1px solid var(--line);
+  background: rgba(11,30,53,.75);
+  padding: 7px;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.dex-entry img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.dex-entry.unseen img {
+  filter: brightness(0);
+  opacity: .32;
+}
+
+.dex-entry.seen:not(.caught) img {
+  filter: grayscale(1);
+  opacity: .72;
+}
+
+.dex-entry strong {
+  font-size: .66rem;
+  letter-spacing: .04em;
+}
+
+.dex-entry small {
+  color: var(--muted);
+  font-size: .58rem;
+  margin-top: 3px;
+}
+
+.dex-entry.caught {
+  border-color: rgba(117,224,177,.5);
+}
+
+.dex-entry:not(:disabled):hover {
+  border-color: #f5c542;
+  transform: translateY(-2px);
+}
+
+.dex-entry:not(:disabled):focus-visible {
+  border-color: #f5c542;
+  transform: translateY(-2px);
+}
+
+.dex-entry:disabled {
+  cursor: default;
+}
+
+.mode-dex .pokedex-grid {
+  border-color: color-mix(in srgb,var(--mode-accent) 36%,#31506c);
+}
+
+.mode-dex .dex-totals {
+  border-color: var(--mode-accent);
+}
+
+.yellow-ui2 .pokedex-grid {
+  gap: 7px !important;
+}
+
+.yellow-ui2 .dex-card {
+  border: 1px solid #4fbcd5 !important;
+  border-radius: 9px !important;
+  background: linear-gradient(180deg,#f6fcff,#dcecf4) !important;
+  color: #123047 !important;
+}
+
+.yellow-ui2 .pokedex-entry {
+  border: 1px solid #4fbcd5 !important;
+  border-radius: 9px !important;
+  background: linear-gradient(180deg,#f6fcff,#dcecf4) !important;
+  color: #123047 !important;
+}
+
+.yellow-ui2 .dex-card img {
+  image-rendering: pixelated;
+}
+
+.yellow-ui2 .pokedex-entry img {
+  image-rendering: pixelated;
+}
+
+.yellow-ui2 .dex-totals {
+  border: 1px solid #5bbbd0 !important;
+  border-radius: 8px !important;
+  background: #e9f6fa !important;
+  color: #18384b !important;
+}
+
+.yellow-ui2 #pokedex-grid .dex-entry {
+  border: 1px solid #4eb9d1 !important;
+  border-radius: 9px !important;
+  background: linear-gradient(180deg,#f8fdff,#dbeaf2) !important;
+  color: #163249 !important;
+  box-shadow: inset 0 0 0 1px #fff !important;
+}
+
+.yellow-ui2 #pokedex-grid .dex-entry:not(:disabled):hover {
+  border-color: #ffd84d !important;
+  transform: translateY(-1px) !important;
+}
+
+.yellow-ui2 #pokedex-grid .dex-entry:not(:disabled):focus-visible {
+  border-color: #ffd84d !important;
+  transform: translateY(-1px) !important;
+}
+
+.yellow-ui2 #pokedex-grid .dex-entry strong {
+  color: #153047 !important;
+}
+
+.yellow-ui2 #pokedex-grid .dex-entry small {
+  color: #557184 !important;
+}
+
+.yellow-ui2 #pokedex-grid .dex-entry:disabled {
+  background: #d0dce3 !important;
+  opacity: .65 !important;
+}
+
+.yellow-ui2 #pokedex-grid .dex-entry:disabled img {
+  filter: brightness(.18) saturate(.3) !important;
+}
+
+@media (max-width: 800px) {
+  .pokedex-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+}
+
+@media (max-width: 500px) {
+  .pokedex-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .dex-entry {
+    min-height: 110px;
+  }
+
+  .dex-entry img {
+    width: 62px;
+    height: 62px;
+  }
+
+}
+
+@media (max-width:800px) {
+  .pokedex-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .dex-entry {
+    min-height: 80px !important;
+    padding: 7px !important;
+  }
+
+  .dex-entry img {
+    width: 52px !important;
+    height: 52px !important;
+  }
+
+  .dex-entry strong {
+    font-size: 11px !important;
+  }
+
+  .dex-entry small {
+    font-size: 9px !important;
+  }
+
+}

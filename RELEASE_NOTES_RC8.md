@@ -28,4 +28,4 @@
 - Architecture contract: 0 errors.
 - Save/state/battle contracts pass.
 - Existing browser regression suite: 21/21 pass.
-- RC8 intro/Tour browser suite: 12/12 pass.
+- RC8 intro/Tour browser suite: 13/13 pass.
