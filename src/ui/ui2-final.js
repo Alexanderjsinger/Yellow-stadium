@@ -108,8 +108,8 @@
       banner.id = "ui2-map-banner";
       banner.className = "ui2-map-banner";
       banner.innerHTML = `<div><p class="eyebrow">KANTO REGION</p><h1>Your adventure continues.</h1><p>Tap an unlocked city to challenge its Gym, heal at the PokéCenter or stock up at the Poké Mart.</p></div><div class="ui2-map-key"><span><i class="next"></i>NEXT</span><span><i class="done"></i>CLEARED</span><span><i class="locked"></i>LOCKED</span></div>`;
-      scroll.before(banner);
     }
+    if (scroll.firstElementChild !== banner) scroll.prepend(banner);
 
     const help = screen.querySelector(".map-help");
     if (help) help.textContent = "Cities are your travel menu. Pallet Town is your home-service hub; unlocked cities provide local services and Gym access.";
@@ -138,6 +138,10 @@
     const panel = byId("map-stop");
     if (!panel) return;
     panel.classList.add("ui2-destination-panel");
+    panel.dataset.ui1Panel = "objective";
+    const recap=byId("adventure-recap"); if(recap) recap.dataset.ui1Panel="recap";
+    const party=byId("journey-party-panel"); if(party) party.dataset.ui1Panel="party";
+    const banner=byId("ui2-map-banner"); if(banner) banner.dataset.ui1="map-panel";
     if (!panel.querySelector(".ui2-service-actions") && panel.children.length) {
       // Elite Four / legacy panels still receive utility services once the route is unlocked.
       const selected = doc.querySelector("#kanto-markers .map-marker[aria-pressed='true']");
@@ -161,8 +165,8 @@
       ["cups-screen","JOURNEY","KANTO REGION"],
       ["trainer-screen","CUPS","STADIUM CIRCUIT"],
       ["safari-screen","SAFARI","FIELD EXPEDITION"],
-      ["select-screen","PARTY","TRAINER TEAM"],
-      ["bag-screen","BAG","TRAINER GEAR"],
+      ["select-screen","PARTY","YOUR PARTY"],
+      ["bag-screen","BAG","BAG"],
       ["pokedex-screen","DEX","KANTO POKÉDEX"],
       ["shop-screen","MART","POKÉ MART"],
       ["pokecenter-screen","CENTER","POKÉCENTER"],
@@ -189,7 +193,7 @@
   }
 
   function refresh() {
-    doc.body.classList.add("yellow-ui2");
+    doc.body.classList.add("yellow-ui2", "ys-facelift-v1");
     normalizeNav();
     decorateTopbar();
     ensureJourneyShell();

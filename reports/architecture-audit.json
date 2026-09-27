@@ -3,27 +3,27 @@
     "script_count": 82,
     "style_count": 14,
     "golden_sha256": "f13a9c4e7f16aa85a64954cf14b0502c341c2cfca3258c4196162c8d42a0bb0c",
-    "canonical_sha256": "6b30a8c5ad53da1975cb5cf3a0a33fe5cc919a95682bb4b612e8c03e3c682529",
-    "canonical_phase": "G2.1"
+    "canonical_sha256": "8ee97825337dbef3766a4b8e0e7684713eb39689f10cf02d346c7e7dd2284e50",
+    "canonical_phase": "UI5.2"
   },
   "summary": {
     "source_js_files_audited": 81,
     "public_window_exports": 36,
     "duplicate_window_exports": {},
     "direct_global_state_refs": {
-      "save": 432,
-      "battle": 658,
-      "selected": 112,
-      "els": 160
+      "save": 436,
+      "battle": 665,
+      "selected": 122,
+      "els": 161
     },
     "boundary_global_state_refs": {
       "save": 10,
-      "battle": 119,
-      "selected": 11,
+      "battle": 120,
+      "selected": 13,
       "els": 0
     },
     "runtime_gateway_modules": 20,
-    "ysflow_subscribed_events": 32,
+    "ysflow_subscribed_events": 33,
     "ysflow_emitted_events": 39
   },
   "runtime_gateway_modules": [
@@ -163,6 +163,7 @@
       "src/battle/stadium-upgrade.js",
       "src/player/avatar.js",
       "src/onboarding/intro-guide.js",
+      "src/ui/app-shell.js",
       "src/journey/journey-controller.js",
       "src/ui/ui2-final.js"
     ],
@@ -191,6 +192,7 @@
       "src/onboarding/intro-guide.js",
       "src/pokemon/details.js",
       "src/ui/mobile-shell.js",
+      "src/ui/app-shell.js",
       "src/progression/adventure-v58.js",
       "src/pokecenter/pokecenter.js",
       "src/ui/interface-v42.js"
@@ -209,6 +211,9 @@
     "battle:moves": [
       "src/presentation/battle-decorators.js",
       "src/pokemon/details.js"
+    ],
+    "battle:startAborted": [
+      "src/onboarding/intro-guide.js"
     ],
     "battle:startFinished": [
       "src/progression/adventure-v58.js"
@@ -230,6 +235,7 @@
     ],
     "journey:rendered": [
       "src/player/avatar.js",
+      "src/ui/app-shell.js",
       "src/journey/journey-controller.js",
       "src/ui/ui2-final.js"
     ],
@@ -515,7 +521,7 @@
     },
     {
       "path": "src/core/save.js",
-      "chars": 6329,
+      "chars": 6702,
       "window_exports": [],
       "window_refs": [
         "SaveTools"
@@ -771,7 +777,7 @@
     },
     {
       "path": "src/safari/legacy-safari.js",
-      "chars": 6061,
+      "chars": 6337,
       "window_exports": [],
       "window_refs": [
         "BattleEntryUX",
@@ -1046,7 +1052,7 @@
     },
     {
       "path": "src/battle/return.js",
-      "chars": 3800,
+      "chars": 4021,
       "window_exports": [],
       "window_refs": [
         "AudioManager",
@@ -1059,9 +1065,9 @@
       "events_emit": [],
       "global_state_refs": {
         "save": 4,
-        "battle": 16,
+        "battle": 17,
         "selected": 1,
-        "els": 26
+        "els": 27
       }
     },
     {
@@ -1327,7 +1333,7 @@
     },
     {
       "path": "src/onboarding/intro-guide.js",
-      "chars": 21128,
+      "chars": 23431,
       "window_exports": [
         "IntroGuide"
       ],
@@ -1339,12 +1345,13 @@
       "events_on": [
         "app:rendered",
         "battle:ended",
+        "battle:startAborted",
         "battle:started"
       ],
       "events_emit": [],
       "global_state_refs": {
-        "save": 46,
-        "battle": 11,
+        "save": 50,
+        "battle": 16,
         "selected": 1,
         "els": 0
       }
@@ -1377,7 +1384,7 @@
     },
     {
       "path": "src/ui/battle-entry-mobile.js",
-      "chars": 9481,
+      "chars": 10705,
       "window_exports": [
         "BattleEntryUX",
         "MobileUX"
@@ -1483,7 +1490,7 @@
     },
     {
       "path": "src/bag/bag.js",
-      "chars": 8295,
+      "chars": 11280,
       "window_exports": [
         "BagSystem"
       ],
@@ -1502,29 +1509,33 @@
       "global_state_refs": {
         "save": 12,
         "battle": 2,
-        "selected": 1,
+        "selected": 2,
         "els": 0
       }
     },
     {
       "path": "src/ui/app-shell.js",
-      "chars": 4960,
+      "chars": 7117,
       "window_exports": [
         "AppShell"
       ],
       "window_refs": [
         "AppShell",
+        "PlayerAvatar",
         "SaveTools",
         "YSFlow",
         "YSRuntime"
       ],
       "events_on": [
+        "app:rendered",
+        "battle:ended",
+        "journey:rendered",
         "nav:changed"
       ],
       "events_emit": [],
       "global_state_refs": {
         "save": 5,
-        "battle": 0,
+        "battle": 1,
         "selected": 0,
         "els": 0
       }
@@ -1545,7 +1556,7 @@
     },
     {
       "path": "src/party/party-mobile.js",
-      "chars": 9939,
+      "chars": 16349,
       "window_exports": [
         "PartyMobile"
       ],
@@ -1553,6 +1564,8 @@
         "PartyMobile",
         "PartyTray",
         "PokemonDetails",
+        "StadiumUpgrade",
+        "YSAdventureV58",
         "YSFlow"
       ],
       "events_on": [
@@ -1562,7 +1575,7 @@
       "global_state_refs": {
         "save": 1,
         "battle": 0,
-        "selected": 21,
+        "selected": 28,
         "els": 0
       }
     },
@@ -1862,7 +1875,7 @@
     },
     {
       "path": "src/pokecenter/pokecenter.js",
-      "chars": 17639,
+      "chars": 19494,
       "window_exports": [
         "PokeCenter"
       ],
@@ -1947,7 +1960,7 @@
     },
     {
       "path": "src/safari/safari-b62.js",
-      "chars": 28091,
+      "chars": 28804,
       "window_exports": [
         "SafariController",
         "YSB62Safari",
@@ -1973,7 +1986,7 @@
       "global_state_refs": {
         "save": 0,
         "battle": 3,
-        "selected": 1,
+        "selected": 3,
         "els": 0
       }
     },
@@ -2003,7 +2016,7 @@
     },
     {
       "path": "src/ui/ui2-final.js",
-      "chars": 8911,
+      "chars": 9254,
       "window_exports": [
         "UI2",
         "__YS_UI2_FINAL__"

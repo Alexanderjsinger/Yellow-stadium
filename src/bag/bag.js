@@ -41,7 +41,9 @@
 
   const screen = () => byId("bag-screen");
   const root = () => byId("bag-panel-root");
+  const detail = () => byId("bag-detail-panel");
   const count = id => Math.max(0, Number(save?.inventory?.[id]) || 0);
+  let selectedItemId = null;
 
   function activeTab() {
     const bag = screen();
@@ -61,6 +63,35 @@
     card.className = "bag-card empty-state";
     card.innerHTML = `<span class="item-icon" data-empty="true">…</span><div><strong>${title}</strong><p>${copy}</p></div>`;
     return card;
+  }
+
+  function ensureDetail() {
+    const bag = screen(), target = root();
+    if (!bag || !target) return null;
+    let panel = detail();
+    if (!panel) {
+      panel = doc.createElement("section");
+      panel.id = "bag-detail-panel";
+      panel.className = "bag-detail-panel";
+      target.after(panel);
+    }
+    return panel;
+  }
+
+  function itemIconMarkup(id, tone, icon) {
+    const file = window.YS_SOURCE_ITEM_ICONS?.[id];
+    return file ? `<span class="item-icon ${tone} source-backed"><img class="source-item-img" src="${assetUrl(`./assets/items/${file}`)}" alt=""></span>` : `<span class="item-icon ${tone}">${icon}</span>`;
+  }
+
+  function showDetail(id, item, tone, icon) {
+    const panel = ensureDetail(); if (!panel) return;
+    selectedItemId = id;
+    root()?.querySelectorAll(".bag-card[data-item]").forEach(card => card.classList.toggle("selected", card.dataset.item === id));
+    const [label, run] = window.ItemSystem?.actionFor?.(id) || [ITEMS[id]?.rewardOnly ? "KEY / REWARD" : "INFO", null];
+    panel.hidden = false;
+    panel.innerHTML = `<header><span>ITEM INFO</span><b>×${count(id)}</b></header><div class="bag-detail-body">${itemIconMarkup(id,tone,icon)}<div><p class="bag-detail-kicker">${item.name}</p><h2>${item.name}</h2><p>${item.description || ITEMS[id]?.description || "Trainer item."}</p></div></div><div class="bag-detail-actions"><button type="button" class="primary-button bag-detail-use" ${!run || count(id)<=0 ? "disabled" : ""}>${label}</button></div>`;
+    const action = panel.querySelector(".bag-detail-use");
+    if (run && count(id) > 0) action.onclick = () => run();
   }
 
   function appendFieldAction(card, id) {
@@ -103,6 +134,12 @@
     body.append(name, description);
     card.append(iconEl, body, quantity);
     appendFieldAction(card, id);
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-label", `${item.name}, quantity ${count(id)}. Show item details.`);
+    const choose = event => { if (event?.target?.closest?.(".bag-use-action")) return; showDetail(id, item, tone, icon); };
+    card.addEventListener("click", choose);
+    card.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); showDetail(id, item, tone, icon); } });
     return card;
   }
 
@@ -154,6 +191,9 @@
     const visible = itemSource.filter(([id]) => count(id) > 0);
     visible.forEach(([id, item]) => target.appendChild(makeItemCard(id, item, def.tone, def.icon)));
     if (key === "evo") appendMewEgg(target);
+    const preferred = visible.find(([id]) => id === selectedItemId) || visible[0];
+    if (preferred) showDetail(preferred[0], preferred[1], def.tone, def.icon);
+    else if (detail()) detail().hidden = true;
     if (!visible.length && !(key === "evo" && save.mewEgg?.awarded && !save.mewEgg.hatched)) {
       target.appendChild(makeEmptyCard("NONE STORED YET", `You do not have any ${def.label.toLowerCase()} items yet. Visit the Poké Mart or keep progressing through Kanto.`));
     }
@@ -166,7 +206,7 @@
     const key = activeTab();
     target.replaceChildren();
     bag.querySelectorAll("[data-bag-tab]").forEach(button => button.setAttribute("aria-selected", String(button.dataset.bagTab === key)));
-    if (key === "record") renderRecord(target); else renderItems(target, key);
+    if (key === "record") { renderRecord(target); if (detail()) detail().hidden = true; } else renderItems(target, key);
     window.YSFlow?.emit("bag:rendered", { tab: key });
     return true;
   }
@@ -188,7 +228,18 @@
     if (!bag || bag.dataset.bagOwner === "canonical") return bag;
     bag.dataset.bagOwner = "canonical";
     bag.dataset.activeTab ||= "balls";
-    bag.querySelectorAll("[data-bag-tab]").forEach(button => button.addEventListener("click", () => setTab(button.dataset.bagTab)));
+    if (!bag.querySelector(".bag-intro-copy")) {
+      const intro = doc.createElement("p");
+      intro.className = "bag-intro-copy";
+      intro.textContent = "Use items, manage your bag, and give items to your Pokémon.";
+      bag.querySelector(".screen-heading")?.after(intro);
+    }
+    ensureDetail();
+    bag.querySelectorAll("[data-bag-tab]").forEach(button => {
+      const def = BAG_DEFS[button.dataset.bagTab];
+      if (def && !button.querySelector(".bag-tab-icon")) button.innerHTML = `<span class="bag-tab-icon" aria-hidden="true">${def.icon}</span><span>${def.label}</span>`;
+      button.addEventListener("click", () => setTab(button.dataset.bagTab));
+    });
     byId("bag-tab")?.addEventListener("click", open);
     byId("bag-shop-link")?.addEventListener("click", showShop);
     return bag;

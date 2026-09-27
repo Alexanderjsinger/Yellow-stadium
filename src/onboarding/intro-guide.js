@@ -21,7 +21,17 @@
   const closeButton = overlay.querySelector("#guide-close");
 
   let replay = false, pendingName = null, starterChoice = null;
-  let pendingAppearance = null;
+  let pendingAppearance = null, fieldDemoLaunchQueued = false;
+  const fieldDemoPending = () => save.introStage === "field-demo" && save.introComplete !== true;
+  function cleanupFieldDemoArtifacts() {
+    document.getElementById("intro-battle-hint")?.remove?.();
+    document.getElementById("intro-aggression-toast")?.remove?.();
+  }
+  function setFieldDemoLock(active) {
+    document.body.classList.toggle("intro-field-demo", active);
+    const nav = document.getElementById("mode-nav");
+    if (nav) nav.hidden = active;
+  }
   const firstName = () => save.playerProfile?.first || "Trainer";
   const fullName = profile => [profile.first, profile.middle ? `${profile.middle}.` : "", profile.last].filter(Boolean).join(" ");
   const button = (label, run, primary = false) => {
@@ -193,14 +203,17 @@
     requestAnimationFrame(()=>tourTabs.querySelector(".active")?.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}));
     actions.replaceChildren();
     if(index>0)button("BACK",()=>showTour(index-1));
-    button(index===tour.length-1?"START FIELD TEST":"NEXT",index===tour.length-1?beginFieldDemo:()=>showTour(index+1),true);
+    if(index===tour.length-1 && replay) button("FINISH TOUR",closeGuide,true);
+    else button(index===tour.length-1?"START FIELD TEST":"NEXT",index===tour.length-1?beginFieldDemo:()=>showTour(index+1),true);
   }
 
   function prepareTourParty() {
     selected=save.pokemon.slice(0,6).map(mon=>mon.uid); selectionLimit=6;
     save.activePartyInstanceIds=[...selected]; save.adventurePartyInstanceIds=[...selected];
     save.pendingEggs=[]; save.hatchedEggs=[]; save.inventory.pokeBall=Math.max(8,save.inventory.pokeBall||0); save.inventory.potion=Math.max(3,save.inventory.potion||0);
-    save.onboardingComplete=true; save.introComplete=false; save.introStage="field-demo"; writeSave();
+    // The normal app remains locked until the field test resolves. Safari receives a narrow
+    // tutorial-only bypass, so navigation can never escape this state machine early.
+    save.onboardingComplete=false; save.introComplete=false; save.tourComplete=false; save.introStage="field-demo"; writeSave();
   }
 
   function showAggroToast() {
@@ -209,16 +222,36 @@
     toast.innerHTML=`<strong>!</strong><span>AGGRESSIVE MANKEY SPOTTED YOU</span>`; toast.hidden=false; setTimeout(()=>toast.hidden=true,1100);
   }
 
-  function beginFieldDemo() {
-    prepareTourParty(); overlay.hidden=true; document.body.classList.remove("intro-open");
-    renderApp(); showSafari(); window.PlayerAvatar?.applyEverywhere?.(); showAggroToast();
-    setTimeout(()=>{
-      startBattle("safari",{enemyIds:["mankey"],forcedLevel:3,tutorialDemo:true});
-    },900);
+  function launchFieldDemoBattle() {
+    if(fieldDemoLaunchQueued || !fieldDemoPending() || battle?.tutorialDemo)return;
+    fieldDemoLaunchQueued=true;
+    const launch=()=>{
+      fieldDemoLaunchQueued=false;
+      if(!fieldDemoPending() || battle)return;
+      const config={enemyIds:["mankey"],forcedLevel:3,tutorialDemo:true};
+      if(typeof startBattleImmediate==="function")startBattleImmediate("safari",config);
+      else startBattle("safari",config);
+    };
+    // Give the habitat one painted frame, then deterministically start the owned tutorial battle.
+    requestAnimationFrame(()=>requestAnimationFrame(launch));
   }
 
+  function enterFieldDemo({announce=true}={}) {
+    if(!fieldDemoPending())return;
+    cleanupFieldDemoArtifacts();
+    overlay.hidden=true; panel.hidden=true; document.body.classList.remove("intro-open");
+    setFieldDemoLock(true);
+    const onboarding=document.getElementById("onboarding-screen"); if(onboarding)onboarding.hidden=true;
+    if(typeof showSafari!=="function"){setTimeout(()=>enterFieldDemo({announce}),0);return;}
+    showSafari(); window.PlayerAvatar?.applyEverywhere?.(); if(announce)showAggroToast(); launchFieldDemoBattle();
+  }
+
+  function beginFieldDemo() { prepareTourParty(); enterFieldDemo({announce:true}); }
+  function resumeFieldDemo() { if(fieldDemoPending())enterFieldDemo({announce:false}); }
+
   function finishTutorialDemo() {
-    save.introComplete=true; save.tourComplete=true; save.introStage="complete"; writeSave();
+    cleanupFieldDemoArtifacts(); setFieldDemoLock(false);
+    save.onboardingComplete=true; save.introComplete=true; save.tourComplete=true; save.introStage="complete"; writeSave();
   }
 
   function replayGuide() { if (battle) return; replay=true; overlay.hidden=false; document.body.classList.add("intro-open"); closeButton.hidden=false; showTour(0); }
@@ -227,19 +260,24 @@
   document.getElementById("joke-guide").onclick=replayGuide;
   overlay.addEventListener("keydown",event=>{if(event.key==="Escape"&&replay)closeGuide();});
   window.YSFlow?.on("battle:started",({battle:started})=>{
+    cleanupFieldDemoArtifacts();
     if(!started?.tutorialDemo)return;
+    setFieldDemoLock(true);
     const consoleEl=document.querySelector("#battle-screen .battle-console");
     let hint=document.getElementById("intro-battle-hint");
     if(!hint&&consoleEl){hint=document.createElement("div");hint.id="intro-battle-hint";hint.className="intro-battle-hint";consoleEl.prepend(hint);}
     if(hint)hint.innerHTML=`<strong>FIELD TEST</strong><span>Capture the aggressive ${activeEnemy().name} with BAG → POKÉ BALL, or defeat it in battle.</span>`;
   },160);
-  window.YSFlow?.on("battle:ended",({battle:finished})=>{if(finished?.tutorialDemo)finishTutorialDemo();},-250);
+  window.YSFlow?.on("battle:ended",({battle:finished})=>{cleanupFieldDemoArtifacts();if(finished?.tutorialDemo)finishTutorialDemo();},-250);
+  window.YSFlow?.on("battle:startAborted",({config})=>{if(config?.tutorialDemo&&fieldDemoPending())requestAnimationFrame(launchFieldDemoBattle);},-250);
   window.YSFlow?.on("app:rendered", () => {
+    if(fieldDemoPending()){setTimeout(resumeFieldDemo,0);return;}
     if(!save.introComplete && !save.onboardingComplete && !save.owned.length) startCinematic();
   }, 80);
 
-  window.IntroGuide={startCinematic,startStory,replayGuide,beginFieldDemo,showTour,eggHatchStep,appearanceMode};
-  if(!save.introComplete && !save.onboardingComplete && !save.owned.length) startCinematic();
+  window.IntroGuide={startCinematic,startStory,replayGuide,beginFieldDemo,resumeFieldDemo,showTour,eggHatchStep,appearanceMode,fieldDemoPending};
+  if(fieldDemoPending())setTimeout(resumeFieldDemo,0);
+  else if(!save.introComplete && !save.onboardingComplete && !save.owned.length) startCinematic();
   else if(!save.introComplete && !save.onboardingComplete && save.owned.length){ overlay.hidden=false;document.body.classList.add("intro-open");closeButton.hidden=true; if(save.hatchedEggs?.length===2)tourIntro(); else eggHatchStep(); }
 })();
 

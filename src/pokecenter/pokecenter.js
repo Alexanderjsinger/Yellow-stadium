@@ -111,6 +111,8 @@
             <div class="pc-machine-lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
             <div class="pc-machine-screen"><small>RECOVERY SYSTEM</small><strong id="pc-machine-readout">READY</strong></div>
           </div>
+          <div class="pc-nurse" aria-hidden="true"><i class="pc-nurse-cap"></i><i class="pc-nurse-face"></i><i class="pc-nurse-body"></i></div>
+          <div class="pc-player-token" aria-hidden="true"><i></i><b></b></div>
           <div id="pc-ball-table" class="pc-ball-table" aria-label="Party Poké Ball recovery table"></div>
           <div class="pc-counter-front"><span>POKÉMON RECOVERY UNIT</span><b>+</b></div>
         </section>
@@ -144,6 +146,8 @@
           </button>
         </section>
 
+        <section id="pc-party-summary" class="pc-party-summary" aria-label="Current party health"></section>
+
         <footer class="pc-footer">
           <p id="pc-footer-copy">Healing restores HP and cures all status ailments.</p>
           <button id="pc-back" class="secondary-button" type="button">BACK TO JOURNEY</button>
@@ -166,6 +170,24 @@
       <strong>${pokemonNameFor(uid)}</strong><small>${status}</small>
     </article>`;
   }
+  function renderPartySummary() {
+    const root = byId("pc-party-summary"); if (!root) return;
+    const ids = partyIds();
+    root.innerHTML = `<header><span>YOUR PARTY</span><small>${ids.length} / 6 · TAP PARTY TO MANAGE</small></header><div class="pc-party-strip"></div>`;
+    const strip = root.querySelector(".pc-party-strip");
+    for (let index = 0; index < 6; index += 1) {
+      const uid = ids[index];
+      if (!uid) { const empty = document.createElement("article"); empty.className = "pc-party-card empty"; empty.innerHTML = `<b>${index + 1}</b><span>EMPTY</span>`; strip.append(empty); continue; }
+      const record = pokemonRecord(uid), stats = calculatedStats(record.speciesId, levelFor(uid)), current = health(record);
+      const hp = Math.max(0, Math.min(stats.hp, Number(current.hp) || 0)), percent = Math.round(hp / Math.max(1, stats.hp) * 100);
+      const card = document.createElement("article"); card.className = "pc-party-card";
+      if (current.status || hp <= 0) card.classList.add("needs-care");
+      const image = document.createElement("img"); image.alt = ""; setSprite(image, record.speciesId);
+      card.innerHTML = `<b>${index + 1}</b><div class="pc-party-art"></div><span><strong>${pokemonNameFor(uid)}</strong><small>Lv.${levelFor(uid)}${current.status ? ` · ${current.status}` : ""}</small><i><em style="width:${percent}%"></em></i><u>${hp}/${stats.hp}</u></span>`;
+      card.querySelector(".pc-party-art").append(image); strip.append(card);
+    }
+  }
+
   function renderTable({ loaded = false } = {}) {
     const table = byId("pc-ball-table"); if (!table) return;
     const ids = partyIds();
@@ -175,6 +197,7 @@
       slot.style.setProperty("--pc-delay", `${i * 80}ms`);
       slot.classList.add("loading");
     });
+    renderPartySummary();
   }
 
   function stopLoop() {

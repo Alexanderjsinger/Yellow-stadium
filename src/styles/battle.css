@@ -3982,3 +3982,343 @@
   }
 
 }
+
+/* UI-4 — Battle facelift. Visual-only treatment layered on the proven battle runtime. */
+.ys-facelift-v1.mobile-battle #battle-screen{
+  --ui4-border:var(--ys-cyan-350);
+  --ui4-ink:var(--ys-navy-950);
+  --ui4-paper:var(--ys-cream-50);
+  --ui4-yellow:var(--ys-yellow-400);
+  --ui4-console:#0b3b59;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-top{
+  min-height:40px!important;
+  padding:0 10px!important;
+  display:flex!important;
+  align-items:stretch!important;
+  gap:0!important;
+  border:2px solid var(--ui4-border)!important;
+  border-bottom:0!important;
+  border-radius:11px 11px 0 0!important;
+  background:var(--ys-navy-800)!important;
+  overflow:hidden!important;
+  box-shadow:0 3px 0 #041c31!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-top .match-strip{
+  width:100%!important;
+  min-height:38px!important;
+  display:grid!important;
+  grid-template-columns:minmax(120px,.8fr) minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:8px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#fff!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen #match-type{
+  align-self:stretch!important;
+  display:flex!important;
+  align-items:center!important;
+  min-width:128px!important;
+  margin-left:-10px!important;
+  padding:0 26px 0 12px!important;
+  background:var(--ui4-yellow)!important;
+  clip-path:polygon(0 0,100% 0,88% 100%,0 100%)!important;
+  color:var(--ui4-ink)!important;
+  font:950 9px/1 var(--ys-display-font)!important;
+  letter-spacing:.1em!important;
+  overflow:visible!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen #opponent-profile{
+  display:flex!important;
+  justify-content:flex-end!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  color:#d6edf3!important;
+  font:900 7px/1 var(--ys-display-font)!important;
+  letter-spacing:.06em!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen #opponent-profile img{display:none!important}
+.ys-facelift-v1.mobile-battle #battle-screen #turn-count{
+  color:#d6edf3!important;
+  font:900 7px/1 var(--ys-display-font)!important;
+  letter-spacing:.08em!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-top .arena-location,
+.ys-facelift-v1.mobile-battle #battle-screen .battle-top .condition-strip{display:none!important}
+.ys-facelift-v1.mobile-battle #battle-screen .arena-wrap{
+  border:2px solid var(--ui4-border)!important;
+  border-top:0!important;
+  border-radius:0 0 11px 11px!important;
+  box-shadow:0 5px 0 #041c31!important;
+  overflow:hidden!important;
+  background:#2f806c!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .crowd{height:16px!important;min-height:16px!important;border-bottom:2px solid rgba(255,255,255,.28)!important}
+.ys-facelift-v1.mobile-battle #battle-screen .arena{background-color:#398d76!important}
+.ys-facelift-v1.mobile-battle #battle-screen .status-card{
+  width:53%!important;
+  max-width:214px!important;
+  padding:8px 9px!important;
+  border:2px solid #15354c!important;
+  border-radius:7px!important;
+  background:linear-gradient(180deg,#f7f6ee,#e8eeeb)!important;
+  color:var(--ys-ink)!important;
+  box-shadow:0 4px 0 rgba(4,28,49,.7)!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .enemy-fighter .status-card{border-left:3px solid var(--ui4-yellow)!important}
+.ys-facelift-v1.mobile-battle #battle-screen .player-status-card{border-right:3px solid var(--ui4-border)!important}
+.ys-facelift-v1.mobile-battle #battle-screen .status-title strong{
+  color:var(--ys-ink)!important;
+  font:950 11px/1 var(--ys-display-font)!important;
+  letter-spacing:.04em!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .status-title span,
+.ys-facelift-v1.mobile-battle #battle-screen .hp-numbers{color:#2f4552!important;font-weight:900!important}
+.ys-facelift-v1.mobile-battle #battle-screen .hp-line>span{color:#6e5b16!important;font:950 7px/1 var(--ys-display-font)!important}
+.ys-facelift-v1.mobile-battle #battle-screen .hp-track{height:8px!important;border:1px solid #17384b!important;border-radius:2px!important;background:#bdccca!important;box-shadow:none!important}
+.ys-facelift-v1.mobile-battle #battle-screen .hp-track i{border-radius:1px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .team-pips{gap:3px!important;margin-top:4px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .team-pips i{width:7px!important;height:7px!important;border:1px solid #17384b!important}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-console{
+  padding:0!important;
+  border:2px solid var(--ui4-border)!important;
+  border-radius:11px!important;
+  background:var(--ui4-console)!important;
+  box-shadow:0 4px 0 #041c31!important;
+  overflow:hidden!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .announcer{
+  order:1!important;
+  min-height:66px!important;
+  margin:0!important;
+  padding:10px 44px 10px 12px!important;
+  border:0!important;
+  border-bottom:2px solid var(--ui4-yellow)!important;
+  border-radius:0!important;
+  background:#174d70!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  position:relative!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .announcer:after{
+  content:'▼';position:absolute;right:12px;bottom:8px;color:var(--ui4-yellow);font:950 10px/1 var(--ys-display-font);animation:ui4Prompt 1.1s steps(2,end) infinite
+}
+@keyframes ui4Prompt{50%{transform:translateY(2px)}}
+.ys-facelift-v1.mobile-battle #battle-screen .announcer-label{display:none!important}
+.ys-facelift-v1.mobile-battle #battle-screen #message{margin:0!important;color:#fff!important;font:850 13px/1.35 var(--ys-body-font)!important}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-log-button{
+  position:absolute!important;right:9px!important;top:7px!important;width:auto!important;min-width:30px!important;height:22px!important;min-height:22px!important;padding:0 6px!important;border:1px solid #7cb4c7!important;border-radius:5px!important;background:#0d3956!important;color:#dceef4!important;font:900 6px/1 var(--ys-display-font)!important;text-transform:uppercase!important
+}
+.ys-facelift-v1.mobile-battle #battle-screen .command-area{
+  order:2!important;
+  min-height:0!important;
+  padding:8px!important;
+  background:var(--ui4-paper)!important;
+  color:var(--ui4-ink)!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs{
+  order:3!important;
+  height:50px!important;
+  min-height:50px!important;
+  margin:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,1fr)!important;
+  gap:0!important;
+  border:0!important;
+  border-top:2px solid var(--ui4-border)!important;
+  background:var(--ys-navy-900)!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs button{
+  position:relative!important;
+  height:48px!important;
+  min-height:48px!important;
+  border:0!important;
+  border-right:1px solid #2b6a8a!important;
+  border-radius:0!important;
+  background:#0d456a!important;
+  color:#e8f5f8!important;
+  box-shadow:none!important;
+  font:950 8px/1 var(--ys-display-font)!important;
+  letter-spacing:.08em!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs button:last-child{border-right:0!important}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs button[aria-selected=true]{background:var(--ui4-yellow)!important;color:var(--ui4-ink)!important;box-shadow:inset 0 -4px 0 var(--ys-yellow-550)!important}
+.ys-facelift-v1.mobile-battle #battle-screen .command-pane{padding:0!important;background:transparent!important;color:var(--ui4-ink)!important}
+.ys-facelift-v1.mobile-battle #battle-screen #moves{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;padding:0!important}
+.ys-facelift-v1.mobile-battle #battle-screen #moves .command-heading{
+  grid-column:1/-1!important;
+  min-height:24px!important;
+  margin:0 0 1px!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  color:#786018!important;
+  font:950 8px/1 var(--ys-display-font)!important;
+  letter-spacing:.08em!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen #moves .command-heading small{color:#6c8289!important;font-size:6px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .move-choice{position:relative!important;min-width:0!important}
+.ys-facelift-v1.mobile-battle #battle-screen .move-button{
+  position:relative!important;
+  width:100%!important;
+  min-height:70px!important;
+  height:70px!important;
+  padding:9px 36px 8px 12px!important;
+  border:2px solid #8aaeb9!important;
+  border-left-width:8px!important;
+  border-radius:7px!important;
+  background:#eef1ee!important;
+  color:var(--ui4-ink)!important;
+  box-shadow:inset 0 -3px 0 #c8d3d1!important;
+  text-align:left!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .move-button:before{content:'▶';position:absolute;left:-7px;top:50%;transform:translate(-100%,-50%);color:#172b3b;font-size:9px;opacity:0}
+.ys-facelift-v1.mobile-battle #battle-screen .move-button:hover:before,.ys-facelift-v1.mobile-battle #battle-screen .move-button:focus-visible:before{opacity:1}
+.ys-facelift-v1.mobile-battle #battle-screen .move-name{color:var(--ui4-ink)!important;font:950 11px/1 var(--ys-display-font)!important;letter-spacing:.02em!important}
+.ys-facelift-v1.mobile-battle #battle-screen .move-type{display:block!important;margin-top:6px!important;color:#61747c!important;font:900 6px/1 var(--ys-display-font)!important;letter-spacing:.04em!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.ys-facelift-v1.mobile-battle #battle-screen .move-pp{position:absolute!important;right:8px!important;top:10px!important;color:#28414e!important;font:900 7px/1 var(--ys-display-font)!important}
+.ys-facelift-v1.mobile-battle #battle-screen .move-insight,.ys-facelift-v1.mobile-battle #battle-screen .move-verdict{display:none!important}
+.ys-facelift-v1.mobile-battle #battle-screen .move-choice select{max-width:100%!important;margin-top:4px!important;height:28px!important;border:1px solid #9fb9c0!important;border-radius:5px!important;background:#e7eeec!important;color:var(--ui4-ink)!important;font-size:8px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=grass]{border-left-color:#66ad52!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=normal]{border-left-color:#9ca5a4!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=fire]{border-left-color:#e56845!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=water]{border-left-color:#4a8fd6!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=electric]{border-left-color:#e5bd38!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=psychic]{border-left-color:#d95f91!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=ice]{border-left-color:#69c6d0!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=fighting]{border-left-color:#b94d43!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=poison]{border-left-color:#99539b!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=ground]{border-left-color:#c39a55!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=flying]{border-left-color:#839fd0!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=bug]{border-left-color:#8ca13e!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=rock]{border-left-color:#9b8748!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=ghost]{border-left-color:#675c98!important}.ys-facelift-v1.mobile-battle #battle-screen .move-button[data-type=dragon]{border-left-color:#6b64bc!important}
+.ys-facelift-v1.mobile-battle #battle-screen .move-button.highest-damage{border-color:#d3a623!important;box-shadow:0 0 0 2px #f9d55d66,inset 0 -3px 0 #d7c48b!important}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-details-button{
+  grid-column:1/-1!important;
+  width:max-content!important;
+  min-height:26px!important;
+  height:26px!important;
+  margin:0 auto!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-radius:4px!important;
+  background:transparent!important;
+  color:#476777!important;
+  box-shadow:none!important;
+  font:900 6.5px/1 var(--ys-display-font)!important;
+  text-transform:uppercase!important;
+  letter-spacing:.06em!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen #team-buttons,.ys-facelift-v1.mobile-battle #battle-screen #battle-items{display:grid!important;grid-template-columns:1fr!important;gap:5px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .team-button,.ys-facelift-v1.mobile-battle #battle-screen .item-button{
+  min-height:43px!important;
+  border:1px solid #a9c2c8!important;
+  border-radius:7px!important;
+  background:#e9efed!important;
+  color:var(--ui4-ink)!important;
+  box-shadow:none!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .team-button:not(:disabled):focus-visible,.ys-facelift-v1.mobile-battle #battle-screen .item-button:not(:disabled):focus-visible{border-color:#c89d2f!important;box-shadow:inset 4px 0 0 var(--ui4-yellow)!important}
+.ys-facelift-v1.mobile-battle #battle-screen .team-button.current{border-color:#c89d2f!important;background:#fff8d8!important}
+@media(max-width:430px){
+  .ys-facelift-v1.mobile-battle #battle-screen{--console-height:326px!important;grid-template-rows:auto minmax(0,1fr) var(--console-height)!important}
+  .ys-facelift-v1.mobile-battle #battle-screen .battle-top{min-height:38px!important}
+  .ys-facelift-v1.mobile-battle #battle-screen .battle-top .match-strip{min-height:36px!important;grid-template-columns:minmax(118px,.9fr) minmax(0,.8fr) auto!important}
+  .ys-facelift-v1.mobile-battle #battle-screen #match-type{min-width:118px!important;font-size:8px!important}
+  .ys-facelift-v1.mobile-battle #battle-screen #opponent-profile{font-size:6px!important}
+  .ys-facelift-v1.mobile-battle #battle-screen .announcer{min-height:60px!important;padding:8px 42px 8px 10px!important}
+  .ys-facelift-v1.mobile-battle #battle-screen #message{font-size:12px!important;line-height:16px!important}
+  .ys-facelift-v1.mobile-battle #battle-screen .command-area{padding:7px!important}
+  .ys-facelift-v1.mobile-battle #battle-screen .move-button{height:66px!important;min-height:66px!important;padding-left:10px!important}
+  .ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs,.ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs button{height:46px!important;min-height:46px!important}
+}
+@media(min-width:801px){
+  .ys-facelift-v1.mobile-battle #battle-screen{max-width:960px!important}
+  .ys-facelift-v1.mobile-battle #battle-screen .battle-console{max-width:760px!important;width:100%!important;margin-inline:auto!important}
+}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-console{grid-template-rows:60px minmax(0,1fr) 50px!important}
+@media(max-width:430px){.ys-facelift-v1.mobile-battle #battle-screen .battle-console{grid-template-rows:58px minmax(0,1fr) 46px!important}}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs button{display:grid!important;grid-template-rows:14px auto!important;place-items:center!important;align-content:center!important;gap:2px!important;font-size:6.5px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs button:before{display:block;font:950 13px/1 var(--ys-display-font)!important;line-height:13px!important}
+.ys-facelift-v1.mobile-battle #battle-screen #command-tab-fight:before{content:'✹'}
+.ys-facelift-v1.mobile-battle #battle-screen #command-tab-bag:before{content:'▣'}
+.ys-facelift-v1.mobile-battle #battle-screen #command-tab-team:before{content:'◉'}
+.ys-facelift-v1.mobile-battle #battle-screen #command-tab-info:before{content:'↗'}
+
+/* UI-5 canonical battle density. */
+/* --- UI-4.1: give the battle arena back more vertical space --- */
+.ys-facelift-v1.mobile-battle #battle-screen{
+  --console-height:232px!important;
+  grid-template-rows:auto minmax(0,1fr) auto!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-console{
+  height:auto!important;
+  min-height:0!important;
+  max-height:246px!important;
+  grid-template-rows:auto auto auto!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .announcer{
+  min-height:42px!important;
+  padding:7px 40px 7px 10px!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen #message{
+  font-size:11px!important;
+  line-height:1.25!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .announcer:after{right:10px!important;bottom:6px!important;font-size:8px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-log-button{top:5px!important;height:19px!important;min-height:19px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .command-area{
+  min-height:0!important;
+  max-height:158px!important;
+  overflow:auto!important;
+  padding:5px 6px!important;
+  scrollbar-width:thin;
+}
+.ys-facelift-v1.mobile-battle #battle-screen #moves{gap:5px!important}
+.ys-facelift-v1.mobile-battle #battle-screen #moves .command-heading{
+  min-height:17px!important;
+  margin:0!important;
+  font-size:7px!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .move-button{
+  height:52px!important;
+  min-height:52px!important;
+  padding:7px 31px 6px 9px!important;
+  border-left-width:6px!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .move-name{font-size:9px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .move-type{margin-top:4px!important;font-size:5.5px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .move-pp{right:6px!important;top:8px!important;font-size:6px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .move-choice select{height:23px!important;margin-top:2px!important;font-size:7px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-details-button{height:19px!important;min-height:19px!important;font-size:5.5px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs,
+.ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs button{
+  height:40px!important;
+  min-height:40px!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs button{
+  grid-template-rows:11px auto!important;
+  gap:1px!important;
+  font-size:5.8px!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs button:before{font-size:10px!important;line-height:10px!important}
+
+/* Party pane: restore the visual identity of each Pokémon without making the pane taller. */
+.ys-facelift-v1.mobile-battle #battle-screen #team-buttons{gap:4px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .team-button{
+  min-height:42px!important;
+  height:42px!important;
+  display:grid!important;
+  grid-template-columns:32px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:7px!important;
+  padding:4px 8px 4px 5px!important;
+  text-align:left!important;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .team-button img.ui5-team-sprite{
+  display:block!important;
+  width:30px!important;
+  height:30px!important;
+  object-fit:contain!important;
+  image-rendering:pixelated;
+}
+.ys-facelift-v1.mobile-battle #battle-screen .team-button>span{min-width:0!important;display:grid!important;gap:2px!important;font:900 8px/1 var(--ys-display-font)!important}
+.ys-facelift-v1.mobile-battle #battle-screen .team-button em{font-size:5.5px!important;line-height:1!important;color:#c59b24!important}
+.ys-facelift-v1.mobile-battle #battle-screen .team-button small{font-size:7px!important;white-space:nowrap!important}
+.ys-facelift-v1.mobile-battle #battle-screen .team-button:disabled img{filter:grayscale(.6);opacity:.58}
+.ys-facelift-v1.mobile-battle #battle-screen .team-button.current img{filter:none;opacity:1}
+.ys-facelift-v1.mobile-battle #battle-screen #battle-items{gap:4px!important}
+.ys-facelift-v1.mobile-battle #battle-screen .item-button{min-height:38px!important;height:38px!important;font-size:8px!important}

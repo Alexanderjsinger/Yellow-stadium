@@ -1,27 +1,17 @@
 from pathlib import Path
-import json, shutil, subprocess, sys
+import json, shutil
 
 ROOT = Path(__file__).resolve().parents[1]
 manifest = json.loads((ROOT / "manifest.json").read_text())
 source = (ROOT / "src/template.html").read_text()
 
-# G2: style blocks are minified with a real CSS parser (tools/minify_css.js)
-# rather than shipped as the readable, hand-edited source. Source on disk
-# stays fully formatted; only the canonical build output is minified.
-node = shutil.which("node") or "node"
-minified_json = subprocess.run(
-    [node, str(ROOT / "tools/minify_css.js")],
-    cwd=ROOT, capture_output=True, text=True,
-)
-if minified_json.returncode != 0:
-    sys.stderr.write(minified_json.stderr)
-    raise SystemExit("CSS minification failed")
-minified_styles = json.loads(minified_json.stdout)
-
+# UI-5.2: source CSS is already consolidated into 14 canonical owners.
+# Keep the canonical build dependency-free and let the CDN apply gzip/brotli;
+# parser minification saved only ~6 KB compressed while adding an npm failure point.
 for entry in manifest["scripts"]:
     source = source.replace(entry["placeholder"], (ROOT / entry["path"]).read_text())
 for entry in manifest["styles"]:
-    source = source.replace(entry["placeholder"], minified_styles[entry["path"]])
+    source = source.replace(entry["placeholder"], (ROOT / entry["path"]).read_text())
 
 dist = ROOT / "dist"
 dist.mkdir(exist_ok=True)

@@ -6,7 +6,7 @@
   const screen=byId('battle-screen'), area=screen.querySelector('.command-area');
   const tabs=document.createElement('div');tabs.className='battle-command-tabs';tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','Battle commands');
   const panes={};let currentTab='fight',lastBattle=null;
-  const labels={fight:'FIGHT',bag:'BAG',team:'TEAM',info:'INFO'};
+  const labels={fight:'FIGHT',bag:'BAG',team:'PARTY',info:'RUN'};
   for(const key of Object.keys(labels)){
     const b=document.createElement('button');b.type='button';b.id=`command-tab-${key}`;b.textContent=labels[key];b.setAttribute('role','tab');b.setAttribute('aria-controls',`command-pane-${key}`);b.onclick=()=>selectTab(key);tabs.append(b);
     const p=document.createElement('section');p.id=`command-pane-${key}`;p.className='command-pane';p.setAttribute('role','tabpanel');p.setAttribute('aria-labelledby',b.id);p.tabIndex=0;panes[key]=p;
@@ -15,12 +15,16 @@
   panes.info.append(byId('field-readout'),screen.querySelector('.battle-history'),screen.querySelector('.camera-controls'));
   const moveHelp=document.createElement('div');moveHelp.className='battle-move-help';panes.info.append(moveHelp);
   const broadcast=screen.querySelector('.stadium-broadcast');if(broadcast)panes.info.append(broadcast);
-  area.replaceChildren(...Object.values(panes));area.before(tabs);
+  area.replaceChildren(...Object.values(panes));area.after(tabs);
   const emptyBag=document.createElement('p');emptyBag.textContent='Your bag is empty. Buy supplies in the Item Shop.';panes.bag.append(emptyBag);
   function selectTab(key){currentTab=key;for(const [name,p] of Object.entries(panes)){p.hidden=name!==key;const b=byId(`command-tab-${name}`);b.setAttribute('aria-selected',String(name===key));b.tabIndex=name===key?0:-1;}}
   tabs.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();const keys=Object.keys(labels),i=keys.indexOf(currentTab);selectTab(keys[(i+(e.key==='ArrowRight'?1:3))%4]);byId(`command-tab-${currentTab}`).focus();});
-  function renderBattle(){const active=!!Runtime.battle;document.body.classList.toggle('mobile-battle',active);if(!active)return;screen.dataset.duo=String(Runtime.battle.mode==='trainerDuo');if(lastBattle!==Runtime.battle){lastBattle=Runtime.battle;selectTab('fight');}
-    emptyBag.hidden=byId('battle-items').children.length>0;
+  function decorateBattleParty(){const root=byId('team-buttons'),b=Runtime.battle;if(!root||!b?.player)return;[...root.querySelectorAll('.team-button')].forEach((button,index)=>{const mon=b.player[index];if(!mon)return;let img=button.querySelector('img.ui5-team-sprite');if(!img){img=document.createElement('img');img.className='ui5-team-sprite';img.alt=mon.name||'Pokémon';button.prepend(img);}try{setSprite(img,mon.id);}catch{}if(mon.hp<=0)button.dataset.fainted='true';else delete button.dataset.fainted;});}
+  function renderBattle(){const active=!!Runtime.battle;document.body.classList.toggle('mobile-battle',active);if(!active)return;screen.dataset.duo=String(Runtime.battle.mode==='trainerDuo');screen.dataset.ui4Mode=Runtime.battle.mode||'trainer';if(lastBattle!==Runtime.battle){lastBattle=Runtime.battle;selectTab('fight');}
+    emptyBag.hidden=byId('battle-items').children.length>0;decorateBattleParty();
+    const title={safari:'WILD ENCOUNTER',cup:'GYM BATTLE',arcade:'CUP BATTLE',elite:'ELITE FOUR',mewtwo:'FINAL BATTLE',legendary:'LEGENDARY BATTLE',trainer:'RIVAL BATTLE',trainerDuo:'RIVAL BATTLE'}[Runtime.battle.mode]||'BATTLE';
+    const match=byId('match-type');if(match){match.dataset.engineLabel=match.textContent;match.textContent=title;}
+    for(const choice of byId('moves').querySelectorAll('.move-choice')){const move=MOVES[choice.dataset.moveId];if(move){choice.dataset.type=String(move.type||'normal').toLowerCase();choice.querySelector('.move-button')?.setAttribute('data-type',String(move.type||'normal').toLowerCase());}}
     const actor=StadiumUpgrade.active('player')[Runtime.battle.commandSlot||0]||StadiumUpgrade.active('player')[0];
     moveHelp.replaceChildren();if(actor)actor.moveIds.forEach(id=>{const d=document.createElement('details'),s=document.createElement('summary'),p=document.createElement('p');s.textContent=MOVES[id].name;p.textContent=PokemonDetails.describe(MOVES[id]);d.append(s,p);moveHelp.append(d);});
   }

@@ -107,3 +107,26 @@ button:focus-visible {
   }
 
 }
+
+/* UI-1 / Visual Design Bible v1 canonical tokens. */
+:root {
+  --ys-navy-950:#07294d;
+  --ys-navy-900:#083354;
+  --ys-navy-800:#154a6e;
+  --ys-blue-650:#1f6b8b;
+  --ys-cyan-500:#1e8dd5;
+  --ys-cyan-350:#3fcde4;
+  --ys-cream-50:#f4f4ee;
+  --ys-paper-100:#e9ecea;
+  --ys-yellow-400:#f9d55d;
+  --ys-yellow-550:#d6af51;
+  --ys-green-500:#6aaf50;
+  --ys-slate-300:#b2cdd4;
+  --ys-slate-500:#748f9e;
+  --ys-ink:#14202a;
+  --ys-danger:#c94747;
+  --ys-panel-radius:12px;
+  --ys-display-font:"Arial Narrow","Roboto Condensed",ui-sans-serif,system-ui,sans-serif;
+  --ys-ui-font:ui-rounded,"Arial Rounded MT Bold","Trebuchet MS",system-ui,sans-serif;
+  --ys-body-font:var(--ys-ui-font);
+}

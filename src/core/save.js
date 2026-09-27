@@ -47,7 +47,11 @@ function loadSave(imported = null) {
     result.adventureBattles = count(parsed.adventureBattles, 0);
     result.mewEgg = parsed.mewEgg && typeof parsed.mewEgg === "object" ? { awarded: parsed.mewEgg.awarded === true, progress: Math.min(42, count(parsed.mewEgg.progress, 0)), hatched: parsed.mewEgg.hatched === true } : null;
     result.partyPresets = Array.isArray(parsed.partyPresets) ? parsed.partyPresets.slice(0, 3).map(team => Array.isArray(team) ? [...new Set(team.filter(id => result.owned.includes(id)))].slice(0, 6) : []) : [];
-    result.introComplete = parsed.introComplete === true || parsed.onboardingComplete === true;
+    const pendingFieldDemo = parsed.introStage === "field-demo" && parsed.introComplete !== true;
+    result.introComplete = parsed.introComplete === true || (parsed.onboardingComplete === true && !pendingFieldDemo);
+    // Repair saves written by the pre-UI5 tutorial flow. That flow unlocked the app before
+    // the field demo was complete, which could strand a player with a persistent Mankey contract.
+    if (pendingFieldDemo) result.onboardingComplete = false;
     const profile = parsed.playerProfile && typeof parsed.playerProfile === "object" ? parsed.playerProfile : {};
     const rawAppearance = profile.appearance && typeof profile.appearance === "object" ? profile.appearance : {};
     const kind = rawAppearance.kind === "pokemon" ? "pokemon" : "trainer";

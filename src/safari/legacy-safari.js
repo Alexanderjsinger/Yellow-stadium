@@ -39,7 +39,8 @@ function renderSafariZonePicker() {
 }
 function showSafari() {
   if (window.SafariController?.open) return window.SafariController.open();
-  if (!SafariLegacyRuntime.save.onboardingComplete || SafariLegacyRuntime.battle) return;
+  const tutorialFieldDemo = SafariLegacyRuntime.save.introStage === "field-demo" && SafariLegacyRuntime.save.introComplete !== true;
+  if ((!SafariLegacyRuntime.save.onboardingComplete && !tutorialFieldDemo) || SafariLegacyRuntime.battle) return;
   setTeamSize(6);
   hideMainScreens();
   SafariLegacyRuntime.element("safari-screen").hidden = false;
@@ -82,6 +83,7 @@ function renderSafariField() {
 }
 
 function startSafariEncounter(id) {
+  if (SafariLegacyRuntime.save.introStage === "field-demo" && SafariLegacyRuntime.save.introComplete !== true) return;
   if (window.BattleEntryUX?.canStartSafariEncounter && !window.BattleEntryUX.canStartSafariEncounter()) return;
   if (SafariLegacyRuntime.selectedIds.length < 1 || SafariLegacyRuntime.selectedIds.length > 6 || !SPECIES[id]) {
     SafariLegacyRuntime.element("safari-team-warning").hidden = false;

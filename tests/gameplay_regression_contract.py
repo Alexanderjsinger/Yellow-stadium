@@ -14,6 +14,7 @@ runtime = (ROOT / "tests/gameplay_regression_runtime.js").read_text()
 harness = (ROOT / "tests/helpers/runtime_harness.js").read_text()
 workflow = (ROOT / ".github/workflows/ci.yml").read_text()
 
+expect(pkg.get("version") == "4.0.0-f1", "package version should identify the F1 regression gate")
 expect(pkg.get("scripts", {}).get("test:gameplay") == "node tests/gameplay_regression_runtime.js", "deterministic gameplay test script missing")
 expect("npm run test:f1" in pkg.get("scripts", {}).get("test", ""), "npm test does not include the F1 gameplay gate")
 expect(isinstance(fixtures.get("rng_seed"), int), "gameplay fixture must define an integer RNG seed")

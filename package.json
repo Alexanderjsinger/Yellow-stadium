@@ -1,15 +1,15 @@
 {
   "name": "yellow-stadium-rc8-recovered",
-  "version": "4.0.0-g2.1",
+  "version": "4.0.0-f1",
   "private": true,
-  "description": "Canonical Yellow Stadium build with F1.1 Journey service isolation plus G1 CSS consolidation and G2 build-time CSS minification.",
+  "description": "Yellow Stadium canonical UI-5.2 build: dependency-light facelift + persistent tutorial field-test contract.",
   "scripts": {
     "build": "python tools/build.py",
     "verify": "python tools/verify.py",
     "test:syntax": "python tools/check_source.py",
     "test:contracts": "python tests/contracts.py",
     "audit": "python tools/architecture_audit.py",
-    "test": "npm run verify && npm run test:syntax && npm run test:contracts && npm run test:kanto-map && npm run test:bag && npm run test:b3 && npm run test:b4 && npm run audit && npm run test:c1 && npm run test:c2 && npm run test:c3 && npm run test:c4 && npm run test:d1 && npm run test:d1-runtime && npm run test:e1 && npm run test:e2 && npm run test:f1 && npm run audit:assets && npm run test:journey-services",
+    "test": "npm run verify && npm run test:syntax && npm run test:contracts && npm run test:kanto-map && npm run test:bag && npm run test:b3 && npm run test:b4 && npm run audit && npm run test:c1 && npm run test:c2 && npm run test:c3 && npm run test:c4 && npm run test:d1 && npm run test:d1-runtime && npm run test:e1 && npm run test:e2 && npm run test:f1 && npm run audit:assets && npm run test:journey-services && npm run test:ui1 && npm run test:ui2 && npm run test:ui3 && npm run test:ui4 && npm run test:ui5 && npm run test:tutorial",
     "test:kanto-map": "python tests/kanto_map_contract.py",
     "test:bag": "python tests/bag_contract.py",
     "test:b3": "python tests/regression_absorption_contract.py",
@@ -26,12 +26,15 @@
     "test:e2": "python tests/asset_demand_contract.py",
     "test:gameplay": "node tests/gameplay_regression_runtime.js",
     "test:f1": "python tests/gameplay_regression_contract.py && npm run test:gameplay",
-    "test:journey-services": "python tests/journey_services_contract.py"
+    "test:journey-services": "python tests/journey_services_contract.py",
+    "test:ui1": "python tests/ui_facelift_v1_contract.py",
+    "test:ui2": "python tests/ui_facelift_v2_contract.py",
+    "test:ui3": "python tests/ui_facelift_v3_contract.py",
+    "test:ui4": "python tests/ui_facelift_v4_contract.py",
+    "test:ui5": "python tests/ui5_refinement_contract.py",
+    "test:tutorial": "python tests/tutorial_field_demo_contract.py && node tests/tutorial_field_demo_runtime.js"
   },
   "engines": {
     "node": ">=20"
-  },
-  "dependencies": {
-    "css": "3.0.0"
   }
 }

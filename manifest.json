@@ -58,8 +58,8 @@
       "index": 7,
       "path": "src/core/save.js",
       "placeholder": "__YS_SCRIPT_007__",
-      "chars": 6329,
-      "sha256": "52764195a9c227fa4abc633c4eb68ce97f14b28b00cc7e0f3bac9b4700ed5962"
+      "chars": 6702,
+      "sha256": "054e020068edefe47e0653280b580c7d79572631b126f0d6307f4f37b3609dd5"
     },
     {
       "index": 8,
@@ -149,8 +149,8 @@
       "index": 20,
       "path": "src/safari/legacy-safari.js",
       "placeholder": "__YS_SCRIPT_020__",
-      "chars": 6061,
-      "sha256": "1bf354c981b86876c883816c12a489b8abe6ddccce1a5812740524faff9d5f89"
+      "chars": 6337,
+      "sha256": "3f31ec30133290968b63ed0e75e0eb89b984395d56da5b393b9b7dd397ccc658"
     },
     {
       "index": 21,
@@ -261,8 +261,8 @@
       "index": 36,
       "path": "src/battle/return.js",
       "placeholder": "__YS_SCRIPT_036__",
-      "chars": 3800,
-      "sha256": "2d8b69ce356e7488a7473af950efacf440e2c81aaa38437882773125bc4b8959"
+      "chars": 4021,
+      "sha256": "9d37c6ae9238632407129023818944eeccb2645bf4492fe0b320816aa4d07b88"
     },
     {
       "index": 37,
@@ -345,8 +345,8 @@
       "index": 48,
       "path": "src/onboarding/intro-guide.js",
       "placeholder": "__YS_SCRIPT_048__",
-      "chars": 21128,
-      "sha256": "d692b120f253fd7585e30cd4eafb0d4946a2026da203caebd13ed62017a590ad"
+      "chars": 23431,
+      "sha256": "1362c86e9c41834bc8086c15801231dd948d26047991b690e6bd6a94652ed1a7"
     },
     {
       "index": 49,
@@ -359,8 +359,8 @@
       "index": 50,
       "path": "src/ui/battle-entry-mobile.js",
       "placeholder": "__YS_SCRIPT_050__",
-      "chars": 9481,
-      "sha256": "ea0435234877776ba46926ceeca0c0f31c19d66848d304dade8d86af8de71317"
+      "chars": 10705,
+      "sha256": "8931b2b4d44653e63946e70b2542d014b05991420865e7df271801b190399d7e"
     },
     {
       "index": 51,
@@ -401,15 +401,15 @@
       "index": 56,
       "path": "src/bag/bag.js",
       "placeholder": "__YS_SCRIPT_056__",
-      "chars": 8295,
-      "sha256": "2b9e025e36963a55f8ec0f33cf3bbe9c0e0639e8efcbc3da3c4921eef1b894dc"
+      "chars": 11280,
+      "sha256": "d989a027df07a35410dc5d73760e7d50f4d0727fb6acbf37fbb7ca4b9f211545"
     },
     {
       "index": 57,
       "path": "src/ui/app-shell.js",
       "placeholder": "__YS_SCRIPT_057__",
-      "chars": 4960,
-      "sha256": "b6af861f351dbdeb9a768478823f9432e57c990e46fc89e7a0cdf343969b0aa5"
+      "chars": 7117,
+      "sha256": "7af654c235b3393d48f0dc0d8ff2412cbd14084798949f27004ebf9ce4e382da"
     },
     {
       "index": 58,
@@ -422,8 +422,8 @@
       "index": 59,
       "path": "src/party/party-mobile.js",
       "placeholder": "__YS_SCRIPT_059__",
-      "chars": 9939,
-      "sha256": "26f983504ced7c4b2271c64234db6a53e80f6351afb69da4ddf00e822cf843f6"
+      "chars": 16349,
+      "sha256": "140e8c19c530303f54600aa4b2b2777f0b7248a6280da027c3d3f5ca0eae9334"
     },
     {
       "index": 60,
@@ -541,8 +541,8 @@
       "index": 76,
       "path": "src/pokecenter/pokecenter.js",
       "placeholder": "__YS_SCRIPT_076__",
-      "chars": 17639,
-      "sha256": "71603f9001c5c58626385bfbe09444af24756ddbdb78f9c9bba98d3d78a93df9"
+      "chars": 19494,
+      "sha256": "9daa4c0e80a30867e7ef99e79f592e94c94cec3b4caeab42bafbb33e4d987b02"
     },
     {
       "index": 77,
@@ -562,8 +562,8 @@
       "index": 79,
       "path": "src/safari/safari-b62.js",
       "placeholder": "__YS_SCRIPT_079__",
-      "chars": 28091,
-      "sha256": "679f9a42324f75b9043aeb82398588d66b95e2f1d370132a3722dfee13e4de08"
+      "chars": 28804,
+      "sha256": "1d4d3252454548e644dc19d7b0774f06b792bcff83d518d51486bbace02625b6"
     },
     {
       "index": 80,
@@ -576,8 +576,8 @@
       "index": 81,
       "path": "src/ui/ui2-final.js",
       "placeholder": "__YS_SCRIPT_081__",
-      "chars": 8911,
-      "sha256": "1c6de4ea22bd2f1b7b0bba5978eb0075fb3da37ba21b384ec046f29d48912809"
+      "chars": 9254,
+      "sha256": "d7a20e24366f8fac268c5c12d1658f65ff54e576d86f7d004f663c4bbf99041b"
     }
   ],
   "styles": [
@@ -585,29 +585,29 @@
       "index": 0,
       "path": "src/styles/tokens.css",
       "placeholder": "__YS_STYLE_TOKENS__",
-      "chars": 2161,
-      "sha256": "718214fad480074f908167fb9837f8acb7c572c9aab03bad1ec6ed31468b7714"
+      "chars": 2841,
+      "sha256": "41f3bf5e838174614052e655d2cc733e147ef4d6286ea58240e34300ab6419c6"
     },
     {
       "index": 1,
       "path": "src/styles/layout.css",
       "placeholder": "__YS_STYLE_LAYOUT__",
-      "chars": 36287,
-      "sha256": "ea0b5087826b2af2c52cc7fcd4dec1645dc540511a742b02074b86ee81a0d6ca"
+      "chars": 47077,
+      "sha256": "3d8f96aa3de94044a9f63eb93e21d043378ea97c91381b80a587db6fbbab699a"
     },
     {
       "index": 2,
       "path": "src/styles/onboarding.css",
       "placeholder": "__YS_STYLE_ONBOARDING__",
-      "chars": 24457,
-      "sha256": "3591c19ce8f471462d8cc293a347080c7f30849c84cec5b90838bf95df972f76"
+      "chars": 24760,
+      "sha256": "f400d47bb879fa286f4a9a881bc7b9147961c626c923ef96084d995eda3f8569"
     },
     {
       "index": 3,
       "path": "src/styles/party.css",
       "placeholder": "__YS_STYLE_PARTY__",
-      "chars": 42908,
-      "sha256": "b27a4900e16d7acb59cf52084915ac99adf7765a3d7751b3a1f2350c731a9e85"
+      "chars": 66287,
+      "sha256": "5c291309b402e662c4bb59f321b90accf68a5f68ad71cf94f7bec029b6a18459"
     },
     {
       "index": 4,
@@ -627,15 +627,15 @@
       "index": 6,
       "path": "src/styles/journey.css",
       "placeholder": "__YS_STYLE_JOURNEY__",
-      "chars": 32467,
-      "sha256": "8e84747b817916810a1509f05f6ecf58283ede7a46a686186b516dd4f750e4c2"
+      "chars": 41397,
+      "sha256": "5b7a12b0566171ead1ade1ad3e16e99f2fa721c21fb7e672dda98f30636bd56c"
     },
     {
       "index": 7,
       "path": "src/styles/safari.css",
       "placeholder": "__YS_STYLE_SAFARI__",
-      "chars": 24572,
-      "sha256": "366b0f004835a289b7925709a4ac5098ea13463b8e531b7514e6bdf33ac4fc56"
+      "chars": 26436,
+      "sha256": "172f3bf5f10213d71924afa99e7556be7658d92dc5bbd363ccfff7e2460a3dc4"
     },
     {
       "index": 8,
@@ -648,29 +648,29 @@
       "index": 9,
       "path": "src/styles/bag.css",
       "placeholder": "__YS_STYLE_BAG__",
-      "chars": 20732,
-      "sha256": "02f721d0e43ed8624a9af55340fa8715dacc5c902f8fa7812138a8ea94b6b2fa"
+      "chars": 28129,
+      "sha256": "8ca41818cac6aff1b31540d74a20fd54112c94f89dcc7913da0b7b006706d614"
     },
     {
       "index": 10,
       "path": "src/styles/pokecenter.css",
       "placeholder": "__YS_STYLE_POKECENTER__",
-      "chars": 12983,
-      "sha256": "4cd1300f0bc1c15518bc16ad8de3c975f160e75e2886abd8dea0b6f9f63010a6"
+      "chars": 28486,
+      "sha256": "5263acf0a33acbe666d5548132fd867cb78a9318beeddb24250947029c613e08"
     },
     {
       "index": 11,
       "path": "src/styles/battle.css",
       "placeholder": "__YS_STYLE_BATTLE__",
-      "chars": 74996,
-      "sha256": "c355718625c6717d82460fc40cc737ecd0ea69ef3eff2523645cca43d9fc0c1f"
+      "chars": 95277,
+      "sha256": "653f8903945e5419411b80de623a27a068c410b91608b77c15c270bb21aa216a"
     },
     {
       "index": 12,
       "path": "src/styles/modal-rewards.css",
       "placeholder": "__YS_STYLE_MODAL_REWARDS__",
-      "chars": 11592,
-      "sha256": "2e154cfe06401997760531838ce1d19246d1cdd9cd2a059a1c470de0b3c9a0d4"
+      "chars": 15316,
+      "sha256": "3609a928dc8a2da47f2df7a92ff93d68adb6a2c095623334ad416c955f2dc9e1"
     },
     {
       "index": 13,
@@ -680,8 +680,8 @@
       "sha256": "dc1b7e52d9f8b7b42f157c2a03ee1172946f4d7782fb95bf5798c20c7f20b6f4"
     }
   ],
-  "canonical_sha256": "6b30a8c5ad53da1975cb5cf3a0a33fe5cc919a95682bb4b612e8c03e3c682529",
-  "canonical_phase": "G2.1",
+  "canonical_sha256": "8ee97825337dbef3766a4b8e0e7684713eb39689f10cf02d346c7e7dd2284e50",
+  "canonical_phase": "UI5.2",
   "canonical_assets_sha256": "5f8d08c81123556f2215272530fb85f980d485fa3c0d0b13fcc7dc8fd1175deb",
   "asset_count": 450,
   "asset_bytes": 13405715

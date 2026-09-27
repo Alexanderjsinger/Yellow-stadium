@@ -1486,3 +1486,8 @@
   }
 
 }
+
+/* UI-5.2 tutorial contract: the Safari field-test owns input until its Mankey battle starts. */
+body.intro-field-demo #mode-nav{display:none!important}
+body.intro-field-demo.safari-b62-active #safari-b62-app{pointer-events:none}
+body.intro-field-demo.mobile-battle #battle-screen{pointer-events:auto}

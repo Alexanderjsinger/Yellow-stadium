@@ -2,10 +2,10 @@
 
 - Source JS files audited: **81** (generated inline asset map excluded)
 - Public `window.*` exports: **36**
-- YSFlow subscribed event names: **32**
+- YSFlow subscribed event names: **33**
 - YSFlow emitted event names: **39**
-- Direct global-state references: `save`=432, `battle`=658, `selected`=112, `els`=160
-- Cross-system/UI direct-state references: `save`=10, `battle`=119, `selected`=11, `els`=0
+- Direct global-state references: `save`=436, `battle`=665, `selected`=122, `els`=161
+- Cross-system/UI direct-state references: `save`=10, `battle`=120, `selected`=13, `els`=0
 - Modules using the B4 `YSRuntime` gateway: **20**
 
 ## Duplicate public exports

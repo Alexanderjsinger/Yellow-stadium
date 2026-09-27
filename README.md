@@ -18,15 +18,13 @@ Verification checks both the untouched RC8 archive and the current canonical bui
 
 ## Current phase
 
-**G2.1 — CSS consolidation/minification rebased on F1.1 — PRIMARY**
+**F1 — deterministic regression + CI hardening — COMPLETE**
 
-G2.1 keeps the proven F1.1 gameplay/runtime baseline, including the Journey PokéCenter/Poké Mart click-isolation fix, while consolidating the recovered CSS surface from 41 historical style slots into 14 concern-named source stylesheets. Readable source CSS is minified only during the canonical build with the pinned `css@3.0.0` parser/stringifier.
+The canonical game now has a dependency-free seeded gameplay harness that executes the real recovered/canonical source modules in CI. It locks new-game onboarding + save/reload, battle math and a full turn, Journey -> Gym launch and badge progression, Safari capture, Arcade Cup completion/reward, and PokéCenter healing.
 
-Independent validation covers the full B1→F1 regression gate plus the F1.1 Journey-service contract. Nine representative rendered states (Journey, Cup/Trainer, Safari, Pokédex, Shop, Collection, Bag, PokéCenter and active battle) were pixel-identical to F1.1 before minification; the exact build-time minifier path and full source test gate also pass on the primary deployment.
+GitHub Actions now runs the complete `npm test` regression gate and uploads the generated reports as CI evidence. F1 changes tests/CI/documentation only; the E2 production HTML and external asset tree remain byte-identical.
 
-Primary canonical HTML SHA-256:
-
-`6b30a8c5ad53da1975cb5cf3a0a33fe5cc919a95682bb4b612e8c03e3c682529`
+With the architecture, audio, assets and regression gates stabilized, the codebase is ready to resume controlled feature development against these tests.
 
 ## Development checks
 
@@ -52,8 +50,6 @@ This performs:
 - E1 external-asset provenance/integrity contracts;
 - E2 reachability, pruning and demand-loading contracts;
 - F1 deterministic gameplay + CI contracts;
-- F1.1 Journey Gym/Center/Mart click-isolation contract;
-- G2 build-time CSS parser/minification through the pinned dependency;
 - seeded onboarding/save, battle, Journey/Gym, Safari, Cup and PokéCenter runtime regressions;
 - architecture + asset inventory generation.
 

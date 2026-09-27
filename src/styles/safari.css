@@ -1249,3 +1249,26 @@ body.safari-b62-active #safari-screen>#safari-zone-picker {
   }
 
 }
+
+/* UI-5 canonical Safari hierarchy. */
+/* --- UI-5: Safari opens on the world; field kit becomes a supporting utility --- */
+body.safari-b62-active #safari-screen{display:flex!important;flex-direction:column!important}
+body.safari-b62-active #safari-screen>#safari-b62-app{order:1!important}
+body.safari-b62-active #safari-screen>.trainer-gear[data-screen="safari-screen"]{order:2!important;margin-top:10px!important}
+body.safari-b62-active #safari-screen>.trainer-gear[data-screen="safari-screen"] .trainer-gear-summary{
+  padding:9px 10px!important;
+}
+body.safari-b62-active #safari-screen>.trainer-gear[data-screen="safari-screen"] .trainer-gear-summary h2{font-size:1rem!important;margin:2px 0!important}
+body.safari-b62-active #safari-screen>.trainer-gear[data-screen="safari-screen"] .trainer-gear-summary p:not(.eyebrow){font-size:.66rem!important;line-height:1.25!important}
+body.safari-b62-active #safari-screen>.trainer-gear[data-screen="safari-screen"] .trainer-gear-actions button{min-height:38px!important}
+
+@media(max-width:430px){
+  .ys-facelift-v1.mobile-battle #battle-screen{--console-height:218px!important}
+  .ys-facelift-v1.mobile-battle #battle-screen .battle-console{max-height:232px!important}
+  .ys-facelift-v1.mobile-battle #battle-screen .announcer{min-height:40px!important;padding:6px 38px 6px 9px!important}
+  .ys-facelift-v1.mobile-battle #battle-screen #message{font-size:10.5px!important;line-height:1.2!important}
+  .ys-facelift-v1.mobile-battle #battle-screen .command-area{max-height:150px!important;padding:5px!important}
+  .ys-facelift-v1.mobile-battle #battle-screen .move-button{height:49px!important;min-height:49px!important}
+  .ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs,
+  .ys-facelift-v1.mobile-battle #battle-screen .battle-command-tabs button{height:38px!important;min-height:38px!important}
+}

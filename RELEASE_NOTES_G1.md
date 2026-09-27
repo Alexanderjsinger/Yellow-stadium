@@ -12,9 +12,9 @@ G1 retires the last "version-named CSS hooks" debt called out in `docs/ARCHITECT
 - Regenerated `manifest.json`'s style entries (paths, placeholders, byte counts, hashes) and the canonical HTML hash. The asset tree hash is untouched — G1 touches no images.
 - Updated the `style_count` contract in `tests/contracts.py` from the old behavior-lock value (41) to the new one (14), the same way each earlier phase closed its own gate.
 
-## Why this was accepted
+## Why this was safe
 
-Rebucketing CSS can change cascade behavior when different selectors of equal specificity match the same element, so same-selector merging alone is not sufficient proof of equivalence. G1 therefore relies on both deterministic duplicate-property handling and rendered regression checks across the major game screens. The later G2.1 release audit repeated that stricter visual comparison against the F1.1 baseline and found 0 differing pixels on Journey, Trainer, Safari, Pokédex, Shop, Collection, Bag, PokéCenter, and Battle reference states.
+Bucketing rules into named files can never change rendering by itself — a rule's effect depends only on its selector and specificity, not which file it lives in or what order same-specificity rules across *different* selectors load in. The only real risk was the 240 same-selector duplicates, which is exactly what the property-level merge above resolves deterministically, in the original cascade's favor.
 
 ## Validation
 

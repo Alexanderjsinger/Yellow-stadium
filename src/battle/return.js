@@ -17,7 +17,7 @@ function returnToRoster() {
   battle = null;
   window.AudioManager?.setScene?.("menu");
   els["mode-nav"].hidden = false;
-  if (finished?.tutorialDemo) showCups();
+  if (finished?.tutorialDemo) { if (typeof showJourney === "function") showJourney(); else showCups(); }
   else if (["trainer", "trainerDuo", "arcade"].includes(finished?.mode)) showTrainer();
   else if (finished?.mode === "safari") showSafari();
   else if (["cup", "elite", "mewtwo", "legendary"].includes(finished?.mode)) showCups();
@@ -27,7 +27,7 @@ function returnToRoster() {
 }
 
 els["box-manage-party"].addEventListener("click",()=>window.PartyTray?.open());
-els["battle-retreat"].addEventListener("click",()=>{if(!battle||battle.over||battle.locked)return;const safari=battle.mode==="safari";if(!window.confirm(safari?"Run from this wild encounter? No rewards will be earned.":"Retreat from this battle? No rewards will be earned and this run will end."))return;const finished=battle;window.YSAdventureV57?.syncBattleHealth?.(finished);if(finished.mode==="arcade"){save.arcadeCupProgress[finished.arcadeCupIndex]=0;writeSave();}else writeSave();battle=null;els["battle-screen"].hidden=true;els["result-modal"].hidden=true;els["mode-nav"].hidden=false;window.AudioManager?.setScene?.("menu");if(finished.mode==="safari")showSafari();else if(["cup","elite","mewtwo","legendary"].includes(finished.mode))showCups();else showTrainer();window.PartyTray?.render();});
+els["battle-retreat"].addEventListener("click",()=>{if(!battle||battle.over||battle.locked)return;if(battle.tutorialDemo){const message=els["message"];if(message)message.textContent="FIELD TEST · Capture Mankey or defeat it to finish orientation.";return;}const safari=battle.mode==="safari";if(!window.confirm(safari?"Run from this wild encounter? No rewards will be earned.":"Retreat from this battle? No rewards will be earned and this run will end."))return;const finished=battle;window.YSAdventureV57?.syncBattleHealth?.(finished);if(finished.mode==="arcade"){save.arcadeCupProgress[finished.arcadeCupIndex]=0;writeSave();}else writeSave();battle=null;els["battle-screen"].hidden=true;els["result-modal"].hidden=true;els["mode-nav"].hidden=false;window.AudioManager?.setScene?.("menu");if(finished.mode==="safari")showSafari();else if(["cup","elite","mewtwo","legendary"].includes(finished.mode))showCups();else showTrainer();window.PartyTray?.render();});
 els["start-battle"].addEventListener("click", showTrainer);
 els["start-duo"].addEventListener("click", showTrainer);
 els["start-safari"].addEventListener("click", showSafari);
