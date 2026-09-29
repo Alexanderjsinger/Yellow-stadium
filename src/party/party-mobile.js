@@ -21,25 +21,13 @@
   const coverage = document.createElement("section");
   coverage.id = "party-mobile-coverage";
   coverage.className = "party-mobile-coverage";
-  const boxHead = document.createElement("header");
-  boxHead.className = "party-mobile-head box-head";
-  boxHead.innerHTML = '<div class="party-box-title"><p class="eyebrow">STORAGE</p><h2>Pokémon Storage</h2><small class="party-box-total"></small></div><div class="party-box-tools"><span class="party-box-index"><button type="button" disabled aria-label="Previous box">‹</button><b>BOX 1 · KANTO</b><button type="button" disabled aria-label="Next box">›</button></span><label>SORT<select aria-label="Sort Pokémon Storage"><option value="level">LEVEL</option><option value="name">NAME</option><option value="dex">DEX NO.</option></select></label></div>';
-  layout.append(teamHead, team, info, coverage, boxHead);
-  roster.before(layout);
-  const storageDetail = document.createElement("section");
-  storageDetail.id = "party-storage-detail";
-  storageDetail.className = "party-storage-detail";
-  storageDetail.setAttribute("aria-live", "polite");
-  roster.after(storageDetail);
-  let storageSelectedUid = null;
 
-  const controls = heading.querySelector(".team-builder-controls");
+  let managing = false;\n  const controls = heading.querySelector(".team-builder-controls");
   const manage = byId("box-manage-party");
   heading.classList.add("party-mobile-heading");
   manage.textContent = "TEAM ›";
   manage.className = "secondary-button party-mobile-presets";
-  controls?.append(manage);
-
+  controls?.append(manage);\n  function setManaging(value) {\n    managing = Boolean(value);\n    if (managing) { [...team.querySelectorAll(".party-entry")].forEach(entry => { entry.querySelector(".party-toggle")?.removeAttribute("hidden"); roster.append(entry); }); }\n    layout.hidden = managing;\n    roster.hidden = !managing;\n    byId("party-workshop")?.toggleAttribute("hidden", !managing);\n    screen.querySelector(".selection-footer")?.toggleAttribute("hidden", !managing);\n    manage.textContent = managing ? "DONE" : "TEAM ›";\n    screen.classList.toggle("party-team-management", managing);\n    if (!managing) arrange();\n  }\n  manage.addEventListener("click", event => { event.preventDefault(); event.stopImmediatePropagation(); setManaging(!managing); }, true);\n
   const swap = document.createElement("dialog");
   swap.className = "party-mobile-swap";
   swap.innerHTML = '<header><div><p class="eyebrow">TEAM FULL</p><h2>Choose a replacement</h2></div><button type="button" aria-label="Close">×</button></header><p>Tap the teammate who should return to the Box.</p><div></div>';
@@ -120,51 +108,6 @@
     const result = coverageForParty();
     coverage.innerHTML = `<div><b>STRONG VS</b><span>${result.covered.slice(0, 3).map(typeChip).join("") || "Build move coverage"}</span></div><div><b>NO ANSWER</b><span>${result.gaps.slice(0, 3).map(typeChip).join("")}</span></div>`;
   }
-  function sortBox() {
-    const mode = boxHead.querySelector("select").value;
-    [...roster.querySelectorAll(".party-entry")].sort((a, b) => {
-      const auid = a.querySelector("[data-companion-id]").dataset.companionId, buid = b.querySelector("[data-companion-id]").dataset.companionId;
-      const ar = pokemonRecord(auid), br = pokemonRecord(buid);
-      return mode === "name" ? pokemonNameFor(auid).localeCompare(pokemonNameFor(buid)) : mode === "dex" ? SPECIES[ar.speciesId].dex - SPECIES[br.speciesId].dex : levelFor(buid) - levelFor(auid) || pokemonNameFor(auid).localeCompare(pokemonNameFor(buid));
-    }).forEach(node => roster.append(node));
-  }
-
-  function drawStorageDetail(uid) {
-    const record = pokemonRecord(uid);
-    if (!record) { storageDetail.hidden = true; storageDetail.replaceChildren(); return; }
-    storageSelectedUid = uid;
-    storageDetail.hidden = false;
-    const mon = SPECIES[record.speciesId], level = levelFor(uid), isSelected = selected.includes(uid);
-    const stats = calculatedStats(record.speciesId, level);
-    const adventure = window.YSAdventureV58?.adventureState?.(record) || record.adventureState || {hp:stats.hp,status:null};
-    const hp = Math.max(0, Math.min(stats.hp, Number(adventure.hp) || 0));
-    const percent = Math.round(hp / Math.max(1, stats.hp) * 100);
-    const art = document.createElement("img"); art.alt = ""; art.className = "party-storage-sprite"; setSprite(art, record.speciesId);
-    storageDetail.innerHTML = `<header><span>SELECTED</span><small>${isSelected ? "IN YOUR PARTY" : "BOX 1 · KANTO"}</small></header><div class="party-storage-body"><div class="party-storage-art"></div><div class="party-storage-copy"><p>No.${String(mon.dex).padStart(3,"0")}</p><h3>${pokemonNameFor(uid)}</h3><div><b>Lv.${level}</b>${mon.types.map(typeChip).join("")}</div><span class="party-storage-hp"><small>HP</small><i><em style="width:${percent}%"></em></i><strong>${hp}/${stats.hp}</strong></span></div></div><footer><button class="primary-button party-storage-transfer" type="button">${isSelected ? "DEPOSIT" : selected.length < selectionLimit ? "WITHDRAW" : "SWAP INTO PARTY"}</button><button class="secondary-button party-storage-details" type="button">VIEW DETAILS</button></footer>`;
-    storageDetail.querySelector(".party-storage-art")?.append(art);
-    storageDetail.querySelector(".party-storage-transfer").onclick = () => {
-      if (isSelected) remove(uid); else add(uid);
-      setTimeout(() => drawStorageDetail(uid), 0);
-    };
-    storageDetail.querySelector(".party-storage-details").onclick = () => window.PokemonDetails?.summary(uid);
-    roster.querySelectorAll(".party-entry").forEach(entry => {
-      const rowUid = entry.querySelector("[data-companion-id]")?.dataset.companionId;
-      entry.classList.toggle("storage-selected", rowUid === uid);
-    });
-  }
-  boxHead.querySelector("select").onchange = sortBox;
-  roster.addEventListener("click", event => {
-    const trigger = event.target.closest(".pokemon-profile-trigger");
-    if (!trigger) return;
-    const uid = trigger.dataset.companionId;
-    if (!uid) return;
-    event.preventDefault(); event.stopImmediatePropagation();
-    drawStorageDetail(uid);
-  }, true);
-  roster.addEventListener("focusin", event => {
-    const uid = event.target.closest("[data-companion-id]")?.dataset.companionId;
-    if (uid) drawStorageDetail(uid);
-  });
   team.addEventListener("pointerover", event => {
     const uid = event.target.closest("[data-companion-id]")?.dataset.companionId;
     if (uid) drawInfo(uid);
@@ -189,7 +132,7 @@
     const button = document.createElement("button");
     button.type = "button"; button.className = "party-mobile-empty";
     button.innerHTML = `<b>+</b><span>SLOT ${index + 1}</span><small>ADD POKÉMON</small>`;
-    button.onclick = () => roster.querySelector(".pokemon-profile-trigger")?.focus();
+    button.onclick = () => setManaging(true);
     return button;
   }
   function arrange() {
@@ -207,10 +150,9 @@
     for (let index = selected.length; index < selectionLimit; index++) team.append(emptySlot(index));
     team.style.setProperty("--party-size", selectionLimit);
     teamHead.querySelector(".party-mobile-count").textContent = `${selected.length} / ${selectionLimit}`;
-    const total = boxHead.querySelector(".party-box-total"); if (total) total.textContent = `${roster.children.length} IN BOX`;
-    drawInfo(selected[0]); drawCoverage(); sortBox();
-    const fallback = storageSelectedUid && pokemonRecord(storageSelectedUid) ? storageSelectedUid : ([...roster.querySelectorAll("[data-companion-id]")].find(node => !selected.includes(node.dataset.companionId))?.dataset.companionId || selected[0]);
-    if (fallback) drawStorageDetail(fallback);
+    drawInfo(selected[0]); drawCoverage();
+    team.querySelectorAll(".party-toggle").forEach(button => { button.hidden = true; });
+    if (!managing) roster.hidden = true;
   }
 
   window.YSFlow?.on("party:rendered", () => { arrange(); }, 35);
