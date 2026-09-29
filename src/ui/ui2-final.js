@@ -89,7 +89,10 @@
     actions.append(
       serviceButton("✚ POKÉCENTER", "ui2-center-action", () => window.PokeCenter?.open?.()),
       serviceButton("▣ POKÉ MART", "ui2-mart-action", () => typeof showShop === "function" && showShop()),
-      serviceButton("● MANAGE PARTY", "ui2-party-action", () => byId("collection-tab")?.click()),
+      serviceButton("● MANAGE PARTY", "ui2-party-action", () => {
+        byId("collection-tab")?.click();
+        setTimeout(() => window.PartyMobile?.setManaging?.(true), 0);
+      }),
     );
     services.append(actions);
     panel.append(services);
