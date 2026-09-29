@@ -13,7 +13,7 @@
     "cups-screen": { key:"journey", label:"Journey", nav:"cups-tab", accent:"gold", gear:true, defaultGear:"party", defaultBag:"recovery", hint:"Prepare your team, review supplies and keep moving through Kanto." },
     "trainer-screen": { key:"cups", label:"Cups", nav:"trainer-tab", accent:"orange", gear:true, defaultGear:"bag", defaultBag:"held", hint:"Competition kit: held gear and recovery items matter most here." },
     "safari-screen": { key:"safari", label:"Safari", nav:"safari-tab", accent:"green", gear:true, defaultGear:"bag", defaultBag:"capture", hint:"Safari kit: check your Ball supply before wandering deeper." },
-    "pokecenter-screen": { key:"center", label:"Center", nav:"pokecenter-tab", accent:"red", gear:true, defaultGear:"bag", defaultBag:"recovery", hint:"Healing is free here. Trainer Gear stays available after treatment." },
+    "pokecenter-screen": { key:"center", label:"Center", nav:"pokecenter-tab", accent:"red", gear:false, defaultGear:null, defaultBag:null, hint:"Healing is free here." },
     "pokedex-screen": { key:"dex", label:"Dex", nav:"pokedex-tab", accent:"cyan", gear:false, defaultGear:null, defaultBag:null, hint:"Reference and collection progress." }
   };
 
@@ -227,7 +227,7 @@
   function moduleContext(screenId) { return MODES[screenId] || MODES["cups-screen"]; }
 
   function ensureGearModule(screenId) {
-    const screen = byId(screenId), mode = moduleContext(screenId); if (!screen || !mode.gear) return null;
+    const screen = byId(screenId), mode = moduleContext(screenId);\n    if (!screen) return null;\n    if (!mode.gear) { screen.querySelectorAll(`.trainer-gear[data-screen="${screenId}"]`).forEach(node => node.remove()); return null; }
     let module = screen.querySelector(`.trainer-gear[data-screen="${screenId}"]`);
     if (!module) {
       module = doc.createElement("section"); module.className="trainer-gear"; module.dataset.screen=screenId; module.dataset.open="false"; module.dataset.view=mode.defaultGear || "bag"; module.dataset.category=mode.defaultBag || "recovery";
