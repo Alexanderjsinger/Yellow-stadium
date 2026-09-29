@@ -641,7 +641,8 @@
           total += Math.min(target.hp, amount); target.hp = Math.max(0, target.hp - amount);
         }
       }
-      if (crit) await present("critical", actor, target, move);\n      else await present("hitReaction", target);
+      if (crit) await present("critical", actor, target, move);
+      else await present("hitReaction", target);
       hitEffect(target);
       if (!wasSubstitute) {
         actor.matchDamage = (actor.matchDamage || 0) + total;
