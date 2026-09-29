@@ -227,7 +227,9 @@
   function moduleContext(screenId) { return MODES[screenId] || MODES["cups-screen"]; }
 
   function ensureGearModule(screenId) {
-    const screen = byId(screenId), mode = moduleContext(screenId);\n    if (!screen) return null;\n    if (!mode.gear) { screen.querySelectorAll(`.trainer-gear[data-screen="${screenId}"]`).forEach(node => node.remove()); return null; }
+    const screen = byId(screenId), mode = moduleContext(screenId);
+    if (!screen) return null;
+    if (!mode.gear) { screen.querySelectorAll(`.trainer-gear[data-screen="${screenId}"]`).forEach(node => node.remove()); return null; }
     let module = screen.querySelector(`.trainer-gear[data-screen="${screenId}"]`);
     if (!module) {
       module = doc.createElement("section"); module.className="trainer-gear"; module.dataset.screen=screenId; module.dataset.open="false"; module.dataset.view=mode.defaultGear || "bag"; module.dataset.category=mode.defaultBag || "recovery";
