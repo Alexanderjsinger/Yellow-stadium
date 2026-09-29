@@ -680,7 +680,7 @@
       "sha256": "dc1b7e52d9f8b7b42f157c2a03ee1172946f4d7782fb95bf5798c20c7f20b6f4"
     }
   ],
-  "canonical_sha256": "8ee97825337dbef3766a4b8e0e7684713eb39689f10cf02d346c7e7dd2284e50",
+  "canonical_sha256": "4995518c7158a158f4697eb33edbddeb3e5fa654bd0e9bfbd5c8895f88e3cddb",
   "canonical_phase": "UI5.2",
   "canonical_assets_sha256": "5f8d08c81123556f2215272530fb85f980d485fa3c0d0b13fcc7dc8fd1175deb",
   "asset_count": 450,
