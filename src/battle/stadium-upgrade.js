@@ -244,6 +244,26 @@
     while (els["battle-log"].children.length > 80) els["battle-log"].firstChild.remove();
   };
   const presentation = () => window.BattlePresentationDirector;
+  async function present(method, ...args) {
+    const service = presentation(), fn = service?.[method];
+    if (typeof fn !== "function") return;
+    let timer;
+    try {
+      await Promise.race([
+        Promise.resolve(fn.apply(service, args)),
+        new Promise(resolve => { timer = setTimeout(resolve, 1400); })
+      ]);
+    } catch (error) {
+      console.warn(`Presentation step ${method} failed; continuing battle.`, error);
+    } finally { clearTimeout(timer); }
+  }
+  function syncLegacyActive(side) {
+    if (!battle?.slots?.[side]) return;
+    const key = side === "player" ? "pActive" : "eActive";
+    const next = battle.slots[side].find(index => index >= 0 && battle[side][index]?.hp > 0);
+    if (next !== undefined) battle[key] = next;
+  }
+  function syncLegacyActiveIndexes() { syncLegacyActive("player"); syncLegacyActive("enemy"); }
   async function say(text) { log(text); updateBattleUI(); await delay(presentation()?.delay(300) ?? 300); }
   function speed(mon) {
     let value = effectiveStat(mon, "speed");
@@ -332,7 +352,7 @@
   }
   async function enter(mon) {
     if (!mon || mon.hp <= 0) return;
-    await presentation()?.sendOut(mon);
+    await present("sendOut", mon);
     playCry(mon);
     await announceEncounterEntry(mon);
     const layers = battle.spikes[mon.side];
@@ -351,9 +371,9 @@
       for (let slot = 0; slot < battle.slots[side].length; slot++) {
         const current = battle[side][battle.slots[side][slot]];
         if (current?.hp > 0) continue;
-        if (current && !current.faintAnnounced) { current.faintAnnounced = true; await presentation()?.faint(current); await say(`${current.name} fainted!`); }
+        if (current && !current.faintAnnounced) { current.faintAnnounced = true; await present("faint", current); await say(`${current.name} fainted!`); }
         const next = battle[side].findIndex((mon, i) => mon.hp > 0 && !battle.slots[side].includes(i));
-        battle.slots[side][slot] = next;
+        battle.slots[side][slot] = next; syncLegacyActive(side);
         if (next >= 0) { await say(`${side === "player" ? "Go" : "Opponent sent out"}, ${battle[side][next].name}!`); await enter(battle[side][next]); if (battle[side][next].hp <= 0) slot--; }
       }
     }
@@ -591,22 +611,22 @@
     }
     const targets = targetsFor(actor, move, action.target);
     if (index >= 0) actor.pp[index] = Math.max(0, actor.pp[index] - 1 - (targets.some(mon => mon.side !== actor.side && mon.ability === "pressure") ? 1 : 0));
-    await presentation()?.prepare(actor, move);
+    await present("prepare", actor, move);
     presentation()?.cue(actor, move);
-    if (presentation()?.move) await presentation().move(actor, move); else await say(`${actor.name} used ${move.name}!`);
+    if (presentation()?.move) await present("move", actor, move); else await say(`${actor.name} used ${move.name}!`);
     moveEffect(actor, move);
     for (const target of targets) {
       if (target.hp <= 0 || actor.hp <= 0) continue;
       let accuracy = move.accuracy * stageMultiplier(actor.stages.accuracy) * (actor.ability === "compoundEyes" ? 1.3 : 1);
       if (move.name === "THUNDER") accuracy = battle.weather === "rain" ? 100 : battle.weather === "sun" ? 50 : accuracy;
-      if (!move.self && Math.random() * 100 >= accuracy) { await Promise.all([presentation()?.playMove(actor, target, move, 'miss'), presentation()?.dodge(target, actor, move)]); presentation()?.impactLabel(target,'DODGED'); if (presentation()?.miss) await presentation().miss(target); else await say(`${target.name} dodged ${actor.name}'s attack!`); continue; }
-      await presentation()?.playMove(actor, target, move);
-      if (!move.power) { await presentation()?.hitReaction(target, "status"); await applyTactic(actor, target, move); continue; }
+      if (!move.self && Math.random() * 100 >= accuracy) { await Promise.all([present("playMove", actor, target, move, "miss"), present("dodge", target, actor, move)]); presentation()?.impactLabel(target,'DODGED'); if (presentation()?.miss) await present("miss", target); else await say(`${target.name} dodged ${actor.name}'s attack!`); continue; }
+      await present("playMove", actor, target, move);
+      if (!move.power) { await present("hitReaction", target, "status"); await applyTactic(actor, target, move); continue; }
       if (target.protected) { presentation()?.impactLabel(target,'PROTECTED'); await say(`${target.name} protected itself!`); continue; }
       if (immunity(target, move)) {
         if (["waterAbsorb", "voltAbsorb"].includes(target.ability) && ((target.ability === "waterAbsorb" && move.type === "WATER") || (target.ability === "voltAbsorb" && move.type === "ELECTRIC"))) heal(target, target.maxHp / 4);
         if (target.ability === "flashFire" && move.type === "FIRE") target.flashFire = true;
-        presentation()?.impactLabel(target,'IMMUNE'); if (presentation()?.immune) await presentation().immune(target); else await say(`${move.name} has no effect on ${target.name}!`); continue;
+        presentation()?.impactLabel(target,'IMMUNE'); if (presentation()?.immune) await present("immune", target); else await say(`${move.name} has no effect on ${target.name}!`); continue;
       }
       if (move === MOVES.brickBreak) { battle.screens[target.side].reflect = 0; battle.screens[target.side].lightScreen = 0; }
       const hits = move.multi ? move.multi[0] + Math.floor(Math.random() * (move.multi[1] - move.multi[0] + 1)) : 1;
@@ -621,8 +641,7 @@
           total += Math.min(target.hp, amount); target.hp = Math.max(0, target.hp - amount);
         }
       }
-      if (crit) await presentation()?.critical(actor, target, move);
-      else await presentation()?.hitReaction(target);
+      if (crit) await present("critical", actor, target, move);\n      else await present("hitReaction", target);
       hitEffect(target);
       if (!wasSubstitute) {
         actor.matchDamage = (actor.matchDamage || 0) + total;
@@ -635,10 +654,10 @@
       battle.log ||= []; battle.log.push(`${target.name}: ${resultText}`); battle.log = battle.log.slice(-80);
       presentation()?.impactLabel(target, crit ? 'CRITICAL' : matchup > 1 ? 'SUPER EFFECTIVE' : matchup < 1 ? 'RESISTED' : 'HIT');
       updateBattleUI();
-      if (presentation()?.result) await presentation().result(target,{crit,effect:matchup,hits,total,substitute:wasSubstitute}); else await say(`${target.name}: ${resultText}`);
+      if (presentation()?.result) await present("result", target,{crit,effect:matchup,hits,total,substitute:wasSubstitute}); else await say(`${target.name}: ${resultText}`);
       if (move === MOVES.scald && target.status === 'FRZ' && !wasSubstitute) { target.status = null; await say(`${target.name} thawed out!`); }
       if (target.hp > 0 && !wasSubstitute) {
-        if (move.status && Math.random() * 100 < move.chance && setStatus(target, move.status, actor)) { const text = statusMessage(target); if (presentation()?.status) await presentation().status(text); else await say(text); }
+        if (move.status && Math.random() * 100 < move.chance && setStatus(target, move.status, actor)) { const text = statusMessage(target); if (presentation()?.status) await present("status", text); else await say(text); }
         if (move.effect === "specialDown" && Math.random() * 100 < move.chance) { statChange(target, "specialDefense", -1); await say(`${target.name}'s SP. DEF fell!`); }
         if (move.confuseChance && Math.random() * 100 < move.confuseChance && target.ability !== "ownTempo") target.confusion = 3;
         if (move.trap) target.trappedTurns = 4;
@@ -660,8 +679,8 @@
     const { actor, incoming } = action;
     if (!isActive(actor) || actor.trappedTurns || incoming.hp <= 0 || isActive(incoming)) return;
     const slot = battle.slots[actor.side].indexOf(battle[actor.side].indexOf(actor));
-    await presentation()?.withdraw(actor);
-    clearVolatile(actor); battle.slots[actor.side][slot] = battle[actor.side].indexOf(incoming); incoming.lastSwitch = battle.turn;
+    await present("withdraw", actor);
+    clearVolatile(actor); battle.slots[actor.side][slot] = battle[actor.side].indexOf(incoming); syncLegacyActive(actor.side); incoming.lastSwitch = battle.turn;
     await say(`${actor.name}, return! Go, ${incoming.name}!`); await enter(incoming);
   }
   async function finishTurn() {
@@ -813,7 +832,7 @@
       const target = active("enemy")[0];
       await say(`You threw a ${item.name}!`);
       const caught = id === "masterBall" || Math.random() < safariCatchChance(target, item.ball);
-      if (presentation()?.capture) await presentation().capture(target, id, caught);
+      if (presentation()?.capture) await present("capture", target, id, caught);
       else for (let i = 0; i < 3; i++) { await say("Shake…"); }
       if (caught) {
         battle.captured = true; battle.caughtNew = !save.owned.includes(target.id); addOwned(target.id, target.level); endBattle(true);
@@ -837,8 +856,7 @@
   let hpTarget;
   function prepareBattleUI() {
     if (!battle?.slots) return;
-    battle.pActive = battle.slots.player.find(index => index >= 0 && battle.player[index]?.hp > 0) ?? 0;
-    battle.eActive = battle.slots.enemy.find(index => index >= 0 && battle.enemy[index]?.hp > 0) ?? 0;
+    syncLegacyActiveIndexes();
   }
   function renderStadiumBattleUI() {
     if (!battle) return;
