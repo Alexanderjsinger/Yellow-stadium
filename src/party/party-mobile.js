@@ -22,12 +22,26 @@
   coverage.id = "party-mobile-coverage";
   coverage.className = "party-mobile-coverage";
 
-  let managing = false;\n  const controls = heading.querySelector(".team-builder-controls");
+  let managing = false;
+  const controls = heading.querySelector(".team-builder-controls");
   const manage = byId("box-manage-party");
   heading.classList.add("party-mobile-heading");
   manage.textContent = "TEAM ›";
   manage.className = "secondary-button party-mobile-presets";
-  controls?.append(manage);\n  function setManaging(value) {\n    managing = Boolean(value);\n    if (managing) { [...team.querySelectorAll(".party-entry")].forEach(entry => { entry.querySelector(".party-toggle")?.removeAttribute("hidden"); roster.append(entry); }); }\n    layout.hidden = managing;\n    roster.hidden = !managing;\n    byId("party-workshop")?.toggleAttribute("hidden", !managing);\n    screen.querySelector(".selection-footer")?.toggleAttribute("hidden", !managing);\n    manage.textContent = managing ? "DONE" : "TEAM ›";\n    screen.classList.toggle("party-team-management", managing);\n    if (!managing) arrange();\n  }\n  manage.addEventListener("click", event => { event.preventDefault(); event.stopImmediatePropagation(); setManaging(!managing); }, true);\n
+  controls?.append(manage);
+  function setManaging(value) {
+    managing = Boolean(value);
+    if (managing) { [...team.querySelectorAll(".party-entry")].forEach(entry => { entry.querySelector(".party-toggle")?.removeAttribute("hidden"); roster.append(entry); }); }
+    layout.hidden = managing;
+    roster.hidden = !managing;
+    byId("party-workshop")?.toggleAttribute("hidden", !managing);
+    screen.querySelector(".selection-footer")?.toggleAttribute("hidden", !managing);
+    manage.textContent = managing ? "DONE" : "TEAM ›";
+    screen.classList.toggle("party-team-management", managing);
+    if (!managing) arrange();
+  }
+  manage.addEventListener("click", event => { event.preventDefault(); event.stopImmediatePropagation(); setManaging(!managing); }, true);
+
   const swap = document.createElement("dialog");
   swap.className = "party-mobile-swap";
   swap.innerHTML = '<header><div><p class="eyebrow">TEAM FULL</p><h2>Choose a replacement</h2></div><button type="button" aria-label="Close">×</button></header><p>Tap the teammate who should return to the Box.</p><div></div>';
