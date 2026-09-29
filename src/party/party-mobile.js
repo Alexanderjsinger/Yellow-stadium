@@ -21,6 +21,8 @@
   const coverage = document.createElement("section");
   coverage.id = "party-mobile-coverage";
   coverage.className = "party-mobile-coverage";
+  layout.append(teamHead, team, info, coverage);
+  roster.before(layout);
 
   let managing = false;
   const controls = heading.querySelector(".team-builder-controls");
@@ -198,7 +200,8 @@
   detailModal.addEventListener("change", enhanceDetails);
   detailModal.addEventListener("click", event => { if (!event.target.closest(".party-detail-actions,.detail-close")) enhanceDetails(); });
 
-  window.PartyMobile = { arrange, add, remove, openSwap, coverage: coverageForParty };
+  window.PartyMobile = { arrange, add, remove, openSwap, coverage: coverageForParty, setManaging };
   renderRoster();
+  setManaging(false);
 })();
 
