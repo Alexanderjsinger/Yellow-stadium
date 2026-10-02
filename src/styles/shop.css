@@ -143,3 +143,266 @@
   }
 
 }
+
+
+/* FINAL Poké Mart — one renderer owns Buy + Sell. */
+#shop-screen {
+  padding-top: 14px;
+}
+#shop-screen > #shop-coins[hidden] {
+  display: none !important;
+}
+#shop-screen .shop-grid {
+  display: block;
+}
+.mart-shell {
+  display: grid;
+  gap: 14px;
+}
+.mart-counter {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: end;
+  padding: 18px;
+  border: 1px solid var(--ui-border);
+  border-left: 4px solid var(--yellow);
+  border-radius: var(--ui-radius);
+  background: linear-gradient(120deg,#0d2134,#122a3e);
+}
+.mart-counter h1 {
+  margin: 4px 0 6px;
+}
+.mart-counter p:last-child {
+  margin: 0;
+  color: var(--muted);
+}
+.mart-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--navy);
+}
+.mart-tabs button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 900;
+  letter-spacing: .08em;
+  cursor: pointer;
+}
+.mart-tabs button[aria-selected="true"] {
+  background: var(--yellow);
+  color: #08131e;
+}
+.mart-shelf {
+  min-width: 0;
+}
+.mart-shelf > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 2px 7px;
+  color: var(--muted);
+  font: 800 .72rem ui-monospace, monospace;
+  letter-spacing: .08em;
+}
+.mart-shelf-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline proximity;
+  padding: 2px 2px 9px;
+}
+.mart-shelf-item {
+  flex: 0 0 min(250px,72vw);
+  min-height: 96px;
+  display: grid;
+  grid-template-columns: 54px minmax(0,1fr);
+  grid-template-rows: 1fr auto;
+  gap: 5px 10px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  background: var(--navy);
+  color: var(--text);
+  cursor: pointer;
+  scroll-snap-align: start;
+}
+.mart-shelf-item > b {
+  grid-column: 2;
+  color: var(--yellow);
+  font: 900 .76rem ui-monospace, monospace;
+}
+.mart-shelf-item span:nth-child(2) {
+  display: grid;
+  align-content: center;
+  gap: 4px;
+}
+.mart-shelf-item strong {
+  letter-spacing: .05em;
+}
+.mart-shelf-item small {
+  color: var(--muted);
+}
+.mart-shelf-item.selected {
+  border-color: var(--yellow);
+  box-shadow: 0 0 0 2px rgba(245,197,66,.18);
+}
+.mart-shelf-item.locked {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.mart-item-art,
+.mart-order-art {
+  display: grid;
+  place-items: center;
+}
+.mart-item-art img,
+.mart-order-art img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.mart-order {
+  display: grid;
+  grid-template-columns: 84px minmax(0,1fr) auto;
+  grid-template-areas:
+    "art copy step"
+    "art total confirm";
+  gap: 12px 16px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--navy);
+}
+.mart-order-art { grid-area: art; }
+.mart-order-copy { grid-area: copy; }
+.mart-order-copy h2 {
+  margin: 2px 0 5px;
+}
+.mart-order-copy p:not(.eyebrow) {
+  margin: 0 0 5px;
+  color: var(--muted);
+}
+.mart-order-copy small {
+  color: var(--muted);
+}
+.mart-stepper {
+  grid-area: step;
+  display: grid;
+  grid-template-columns: 38px 44px 38px;
+  align-items: center;
+  text-align: center;
+}
+.mart-stepper button {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.mart-stepper button:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+.mart-total {
+  grid-area: total;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mart-total span,
+.mart-total small {
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 800;
+}
+.mart-total strong {
+  color: var(--yellow);
+}
+.mart-total.insufficient strong {
+  color: #ff7f7f;
+}
+.mart-confirm {
+  grid-area: confirm;
+  min-width: 190px;
+}
+.mart-order.empty {
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "copy confirm";
+}
+.mart-order.empty > .eyebrow,
+.mart-order.empty > h2,
+.mart-order.empty > p {
+  grid-column: 1;
+}
+.mart-empty-copy {
+  margin: 10px 0;
+  color: var(--muted);
+}
+
+.yellow-ui2 .mart-counter,
+.yellow-ui2 .mart-order,
+.yellow-ui2 .mart-shelf-item,
+.yellow-ui2 .mart-tabs {
+  border-color: #62bdd1;
+}
+.yellow-ui2 .mart-counter,
+.yellow-ui2 .mart-order,
+.yellow-ui2 .mart-shelf-item {
+  background: linear-gradient(180deg,#f8fdff,#dcecf4);
+  color: #123047;
+}
+.yellow-ui2 .mart-counter p:last-child,
+.yellow-ui2 .mart-order-copy p:not(.eyebrow),
+.yellow-ui2 .mart-order-copy small,
+.yellow-ui2 .mart-shelf-item small,
+.yellow-ui2 .mart-shelf > header {
+  color: #547386;
+}
+.yellow-ui2 .mart-tabs {
+  background: #ecf8fb;
+}
+.yellow-ui2 .mart-tabs button {
+  color: #486a7e;
+}
+.yellow-ui2 .mart-tabs button[aria-selected="true"] {
+  color: #12283a;
+}
+.yellow-ui2 .mart-total strong,
+.yellow-ui2 .mart-shelf-item > b {
+  color: #9c6e00;
+}
+
+@media (max-width: 700px) {
+  .mart-counter {
+    align-items: start;
+  }
+  .mart-order {
+    grid-template-columns: 64px minmax(0,1fr);
+    grid-template-areas:
+      "art copy"
+      "step step"
+      "total total"
+      "confirm confirm";
+  }
+  .mart-stepper {
+    justify-content: start;
+  }
+  .mart-confirm {
+    width: 100%;
+  }
+}
