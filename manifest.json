@@ -680,7 +680,7 @@
       "sha256": "dc1b7e52d9f8b7b42f157c2a03ee1172946f4d7782fb95bf5798c20c7f20b6f4"
     }
   ],
-  "canonical_sha256": "0a7d7e44b0a28f0d1d01ddc5efd6ddb1e5395420b78716ab173f44438af1ee69",
+  "canonical_sha256": "c3a6044005c7acf22057feebaf902b6f551ed8144b00485be89b22b38f3f64b4",
   "canonical_phase": "source-owner-battle-stability",
   "canonical_assets_sha256": "5f8d08c81123556f2215272530fb85f980d485fa3c0d0b13fcc7dc8fd1175deb",
   "asset_count": 450,
