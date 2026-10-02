@@ -23,6 +23,7 @@ expect("Math.random = function" in harness and "__setSeed" in harness, "runtime 
 for required in [
     "testOnboardingAndSaveReload",
     "testDamageAndTurnDeterminism",
+    "testSwitchSlotSynchronization",
     "testJourneyGymAndCupProgression",
     "testSafariCapture",
     "testArcadeCupProgression",
