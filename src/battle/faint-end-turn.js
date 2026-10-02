@@ -12,7 +12,14 @@ async function faintAndAdvance(side) {
     endBattle(side === "enemy");
     return;
   }
+  const previous = battle[activeKey];
   battle[activeKey] = next;
+  const slotSide = side === "player" ? "player" : "enemy";
+  if (Array.isArray(battle.slots?.[slotSide])) {
+    const slot = battle.slots[slotSide].indexOf(previous);
+    if (slot >= 0) battle.slots[slotSide][slot] = next;
+    else if (battle.slots[slotSide].length) battle.slots[slotSide][0] = next;
+  }
   sprite.classList.remove("faint");
   updateBattleUI();
   announce(side === "enemy" ? `The opponent sent out ${team[next].name}!` : `Go, ${team[next].name}!`);
