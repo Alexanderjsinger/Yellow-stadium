@@ -149,15 +149,8 @@
       </section>
 
       <section id="shop-screen" class="screen shop-screen" hidden>
-        <div class="screen-heading">
-          <div>
-            <p class="eyebrow">POKÉ MART</p>
-            <h1>Stock up for your journey.</h1>
-            <p class="rules-note">Spend coins earned in battle. Items stay in your bag until used.</p>
-          </div>
-          <div class="shop-balance"><span>●</span><b id="shop-coins">0</b></div>
-        </div>
-        <div id="shop-grid" class="shop-grid"></div>
+        <b id="shop-coins" hidden>0</b>
+        <div id="shop-grid" class="shop-grid" aria-live="polite"></div>
       </section>
 
       <section id="bag-screen" class="screen bag-screen" hidden><div class="screen-heading"><div><p class="eyebrow">TRAINER GEAR</p><h1>Your Bag.</h1><p class="rules-note">Your items and earned badges. Buy supplies at the Poké Mart.</p></div><button id="bag-shop-link" class="secondary-button" type="button">VISIT POKÉ MART ›</button></div><div class="bag-tabs" role="tablist" aria-label="Bag sections"><button type="button" role="tab" data-bag-tab="balls" aria-selected="true">CAPTURE</button><button type="button" role="tab" data-bag-tab="healing" aria-selected="false">RECOVERY</button><button type="button" role="tab" data-bag-tab="evo" aria-selected="false">GROWTH</button><button type="button" role="tab" data-bag-tab="held" aria-selected="false">HELD</button><button type="button" role="tab" data-bag-tab="record" aria-selected="false">RECORD</button></div><div id="bag-panel-root" class="bag-grid"></div></section>
