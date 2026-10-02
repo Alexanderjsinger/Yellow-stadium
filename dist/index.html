@@ -18013,7 +18013,15 @@ linear-gradient(180deg,#efd2b7 0 66%,#f5e7c8 66% 100%)!important;box-shadow:inse
       <section class="scene-card" role="dialog" aria-modal="true" aria-labelledby="scene-title">
         <p id="scene-kicker" class="eyebrow"></p>
         <h2 id="scene-title"></h2>
-        <div class="scene-stage"><img id="scene-trainer" alt=""><span id="scene-badge" class="kanto-badge" hidden></span></div>
+        <div class="scene-stage">
+          <img id="scene-player" alt="Your trainer" src="./assets/trainers/jr.trainerm.png">
+          <img id="scene-trainer" alt="">
+          <b class="scene-versus-name player">YOU</b>
+          <b id="scene-foe-name" class="scene-versus-name foe">TRAINER</b>
+          <span id="scene-player-pips" class="scene-team-pips player" aria-label="Your team"></span>
+          <span id="scene-foe-pips" class="scene-team-pips foe" aria-label="Opponent team"></span>
+          <span id="scene-badge" class="kanto-badge" hidden></span>
+        </div>
         <div class="scene-dialogue">
           <p id="scene-quote"></p>
           <div id="scene-plan" class="encounter-plan" hidden>
@@ -20262,8 +20270,14 @@ function chooseEnemyAction(mon, defender) {
 }
 
 async function executeEnemySwitch(index) {
+  const outgoingIndex = battle.eActive;
   const outgoing = activeEnemy();
   battle.eActive = index;
+  if (Array.isArray(battle.slots?.enemy)) {
+    const slot = battle.slots.enemy.indexOf(outgoingIndex);
+    if (slot >= 0) battle.slots.enemy[slot] = index;
+    else if (battle.slots.enemy.length) battle.slots.enemy[0] = index;
+  }
   battle.aiSwitchCooldown = 2;
   announce(`${battle.profile.label} withdrew ${outgoing.name}!`);
   await delay(500);
@@ -20558,7 +20572,14 @@ async function faintAndAdvance(side) {
     endBattle(side === "enemy");
     return;
   }
+  const previous = battle[activeKey];
   battle[activeKey] = next;
+  const slotSide = side === "player" ? "player" : "enemy";
+  if (Array.isArray(battle.slots?.[slotSide])) {
+    const slot = battle.slots[slotSide].indexOf(previous);
+    if (slot >= 0) battle.slots[slotSide][slot] = next;
+    else if (battle.slots[slotSide].length) battle.slots[slotSide][0] = next;
+  }
   sprite.classList.remove("faint");
   updateBattleUI();
   announce(side === "enemy" ? `The opponent sent out ${team[next].name}!` : `Go, ${team[next].name}!`);
@@ -20688,8 +20709,14 @@ async function switchPlayer(index) {
     return;
   }
   battle.locked = true;
+  const outgoingIndex = battle.pActive;
   const outgoing = activePlayer();
   battle.pActive = index;
+  if (Array.isArray(battle.slots?.player)) {
+    const slot = battle.slots.player.indexOf(outgoingIndex);
+    if (slot >= 0) battle.slots.player[slot] = index;
+    else if (battle.slots.player.length) battle.slots.player[0] = index;
+  }
   battle.participants?.add(index);
   announce(`${outgoing.name}, come back! Go, ${activePlayer().name}!`);
   updateBattleUI();
@@ -21069,12 +21096,19 @@ function registerAgentControls() {
   const supported=b=>['cup','trainer','trainerDuo','elite','arcade'].includes(b.mode);
   const badgeSymbols=['◆','●','ϟ','✿','☠','◉','▲','◇'];
   function badge(node,index){node.style.removeProperty('background-image');node.style.removeProperty('background-position');node.classList.add(`badge-${index}`);node.textContent=badgeSymbols[index]||'◆';node.setAttribute('role','img');node.setAttribute('aria-label',`${CUPS[index].badge} Badge`);}
+  function drawPips(node,count){
+    if(!node)return;
+    node.replaceChildren(...Array.from({length:Math.min(6,Math.max(1,count||1))},()=>document.createElement('i')));
+  }
   function show(b,victory){
     const intro=victory===undefined,name=b.trainer?.name||'TRAINER';
     scene.dataset.phase=intro?'intro':victory?'win':'loss';
     const cupStage=b.mode==='cup'?(b.cupRound===2?'LEADER BATTLE':`BATTLE ${(b.cupRound||0)+1} OF 3`):'';
     document.getElementById('scene-kicker').textContent=intro?(b.mode==='cup'?`${CUPS[b.cupIndex].badge} JOURNEY · ${cupStage}`:b.mode==='arcade'?`${ARCADE_CUPS[b.arcadeCupIndex].name} · STAGE ${b.arcadeStage+1}/${ARCADE_CUPS[b.arcadeCupIndex].stages.length} · ${b.arcadeLabel}`:b.mode==='elite'?'POKÉMON LEAGUE':'TRAINER CHALLENGE'):'MATCH COMPLETE';
-    document.getElementById('scene-title').textContent=intro?`${name} challenges you!`:victory?`You defeated ${name}!`:`${name} wins the match!`;
+    document.getElementById('scene-title').textContent=intro?`YOU  VS  ${name}`:victory?`You defeated ${name}!`:`${name} wins the match!`;
+    const foeName=document.getElementById('scene-foe-name');if(foeName)foeName.textContent=name.toUpperCase();
+    drawPips(document.getElementById('scene-player-pips'),b.player?.length||Runtime.save?.party?.length||3);
+    drawPips(document.getElementById('scene-foe-pips'),b.enemy?.length||b.trainer?.team?.length||3);
     const sprite=document.getElementById('scene-trainer');sprite.src=assetUrl(`./assets/trainers/${b.trainer?.sprite||'youngster'}.png`);sprite.alt=name;
     const leader=b.mode==='cup'&&b.cupRound===2,lines=leader?quotes[name]:null;
     const qualifierIntro=b.mode==='cup'&&!leader?`You will not reach ${CUPS[b.cupIndex].leader} without getting through my team first!`:null;
@@ -23020,21 +23054,7 @@ YSPresentationInstallers.BattleRefinement = () => {
   const Runtime=window.YSRuntime;
   /* Damage tuning is applied inside the active engine in index.html. */
 
-  const scene=document.getElementById('trainer-scene'),stage=scene?.querySelector('.scene-stage');
-  if(scene&&stage&&window.TrainerScenes){
-    const player=document.createElement('img');player.id='scene-player';player.alt='Your trainer';player.src=assetUrl('./assets/trainers/jr.trainerm.png');
-    stage.prepend(player);
-    const pName=document.createElement('b');pName.className='scene-versus-name player';pName.textContent='YOU';stage.append(pName);
-    const fName=document.createElement('b');fName.className='scene-versus-name foe';stage.append(fName);
-    const pPips=document.createElement('span');pPips.className='scene-team-pips player';stage.append(pPips);
-    const fPips=document.createElement('span');fPips.className='scene-team-pips foe';stage.append(fPips);
-    const pips=(node,count)=>{node.replaceChildren(...Array.from({length:Math.min(6,Math.max(1,count||1))},()=>document.createElement('i')));};
-    window.YSFlow?.on('presentation:trainerIntro',({battle:b})=>{
-      const name=b.trainer?.name||'TRAINER';fName.textContent=name.toUpperCase();
-      pips(pPips,b.player?.length||Runtime.save?.party?.length||3);pips(fPips,b.enemy?.length||b.trainer?.team?.length||3);
-      const title=document.getElementById('scene-title');if(title)title.textContent=`YOU  VS  ${name}`;
-    },10);
-  }
+  /* Trainer VS structure is owned by src/template.html + trainer-scenes.js. */
 
   /* Routine information stays in the dialogue rail. Status/capture-scale moments may briefly use the arena. */
   const arena=document.getElementById('battle-arena');
@@ -24249,11 +24269,15 @@ YSPresentationInstallers.BattleReadout();
   boxHead.innerHTML = '<div class="party-box-title"><p class="eyebrow">STORAGE</p><h2>Pokémon Storage</h2><small class="party-box-total"></small></div><div class="party-box-tools"><span class="party-box-index"><button type="button" disabled aria-label="Previous box">‹</button><b>BOX 1 · KANTO</b><button type="button" disabled aria-label="Next box">›</button></span><label>SORT<select aria-label="Sort Pokémon Storage"><option value="level">LEVEL</option><option value="name">NAME</option><option value="dex">DEX NO.</option></select></label></div>';
   layout.append(teamHead, team, info, coverage, boxHead);
   roster.before(layout);
+  let managementOpen = false;
+  boxHead.hidden = true;
+  roster.hidden = true;
   const storageDetail = document.createElement("section");
   storageDetail.id = "party-storage-detail";
   storageDetail.className = "party-storage-detail";
   storageDetail.setAttribute("aria-live", "polite");
   roster.after(storageDetail);
+  storageDetail.hidden = true;
   let storageSelectedUid = null;
 
   const controls = heading.querySelector(".team-builder-controls");
@@ -24262,6 +24286,25 @@ YSPresentationInstallers.BattleReadout();
   manage.textContent = "TEAM ›";
   manage.className = "secondary-button party-mobile-presets";
   controls?.append(manage);
+  function setManagement(open) {
+    managementOpen = !!open;
+    layout.dataset.partyView = managementOpen ? "management" : "party";
+    teamHead.hidden = managementOpen;
+    team.hidden = managementOpen;
+    info.hidden = managementOpen;
+    coverage.hidden = managementOpen;
+    boxHead.hidden = !managementOpen;
+    roster.hidden = !managementOpen;
+    if (!managementOpen) storageDetail.hidden = true;
+    manage.textContent = managementOpen ? "‹ PARTY" : "TEAM ›";
+    manage.setAttribute("aria-pressed", String(managementOpen));
+    arrange();
+  }
+  manage.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    setManagement(!managementOpen);
+  }, true);
 
   const swap = document.createElement("dialog");
   swap.className = "party-mobile-swap";
@@ -24411,7 +24454,8 @@ YSPresentationInstallers.BattleReadout();
   function emptySlot(index) {
     const button = document.createElement("button");
     button.type = "button"; button.className = "party-mobile-empty";
-    button.innerHTML = `<b>+</b><span>SLOT ${index + 1}</span><small>ADD POKÉMON</small>`;
+    button.innerHTML = `<b>+</b><span>SLOT ${index + 1}</span><small>${managementOpen ? "ADD POKÉMON" : "EMPTY"}</small>`;
+    button.disabled = !managementOpen;
     button.onclick = () => roster.querySelector(".pokemon-profile-trigger")?.focus();
     return button;
   }
@@ -24432,8 +24476,10 @@ YSPresentationInstallers.BattleReadout();
     teamHead.querySelector(".party-mobile-count").textContent = `${selected.length} / ${selectionLimit}`;
     const total = boxHead.querySelector(".party-box-total"); if (total) total.textContent = `${roster.children.length} IN BOX`;
     drawInfo(selected[0]); drawCoverage(); sortBox();
+    team.querySelectorAll(".party-toggle").forEach(button => { button.hidden = !managementOpen; });
     const fallback = storageSelectedUid && pokemonRecord(storageSelectedUid) ? storageSelectedUid : ([...roster.querySelectorAll("[data-companion-id]")].find(node => !selected.includes(node.dataset.companionId))?.dataset.companionId || selected[0]);
-    if (fallback) drawStorageDetail(fallback);
+    if (managementOpen && fallback) drawStorageDetail(fallback);
+    else storageDetail.hidden = true;
   }
 
   window.YSFlow?.on("party:rendered", () => { arrange(); }, 35);
@@ -24465,7 +24511,7 @@ YSPresentationInstallers.BattleReadout();
   detailModal.addEventListener("change", enhanceDetails);
   detailModal.addEventListener("click", event => { if (!event.target.closest(".party-detail-actions,.detail-close")) enhanceDetails(); });
 
-  window.PartyMobile = { arrange, add, remove, openSwap, coverage: coverageForParty };
+  window.PartyMobile = { arrange, add, remove, openSwap, coverage: coverageForParty, setManagement };
   renderRoster();
 })();
 
@@ -24784,6 +24830,13 @@ YSPresentationInstallers.SignatureEffects();
   const captureChoreography = YSPresentationInternals.CaptureEffects;
   const corePlay = effects.play.bind(effects);
   const moveId = move => Object.keys(window.MOVES || {}).find(key => MOVES[key] === move) || "";
+  const settle = (value, timeout = 1600) => {
+    if (!value || typeof value.then !== "function") return Promise.resolve(value);
+    return Promise.race([
+      Promise.resolve(value).catch(error => { console.warn("Battle presentation failed open", error); }),
+      new Promise(resolve => setTimeout(resolve, timeout)),
+    ]);
+  };
 
   const choreographyPass = (actor, target, move, outcome) =>
     choreography?.play ? choreography.play(corePlay, actor, target, move, outcome) : corePlay(actor, target, move, outcome);
@@ -24801,7 +24854,7 @@ YSPresentationInstallers.SignatureEffects();
         atmosphere?.aftermath?.(target, move);
       }
     })();
-    await Promise.all([visualRun, signatureRun]);
+    await settle(Promise.all([visualRun, signatureRun]), 2200);
   }
 
   const api = {
@@ -24811,16 +24864,16 @@ YSPresentationInstallers.SignatureEffects();
     get speed() { return polish?.speed || "classic"; },
     get scale() { return polish?.scale || 1; },
     delay(ms) { return polish?.delay?.(ms) ?? ms; },
-    wait(ms) { return polish?.wait?.(ms) ?? new Promise(resolve => setTimeout(resolve, ms)); },
+    wait(ms) { return settle(polish?.wait?.(ms) ?? new Promise(resolve => setTimeout(resolve, ms)), Math.max(800, ms + 600)); },
     setSpeed(next) { return polish?.setSpeed?.(next); },
 
     // Battle lifecycle presentation.
-    sendOut(mon) { return polish?.sendOut?.(mon); },
-    withdraw(mon) { return polish?.withdraw?.(mon); },
-    prepare(actor, move) { return polish?.prepare?.(actor, move); },
-    hitReaction(target, outcome = "hit") { return polish?.impact?.(target, outcome); },
-    faint(mon) { return polish?.faint?.(mon); },
-    finish(victory) { return polish?.finish?.(victory); },
+    sendOut(mon) { return settle(polish?.sendOut?.(mon)); },
+    withdraw(mon) { return settle(polish?.withdraw?.(mon)); },
+    prepare(actor, move) { return settle(polish?.prepare?.(actor, move)); },
+    hitReaction(target, outcome = "hit") { return settle(polish?.impact?.(target, outcome)); },
+    faint(mon) { return settle(polish?.faint?.(mon)); },
+    finish(victory) { return settle(polish?.finish?.(victory)); },
     eventSound(name) { return polish?.eventSound?.(name); },
 
     // Camera / readable battle framing.
@@ -24840,10 +24893,10 @@ YSPresentationInstallers.SignatureEffects();
 
     // Move pipeline and outcome punctuation.
     playMove,
-    dodge(target, actor, move) { return cinematics?.dodge?.(target, actor, move); },
-    critical(actor, target, move) { return cinematics?.critical?.(actor, target, move) ?? polish?.impact?.(target, "critical"); },
-    effectiveness(target, factor) { return cinematics?.effectiveness?.(target, factor); },
-    capture(target, id, caught) { return captureChoreography?.capture?.(target, id, caught); },
+    dodge(target, actor, move) { return settle(cinematics?.dodge?.(target, actor, move)); },
+    critical(actor, target, move) { return settle(cinematics?.critical?.(actor, target, move) ?? polish?.impact?.(target, "critical")); },
+    effectiveness(target, factor) { return settle(cinematics?.effectiveness?.(target, factor)); },
+    capture(target, id, caught) { return settle(captureChoreography?.capture?.(target, id, caught), 2400); },
 
     // Exposed for architecture/debug tooling, not battle mechanics.
     matrix: signatures?.matrix || Object.freeze({}),
@@ -25502,6 +25555,18 @@ YSPresentationInstallers.SignatureEffects();
       card.innerHTML = `<b>${index + 1}</b><div class="pc-party-art"></div><span><strong>${pokemonNameFor(uid)}</strong><small>Lv.${levelFor(uid)}${current.status ? ` · ${current.status}` : ""}</small><i><em style="width:${percent}%"></em></i><u>${hp}/${stats.hp}</u></span>`;
       card.querySelector(".pc-party-art").append(image); strip.append(card);
     }
+    root.tabIndex = 0;
+    root.setAttribute("role", "button");
+    root.setAttribute("aria-label", "Open Team Management");
+    const openManagement = () => {
+      if (Runtime.battle) return;
+      if (typeof showCollection === "function") showCollection();
+      window.PartyMobile?.setManagement?.(true);
+    };
+    root.onclick = openManagement;
+    root.onkeydown = event => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openManagement(); }
+    };
   }
 
   function renderTable({ loaded = false } = {}) {
@@ -25741,7 +25806,7 @@ YSPresentationInstallers.SignatureEffects();
     "cups-screen": { key:"journey", label:"Journey", nav:"cups-tab", accent:"gold", gear:true, defaultGear:"party", defaultBag:"recovery", hint:"Prepare your team, review supplies and keep moving through Kanto." },
     "trainer-screen": { key:"cups", label:"Cups", nav:"trainer-tab", accent:"orange", gear:true, defaultGear:"bag", defaultBag:"held", hint:"Competition kit: held gear and recovery items matter most here." },
     "safari-screen": { key:"safari", label:"Safari", nav:"safari-tab", accent:"green", gear:true, defaultGear:"bag", defaultBag:"capture", hint:"Safari kit: check your Ball supply before wandering deeper." },
-    "pokecenter-screen": { key:"center", label:"Center", nav:"pokecenter-tab", accent:"red", gear:true, defaultGear:"bag", defaultBag:"recovery", hint:"Healing is free here. Trainer Gear stays available after treatment." },
+    "pokecenter-screen": { key:"center", label:"Center", nav:"pokecenter-tab", accent:"red", gear:false, defaultGear:null, defaultBag:null, hint:"Healing is free here." },
     "pokedex-screen": { key:"dex", label:"Dex", nav:"pokedex-tab", accent:"cyan", gear:false, defaultGear:null, defaultBag:null, hint:"Reference and collection progress." }
   };
 
@@ -26006,7 +26071,9 @@ YSPresentationInstallers.SignatureEffects();
   }
 
   function refresh() {
-    normalizeNav(); tagScreens(); removeDuplicateGymUI(); ensureAdventureRecap(); normalizePageOrder(); refineHeadings(); renderGearAll();
+    normalizeNav(); tagScreens(); removeDuplicateGymUI(); ensureAdventureRecap(); normalizePageOrder(); refineHeadings();
+    byId("pokecenter-screen")?.querySelectorAll(".trainer-gear").forEach(node => node.remove());
+    renderGearAll();
   }
 
   let lastSafariCatchAt = 0;

@@ -198,8 +198,8 @@
       "index": 27,
       "path": "src/battle/ai.js",
       "placeholder": "__YS_SCRIPT_027__",
-      "chars": 4787,
-      "sha256": "4e18d8d8ea1d9e73024b9ebed753a111c15c3dea82cfcd986264f6ed57847f33"
+      "chars": 5059,
+      "sha256": "163348763feb491f50083bb435ea4bc97d61af29f273a32a9933df1e26476c1f"
     },
     {
       "index": 28,
@@ -226,8 +226,8 @@
       "index": 31,
       "path": "src/battle/faint-end-turn.js",
       "placeholder": "__YS_SCRIPT_031__",
-      "chars": 1856,
-      "sha256": "a9d29d4b4280e1b0e01be498fdb0df3967c7265904d0818a3eb882510392510a"
+      "chars": 2199,
+      "sha256": "08c228421486a28bc806b77dbe8b508d17af7ad1d92e890fc47db1ae8b696164"
     },
     {
       "index": 32,
@@ -240,8 +240,8 @@
       "index": 33,
       "path": "src/battle/switch.js",
       "placeholder": "__YS_SCRIPT_033__",
-      "chars": 531,
-      "sha256": "1945be43dfa51d611f3e5aa2a2ea56a1c77954c3ca898f3f1589231775ec477b"
+      "chars": 808,
+      "sha256": "fe966383c262a93a51478fb77449c50e31ee0bb3b7b8ea44e513f2e53f651630"
     },
     {
       "index": 34,
@@ -289,8 +289,8 @@
       "index": 40,
       "path": "src/presentation/trainer-scenes.js",
       "placeholder": "__YS_SCRIPT_040__",
-      "chars": 5462,
-      "sha256": "8cebb73bf6235cc8f2ee753b89f76626417a0ab0f0454ff930c545ba64cd1a6d"
+      "chars": 5950,
+      "sha256": "f2c6b9cb31230da8161674019b9dbb7cd9055a9f2adfaf67e1a46b904d9dd9f7"
     },
     {
       "index": 41,
@@ -324,8 +324,8 @@
       "index": 45,
       "path": "src/presentation/battle-decorators.js",
       "placeholder": "__YS_SCRIPT_045__",
-      "chars": 35505,
-      "sha256": "7c7637f57922eadc24837d02393fee239e1477d50a221309969210ca4a455c74"
+      "chars": 34274,
+      "sha256": "3e8f6574f0eac47efa0340797977efb46c824f4aaed94c69f204d55ad7ce4020"
     },
     {
       "index": 46,
@@ -422,8 +422,8 @@
       "index": 59,
       "path": "src/party/party-mobile.js",
       "placeholder": "__YS_SCRIPT_059__",
-      "chars": 16349,
-      "sha256": "140e8c19c530303f54600aa4b2b2777f0b7248a6280da027c3d3f5ca0eae9334"
+      "chars": 17416,
+      "sha256": "7eded026bc9d711e0578c25e9d9f285ffa6bf3539f35f3e2b446e2ef6d7f16ad"
     },
     {
       "index": 60,
@@ -506,8 +506,8 @@
       "index": 71,
       "path": "src/presentation/battle-presentation-director.js",
       "placeholder": "__YS_SCRIPT_071__",
-      "chars": 4481,
-      "sha256": "9b1a802a0d74e2e839ed892b01e709198b4c1fb406be7be787ba494f813af6eb"
+      "chars": 4948,
+      "sha256": "a02242c16f4f2684dbc54aef433ed54b9d08f5bed9c5c12882be35d19df7faad"
     },
     {
       "index": 72,
@@ -541,15 +541,15 @@
       "index": 76,
       "path": "src/pokecenter/pokecenter.js",
       "placeholder": "__YS_SCRIPT_076__",
-      "chars": 19494,
-      "sha256": "9daa4c0e80a30867e7ef99e79f592e94c94cec3b4caeab42bafbb33e4d987b02"
+      "chars": 19984,
+      "sha256": "162cddbaa2f33911ba27e084b5ee25b42173fced16e02db4f352cdd56a209d0b"
     },
     {
       "index": 77,
       "path": "src/ui/interface-v42.js",
       "placeholder": "__YS_SCRIPT_077__",
-      "chars": 23560,
-      "sha256": "905887b22c821046d7e7dc5989afe9f91abd94dffecf47fccf12269c583157aa"
+      "chars": 23609,
+      "sha256": "058c84d74964b15b87715d4b8f92fd2c86c01c1ce42b7573fd5a1885fa9780f8"
     },
     {
       "index": 78,
@@ -680,8 +680,8 @@
       "sha256": "dc1b7e52d9f8b7b42f157c2a03ee1172946f4d7782fb95bf5798c20c7f20b6f4"
     }
   ],
-  "canonical_sha256": "8ee97825337dbef3766a4b8e0e7684713eb39689f10cf02d346c7e7dd2284e50",
-  "canonical_phase": "UI5.2",
+  "canonical_sha256": "0a7d7e44b0a28f0d1d01ddc5efd6ddb1e5395420b78716ab173f44438af1ee69",
+  "canonical_phase": "source-owner-battle-stability",
   "canonical_assets_sha256": "5f8d08c81123556f2215272530fb85f980d485fa3c0d0b13fcc7dc8fd1175deb",
   "asset_count": 450,
   "asset_bytes": 13405715
