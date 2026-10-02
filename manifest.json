@@ -613,8 +613,8 @@
       "index": 4,
       "path": "src/styles/shop.css",
       "placeholder": "__YS_STYLE_SHOP__",
-      "chars": 2684,
-      "sha256": "91e89da45e0d2b79ea18566262a5465d3043efba64ef0d224c0bfb7778e9347f"
+      "chars": 7916,
+      "sha256": "0a8cb7d5985f08f7d486cae46a785d4abfcaa64ac92aa0903cc6908bff89e679"
     },
     {
       "index": 5,
@@ -680,7 +680,7 @@
       "sha256": "dc1b7e52d9f8b7b42f157c2a03ee1172946f4d7782fb95bf5798c20c7f20b6f4"
     }
   ],
-  "canonical_sha256": "ec8fbca82a843ecfbb97bc64e8791c90c02a9b8b6b258ef9dd4a5382c16250a3",
+  "canonical_sha256": "79bbe545a72816d87741d575ce8e242a3023d85a519b9cbd5a57e3c54acda878",
   "canonical_phase": "source-owner-battle-stability",
   "canonical_assets_sha256": "5f8d08c81123556f2215272530fb85f980d485fa3c0d0b13fcc7dc8fd1175deb",
   "asset_count": 450,
