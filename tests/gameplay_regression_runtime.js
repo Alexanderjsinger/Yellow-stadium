@@ -101,6 +101,41 @@ async function testDamageAndTurnDeterminism(){
   return {damage:sample,turn};
 }
 
+async function testSwitchSlotSynchronization(){
+  const h=loadBattleBasics(loadCore(createHarness({seed:fixtures.rng_seed})));
+  prepareSinglePokemon(h,"pikachu",30);
+  h.run(`
+    addOwned("bulbasaur",30);
+    selected=[save.pokemon[0].uid,save.pokemon[1].uid];
+    save.activePartyInstanceIds=[...selected];
+    battle={
+      player:[createMon(save.pokemon[0].uid,"player",30),createMon(save.pokemon[1].uid,"player",30)],
+      enemy:[createMon("squirtle","enemy",30),createMon("charmander","enemy",30)],
+      mode:"trainer",difficulty:"stadium",profile:AI_PROFILES.rookie,pActive:0,eActive:0,turn:1,locked:false,over:false,
+      participants:new Set([0]),aiSwitchCooldown:0,lastPlayerMove:null,actedThisTurn:[],slots:{player:[0],enemy:[0]}
+    };
+    announce=()=>{}; updateBattleUI=()=>{}; delay=async()=>{}; enemyUtilityResponse=async()=>{battle.locked=false;};
+  `);
+  h.load("src/battle/switch.js");
+  await h.run(`switchPlayer(1)`);
+  let state=h.json(`({pActive:battle.pActive,slot:battle.slots.player[0],locked:battle.locked})`);
+  assert.strictEqual(state.pActive,1,"manual switch did not update legacy active index");
+  assert.strictEqual(state.slot,1,"manual switch did not update Stadium slot index");
+  assert.strictEqual(state.locked,false,"manual switch did not return battle control");
+
+  h.load("src/battle/faint-end-turn.js");
+  h.run(`
+    battle.pActive=0; battle.slots.player=[0]; battle.player[0].hp=0; battle.player[1].hp=Math.max(1,battle.player[1].hp);
+    endBattle=v=>{battle.over=true;battle.victory=v;};
+  `);
+  await h.run(`faintAndAdvance("player")`);
+  state=h.json(`({pActive:battle.pActive,slot:battle.slots.player[0],over:battle.over})`);
+  assert.strictEqual(state.pActive,1,"faint replacement did not update legacy active index");
+  assert.strictEqual(state.slot,1,"faint replacement did not update Stadium slot index");
+  assert.strictEqual(state.over,false,"faint replacement incorrectly ended a battle with a healthy reserve");
+  return state;
+}
+
 async function testJourneyGymAndCupProgression(){
   const h=loadBattleBasics(loadCore(createHarness({seed:fixtures.rng_seed})));
   prepareSinglePokemon(h,"pikachu",30);
@@ -213,6 +248,7 @@ async function testPokeCenterHealing(){
   const results={
     onboarding_save:await testOnboardingAndSaveReload(),
     battle:await testDamageAndTurnDeterminism(),
+    switch_sync:await testSwitchSlotSynchronization(),
     journey_gym:await testJourneyGymAndCupProgression(),
     safari:await testSafariCapture(),
     arcade:await testArcadeCupProgression(),
@@ -220,5 +256,5 @@ async function testPokeCenterHealing(){
   };
   const reportPath=path.join(ROOT,"reports/f1-gameplay-regression.json");
   fs.writeFileSync(reportPath,JSON.stringify({seed:fixtures.rng_seed,results},null,2)+"\n");
-  console.log("PASS: F1 deterministic gameplay regressions (onboarding/save, battle, Journey/Gym, Safari, Cups, PokéCenter)");
+  console.log("PASS: F1 deterministic gameplay regressions (onboarding/save, battle, switch sync, Journey/Gym, Safari, Cups, PokéCenter)");
 })().catch(error=>{ console.error(error); process.exit(1); });
