@@ -325,21 +325,7 @@ YSPresentationInstallers.BattleRefinement = () => {
   const Runtime=window.YSRuntime;
   /* Damage tuning is applied inside the active engine in index.html. */
 
-  const scene=document.getElementById('trainer-scene'),stage=scene?.querySelector('.scene-stage');
-  if(scene&&stage&&window.TrainerScenes){
-    const player=document.createElement('img');player.id='scene-player';player.alt='Your trainer';player.src=assetUrl('./assets/trainers/jr.trainerm.png');
-    stage.prepend(player);
-    const pName=document.createElement('b');pName.className='scene-versus-name player';pName.textContent='YOU';stage.append(pName);
-    const fName=document.createElement('b');fName.className='scene-versus-name foe';stage.append(fName);
-    const pPips=document.createElement('span');pPips.className='scene-team-pips player';stage.append(pPips);
-    const fPips=document.createElement('span');fPips.className='scene-team-pips foe';stage.append(fPips);
-    const pips=(node,count)=>{node.replaceChildren(...Array.from({length:Math.min(6,Math.max(1,count||1))},()=>document.createElement('i')));};
-    window.YSFlow?.on('presentation:trainerIntro',({battle:b})=>{
-      const name=b.trainer?.name||'TRAINER';fName.textContent=name.toUpperCase();
-      pips(pPips,b.player?.length||Runtime.save?.party?.length||3);pips(fPips,b.enemy?.length||b.trainer?.team?.length||3);
-      const title=document.getElementById('scene-title');if(title)title.textContent=`YOU  VS  ${name}`;
-    },10);
-  }
+  /* Trainer VS structure is owned by src/template.html + trainer-scenes.js. */
 
   /* Routine information stays in the dialogue rail. Status/capture-scale moments may briefly use the arena. */
   const arena=document.getElementById('battle-arena');
