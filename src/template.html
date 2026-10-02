@@ -235,7 +235,15 @@
       <section class="scene-card" role="dialog" aria-modal="true" aria-labelledby="scene-title">
         <p id="scene-kicker" class="eyebrow"></p>
         <h2 id="scene-title"></h2>
-        <div class="scene-stage"><img id="scene-trainer" alt=""><span id="scene-badge" class="kanto-badge" hidden></span></div>
+        <div class="scene-stage">
+          <img id="scene-player" alt="Your trainer" src="./assets/trainers/jr.trainerm.png">
+          <img id="scene-trainer" alt="">
+          <b class="scene-versus-name player">YOU</b>
+          <b id="scene-foe-name" class="scene-versus-name foe">TRAINER</b>
+          <span id="scene-player-pips" class="scene-team-pips player" aria-label="Your team"></span>
+          <span id="scene-foe-pips" class="scene-team-pips foe" aria-label="Opponent team"></span>
+          <span id="scene-badge" class="kanto-badge" hidden></span>
+        </div>
         <div class="scene-dialogue">
           <p id="scene-quote"></p>
           <div id="scene-plan" class="encounter-plan" hidden>
