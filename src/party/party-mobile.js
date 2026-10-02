@@ -26,11 +26,15 @@
   boxHead.innerHTML = '<div class="party-box-title"><p class="eyebrow">STORAGE</p><h2>Pokémon Storage</h2><small class="party-box-total"></small></div><div class="party-box-tools"><span class="party-box-index"><button type="button" disabled aria-label="Previous box">‹</button><b>BOX 1 · KANTO</b><button type="button" disabled aria-label="Next box">›</button></span><label>SORT<select aria-label="Sort Pokémon Storage"><option value="level">LEVEL</option><option value="name">NAME</option><option value="dex">DEX NO.</option></select></label></div>';
   layout.append(teamHead, team, info, coverage, boxHead);
   roster.before(layout);
+  let managementOpen = false;
+  boxHead.hidden = true;
+  roster.hidden = true;
   const storageDetail = document.createElement("section");
   storageDetail.id = "party-storage-detail";
   storageDetail.className = "party-storage-detail";
   storageDetail.setAttribute("aria-live", "polite");
   roster.after(storageDetail);
+  storageDetail.hidden = true;
   let storageSelectedUid = null;
 
   const controls = heading.querySelector(".team-builder-controls");
@@ -39,6 +43,25 @@
   manage.textContent = "TEAM ›";
   manage.className = "secondary-button party-mobile-presets";
   controls?.append(manage);
+  function setManagement(open) {
+    managementOpen = !!open;
+    layout.dataset.partyView = managementOpen ? "management" : "party";
+    teamHead.hidden = managementOpen;
+    team.hidden = managementOpen;
+    info.hidden = managementOpen;
+    coverage.hidden = managementOpen;
+    boxHead.hidden = !managementOpen;
+    roster.hidden = !managementOpen;
+    if (!managementOpen) storageDetail.hidden = true;
+    manage.textContent = managementOpen ? "‹ PARTY" : "TEAM ›";
+    manage.setAttribute("aria-pressed", String(managementOpen));
+    arrange();
+  }
+  manage.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    setManagement(!managementOpen);
+  }, true);
 
   const swap = document.createElement("dialog");
   swap.className = "party-mobile-swap";
@@ -188,7 +211,8 @@
   function emptySlot(index) {
     const button = document.createElement("button");
     button.type = "button"; button.className = "party-mobile-empty";
-    button.innerHTML = `<b>+</b><span>SLOT ${index + 1}</span><small>ADD POKÉMON</small>`;
+    button.innerHTML = `<b>+</b><span>SLOT ${index + 1}</span><small>${managementOpen ? "ADD POKÉMON" : "EMPTY"}</small>`;
+    button.disabled = !managementOpen;
     button.onclick = () => roster.querySelector(".pokemon-profile-trigger")?.focus();
     return button;
   }
@@ -209,8 +233,10 @@
     teamHead.querySelector(".party-mobile-count").textContent = `${selected.length} / ${selectionLimit}`;
     const total = boxHead.querySelector(".party-box-total"); if (total) total.textContent = `${roster.children.length} IN BOX`;
     drawInfo(selected[0]); drawCoverage(); sortBox();
+    team.querySelectorAll(".party-toggle").forEach(button => { button.hidden = !managementOpen; });
     const fallback = storageSelectedUid && pokemonRecord(storageSelectedUid) ? storageSelectedUid : ([...roster.querySelectorAll("[data-companion-id]")].find(node => !selected.includes(node.dataset.companionId))?.dataset.companionId || selected[0]);
-    if (fallback) drawStorageDetail(fallback);
+    if (managementOpen && fallback) drawStorageDetail(fallback);
+    else storageDetail.hidden = true;
   }
 
   window.YSFlow?.on("party:rendered", () => { arrange(); }, 35);
@@ -242,7 +268,7 @@
   detailModal.addEventListener("change", enhanceDetails);
   detailModal.addEventListener("click", event => { if (!event.target.closest(".party-detail-actions,.detail-close")) enhanceDetails(); });
 
-  window.PartyMobile = { arrange, add, remove, openSwap, coverage: coverageForParty };
+  window.PartyMobile = { arrange, add, remove, openSwap, coverage: coverageForParty, setManagement };
   renderRoster();
 })();
 
