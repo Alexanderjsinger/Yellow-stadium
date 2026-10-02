@@ -128,8 +128,8 @@
       "index": 17,
       "path": "src/shop/shop.js",
       "placeholder": "__YS_SCRIPT_017__",
-      "chars": 2055,
-      "sha256": "c5caba5d1ae84758d8a837f7142da8b796ae8abba46bc9707aae807a8de137f6"
+      "chars": 8621,
+      "sha256": "c77ddf9f3496fec04189084346a2e85e21a0a89d3b79e5f0c02bef64202e97b7"
     },
     {
       "index": 18,
@@ -680,7 +680,7 @@
       "sha256": "dc1b7e52d9f8b7b42f157c2a03ee1172946f4d7782fb95bf5798c20c7f20b6f4"
     }
   ],
-  "canonical_sha256": "c3a6044005c7acf22057feebaf902b6f551ed8144b00485be89b22b38f3f64b4",
+  "canonical_sha256": "ec8fbca82a843ecfbb97bc64e8791c90c02a9b8b6b258ef9dd4a5382c16250a3",
   "canonical_phase": "source-owner-battle-stability",
   "canonical_assets_sha256": "5f8d08c81123556f2215272530fb85f980d485fa3c0d0b13fcc7dc8fd1175deb",
   "asset_count": 450,
