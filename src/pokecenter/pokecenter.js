@@ -186,6 +186,18 @@
       card.innerHTML = `<b>${index + 1}</b><div class="pc-party-art"></div><span><strong>${pokemonNameFor(uid)}</strong><small>Lv.${levelFor(uid)}${current.status ? ` · ${current.status}` : ""}</small><i><em style="width:${percent}%"></em></i><u>${hp}/${stats.hp}</u></span>`;
       card.querySelector(".pc-party-art").append(image); strip.append(card);
     }
+    root.tabIndex = 0;
+    root.setAttribute("role", "button");
+    root.setAttribute("aria-label", "Open Team Management");
+    const openManagement = () => {
+      if (Runtime.battle) return;
+      if (typeof showCollection === "function") showCollection();
+      window.PartyMobile?.setManagement?.(true);
+    };
+    root.onclick = openManagement;
+    root.onkeydown = event => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openManagement(); }
+    };
   }
 
   function renderTable({ loaded = false } = {}) {
