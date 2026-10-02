@@ -42,9 +42,21 @@ for index,(path,name) in expected.items():
     assert f'YSPresentationInstallers.{name}();' in text
     assert 'window.' not in text
 
+# Trainer VS structure belongs to the canonical template/trainer scene owner,
+# never to a late decorator.
+template=(ROOT/'src/template.html').read_text()
+trainer=(P/'trainer-scenes.js').read_text()
+for required in ['id="scene-player"','id="scene-foe-name"','id="scene-player-pips"','id="scene-foe-pips"']:
+    assert required in template, f'canonical trainer scene missing {required}'
+assert "createElement('img');player.id='scene-player'" not in runtime
+assert "drawPips(document.getElementById('scene-player-pips')" in trainer
+
 # Decorators may register lifecycle listeners, but they must not bypass the
 # canonical battle director to reach a subordinate presentation generation.
 assert 'YSPresentationInternals.BattlePolish?.scale' not in runtime
-assert 'version: "C4"' in (P/'battle-presentation-director.js').read_text()
+director=(P/'battle-presentation-director.js').read_text()
+assert 'version: "C4"' in director
+assert 'const settle = (value, timeout = 1600)' in director
+assert 'await settle(Promise.all([visualRun, signatureRun]), 2200)' in director
 
 print('PASS: C4 event-driven presentation decorators absorbed into one runtime')
