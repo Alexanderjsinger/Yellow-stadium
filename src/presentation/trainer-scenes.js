@@ -24,12 +24,19 @@
   const supported=b=>['cup','trainer','trainerDuo','elite','arcade'].includes(b.mode);
   const badgeSymbols=['◆','●','ϟ','✿','☠','◉','▲','◇'];
   function badge(node,index){node.style.removeProperty('background-image');node.style.removeProperty('background-position');node.classList.add(`badge-${index}`);node.textContent=badgeSymbols[index]||'◆';node.setAttribute('role','img');node.setAttribute('aria-label',`${CUPS[index].badge} Badge`);}
+  function drawPips(node,count){
+    if(!node)return;
+    node.replaceChildren(...Array.from({length:Math.min(6,Math.max(1,count||1))},()=>document.createElement('i')));
+  }
   function show(b,victory){
     const intro=victory===undefined,name=b.trainer?.name||'TRAINER';
     scene.dataset.phase=intro?'intro':victory?'win':'loss';
     const cupStage=b.mode==='cup'?(b.cupRound===2?'LEADER BATTLE':`BATTLE ${(b.cupRound||0)+1} OF 3`):'';
     document.getElementById('scene-kicker').textContent=intro?(b.mode==='cup'?`${CUPS[b.cupIndex].badge} JOURNEY · ${cupStage}`:b.mode==='arcade'?`${ARCADE_CUPS[b.arcadeCupIndex].name} · STAGE ${b.arcadeStage+1}/${ARCADE_CUPS[b.arcadeCupIndex].stages.length} · ${b.arcadeLabel}`:b.mode==='elite'?'POKÉMON LEAGUE':'TRAINER CHALLENGE'):'MATCH COMPLETE';
-    document.getElementById('scene-title').textContent=intro?`${name} challenges you!`:victory?`You defeated ${name}!`:`${name} wins the match!`;
+    document.getElementById('scene-title').textContent=intro?`YOU  VS  ${name}`:victory?`You defeated ${name}!`:`${name} wins the match!`;
+    const foeName=document.getElementById('scene-foe-name');if(foeName)foeName.textContent=name.toUpperCase();
+    drawPips(document.getElementById('scene-player-pips'),b.player?.length||Runtime.save?.party?.length||3);
+    drawPips(document.getElementById('scene-foe-pips'),b.enemy?.length||b.trainer?.team?.length||3);
     const sprite=document.getElementById('scene-trainer');sprite.src=assetUrl(`./assets/trainers/${b.trainer?.sprite||'youngster'}.png`);sprite.alt=name;
     const leader=b.mode==='cup'&&b.cupRound===2,lines=leader?quotes[name]:null;
     const qualifierIntro=b.mode==='cup'&&!leader?`You will not reach ${CUPS[b.cupIndex].leader} without getting through my team first!`:null;
