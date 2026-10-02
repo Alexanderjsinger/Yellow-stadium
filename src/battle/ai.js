@@ -82,8 +82,14 @@ function chooseEnemyAction(mon, defender) {
 }
 
 async function executeEnemySwitch(index) {
+  const outgoingIndex = battle.eActive;
   const outgoing = activeEnemy();
   battle.eActive = index;
+  if (Array.isArray(battle.slots?.enemy)) {
+    const slot = battle.slots.enemy.indexOf(outgoingIndex);
+    if (slot >= 0) battle.slots.enemy[slot] = index;
+    else if (battle.slots.enemy.length) battle.slots.enemy[0] = index;
+  }
   battle.aiSwitchCooldown = 2;
   announce(`${battle.profile.label} withdrew ${outgoing.name}!`);
   await delay(500);
