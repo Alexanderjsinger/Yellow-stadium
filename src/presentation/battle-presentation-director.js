@@ -23,6 +23,13 @@
   const captureChoreography = YSPresentationInternals.CaptureEffects;
   const corePlay = effects.play.bind(effects);
   const moveId = move => Object.keys(window.MOVES || {}).find(key => MOVES[key] === move) || "";
+  const settle = (value, timeout = 1600) => {
+    if (!value || typeof value.then !== "function") return Promise.resolve(value);
+    return Promise.race([
+      Promise.resolve(value).catch(error => { console.warn("Battle presentation failed open", error); }),
+      new Promise(resolve => setTimeout(resolve, timeout)),
+    ]);
+  };
 
   const choreographyPass = (actor, target, move, outcome) =>
     choreography?.play ? choreography.play(corePlay, actor, target, move, outcome) : corePlay(actor, target, move, outcome);
@@ -40,7 +47,7 @@
         atmosphere?.aftermath?.(target, move);
       }
     })();
-    await Promise.all([visualRun, signatureRun]);
+    await settle(Promise.all([visualRun, signatureRun]), 2200);
   }
 
   const api = {
@@ -50,16 +57,16 @@
     get speed() { return polish?.speed || "classic"; },
     get scale() { return polish?.scale || 1; },
     delay(ms) { return polish?.delay?.(ms) ?? ms; },
-    wait(ms) { return polish?.wait?.(ms) ?? new Promise(resolve => setTimeout(resolve, ms)); },
+    wait(ms) { return settle(polish?.wait?.(ms) ?? new Promise(resolve => setTimeout(resolve, ms)), Math.max(800, ms + 600)); },
     setSpeed(next) { return polish?.setSpeed?.(next); },
 
     // Battle lifecycle presentation.
-    sendOut(mon) { return polish?.sendOut?.(mon); },
-    withdraw(mon) { return polish?.withdraw?.(mon); },
-    prepare(actor, move) { return polish?.prepare?.(actor, move); },
-    hitReaction(target, outcome = "hit") { return polish?.impact?.(target, outcome); },
-    faint(mon) { return polish?.faint?.(mon); },
-    finish(victory) { return polish?.finish?.(victory); },
+    sendOut(mon) { return settle(polish?.sendOut?.(mon)); },
+    withdraw(mon) { return settle(polish?.withdraw?.(mon)); },
+    prepare(actor, move) { return settle(polish?.prepare?.(actor, move)); },
+    hitReaction(target, outcome = "hit") { return settle(polish?.impact?.(target, outcome)); },
+    faint(mon) { return settle(polish?.faint?.(mon)); },
+    finish(victory) { return settle(polish?.finish?.(victory)); },
     eventSound(name) { return polish?.eventSound?.(name); },
 
     // Camera / readable battle framing.
@@ -79,10 +86,10 @@
 
     // Move pipeline and outcome punctuation.
     playMove,
-    dodge(target, actor, move) { return cinematics?.dodge?.(target, actor, move); },
-    critical(actor, target, move) { return cinematics?.critical?.(actor, target, move) ?? polish?.impact?.(target, "critical"); },
-    effectiveness(target, factor) { return cinematics?.effectiveness?.(target, factor); },
-    capture(target, id, caught) { return captureChoreography?.capture?.(target, id, caught); },
+    dodge(target, actor, move) { return settle(cinematics?.dodge?.(target, actor, move)); },
+    critical(actor, target, move) { return settle(cinematics?.critical?.(actor, target, move) ?? polish?.impact?.(target, "critical")); },
+    effectiveness(target, factor) { return settle(cinematics?.effectiveness?.(target, factor)); },
+    capture(target, id, caught) { return settle(captureChoreography?.capture?.(target, id, caught), 2400); },
 
     // Exposed for architecture/debug tooling, not battle mechanics.
     matrix: signatures?.matrix || Object.freeze({}),
